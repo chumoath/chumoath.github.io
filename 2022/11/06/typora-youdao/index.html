@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>博客文章管理经验 | Hexo</title>
+  <title>typora_youdao | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="简介​	本文用于记录使用 hexo 写博客的经验 [TOC] 一、新建文件# 不能加 .md，因为配置中已经有了 hexo new name typora source\_post\name.md sublime name.md  # 配置 文件名称 #   默认名称 config.yml -&gt; new_post_name: :title.md #   修改为日期开头   :year-:month">
+  <meta name="description" content="[toc] 简介​	记录 typora、hexo、有道云配合写博客 一、typora的作用 实际写博客的地方 设置 image来存放需要的图片 源代码 -&gt; 复制，拷贝到 有道云备份  二、hexo的作用 按hexo模板 新建博客 (也可以手动在typora配置) 配置渲染 部署到 服务器  三、有道云的作用 备份博客源代码 在分屏模式下 粘贴，否则会进行转义 在分屏模式下 才能设置为 gi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="博客文章管理经验">
-<meta property="og:url" content="http://example.com/2022/11/05/%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86%E7%BB%8F%E9%AA%8C/index.html">
+<meta property="og:title" content="typora_youdao">
+<meta property="og:url" content="http://example.com/2022/11/06/typora-youdao/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="简介​	本文用于记录使用 hexo 写博客的经验 [TOC] 一、新建文件# 不能加 .md，因为配置中已经有了 hexo new name typora source\_post\name.md sublime name.md  # 配置 文件名称 #   默认名称 config.yml -&gt; new_post_name: :title.md #   修改为日期开头   :year-:month">
+<meta property="og:description" content="[toc] 简介​	记录 typora、hexo、有道云配合写博客 一、typora的作用 实际写博客的地方 设置 image来存放需要的图片 源代码 -&gt; 复制，拷贝到 有道云备份  二、hexo的作用 按hexo模板 新建博客 (也可以手动在typora配置) 配置渲染 部署到 服务器  三、有道云的作用 备份博客源代码 在分屏模式下 粘贴，否则会进行转义 在分屏模式下 才能设置为 gi">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-11-05T09:14:43.000Z">
-<meta property="article:modified_time" content="2022-11-06T12:41:52.935Z">
+<meta property="article:published_time" content="2022-11-06T13:46:16.000Z">
+<meta property="article:modified_time" content="2022-11-06T13:53:27.615Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="随笔">
+<meta property="article:tag" content="hexo">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -155,86 +155,44 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-博客文章管理经验" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-typora-youdao" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      博客文章管理经验
+      typora_youdao
     </h1>
   
 
         
-        <a href="/2022/11/05/%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86%E7%BB%8F%E9%AA%8C/" class="archive-article-date">
-  	<time datetime="2022-11-05T09:14:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-11-05</time>
+        <a href="/2022/11/06/typora-youdao/" class="archive-article-date">
+  	<time datetime="2022-11-06T13:46:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-11-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>​	本文用于记录使用 <code>hexo</code> 写博客的经验</p>
-<p>[TOC]</p>
-<h2 id="一、新建文件"><a href="#一、新建文件" class="headerlink" title="一、新建文件"></a>一、新建文件</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 不能加 .md，因为配置中已经有了</span>
-hexo new name
-typora source<span class="token punctuation">\</span>_post<span class="token punctuation">\</span>name.md
-sublime name.md
-
-<span class="token comment"># 配置 文件名称</span>
-<span class="token comment">#   默认名称 config.yml -> new_post_name: :title.md</span>
-<span class="token comment">#   修改为日期开头   :year-:month-:day</span>
-<span class="token comment">#   注：:title, :year 均是变量</span>
-
-<span class="token comment"># 配置 文件模板</span>
-<span class="token comment"># 	默认模板 config.yml -> default_layout: post</span>
-<span class="token comment">#   可以修改 post模板，加上 toc: true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="二、配置目录"><a href="#二、配置目录" class="headerlink" title="二、配置目录"></a>二、配置目录</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 默认存在的目录</span>
-<span class="token comment">#   source          starter 自带</span>
-<span class="token comment">#   public          hexo g  生成</span>
-<span class="token comment">#   tags            hexo g  在 public 目录下生成</span>
-<span class="token comment">#   archives     </span>
-<span class="token comment">#   categories</span>
-<span class="token comment">#             当有相应的属性时才会生成 目录</span>
-
-<span class="token comment">#   asssets/img     使用 typora创建，用于存放图片</span>
-
-<span class="token comment">#   无法建立新的目录</span>
-    <span class="token comment"># 建立新的目录</span>
-    <span class="token comment">#   hexo 没有专门的命令，所以肯定是在 _config.yml中配置</span>
-    <span class="token comment">#   尝试新建 test_dir: tests</span>
-    
-    
-
-<span class="token comment"># 实用目录</span>
-<span class="token comment">#    tags 和 categories目录中的目录</span>
-<span class="token comment">#    	是根据 每个源文件  的 footer matter 自动产生的</span>
-
-<span class="token comment">#    需要新的 tag 或 category，直接在 footer matter写即可 </span>
-<span class="token comment">#    	一个命令就可以更新文章所属 tag 和 category</span>
-
-<span class="token comment">#    所以都是写完文章再 写 footer matter</span>
-<span class="token comment">#       给文章 tag 和 category</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h2 id="三、管理博客文章"><a href="#三、管理博客文章" class="headerlink" title="三、管理博客文章"></a>三、管理博客文章</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 已知有三种管理方法</span>
-<span class="token comment">#     1. 日期         _config.yml -> premalink</span>
-<span class="token comment">#     2. tag</span>
-<span class="token comment">#     3. category</span>
-
-
-<span class="token comment"># 使用  目录 和 fronter matter 管理</span>
-<span class="token comment"># 	fronter matter 就是用来设置文章属性的</span>
-<span class="token comment">#   </span>
-<span class="token comment">#   tags: []         ->  文件所属标签</span>
-<span class="token comment">#   title:           ->  标题</span>
-<span class="token comment">#   date:            ->  文件创建日期</span>
-<span class="token comment">#   categorys: []    ->  文件所属类别</span>
-
-
-<span class="token comment"># toc: true          ->  看文章时显示目录</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+        <p>[toc]</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>​	记录 <code>typora</code>、<code>hexo</code>、有道云配合写博客</p>
+<h3 id="一、typora的作用"><a href="#一、typora的作用" class="headerlink" title="一、typora的作用"></a>一、<code>typora</code>的作用</h3><ol>
+<li>实际写博客的地方</li>
+<li>设置 <code>image</code>来存放需要的图片</li>
+<li>源代码 -&gt; 复制，拷贝到 有道云备份</li>
+</ol>
+<h3 id="二、hexo的作用"><a href="#二、hexo的作用" class="headerlink" title="二、hexo的作用"></a>二、<code>hexo</code>的作用</h3><ol>
+<li>按<code>hexo</code>模板 新建博客 (也可以手动在<code>typora</code>配置)</li>
+<li>配置渲染</li>
+<li>部署到 服务器</li>
+</ol>
+<h3 id="三、有道云的作用"><a href="#三、有道云的作用" class="headerlink" title="三、有道云的作用"></a>三、有道云的作用</h3><ol>
+<li>备份博客源代码</li>
+<li>在分屏模式下 粘贴，否则会进行转义</li>
+<li>在分屏模式下 才能设置为 <code>github</code> 主题</li>
+<li>将 <code>footer matter</code> 放在 <code>yaml</code> 代码块兼容</li>
+</ol>
 
       
 
@@ -269,24 +227,13 @@ sublime name.md
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/hexo//" class="article-tag-list-link color5">hexo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
 
@@ -336,7 +283,7 @@ sublime name.md
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/11/05/%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86%E7%BB%8F%E9%AA%8C/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/11/06/typora-youdao/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -350,18 +297,9 @@ sublime name.md
   
 <nav id="article-nav">
   
-    <a href="/2022/11/06/%E5%8D%9A%E5%AE%A2%E9%9A%8F%E7%AC%94/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          博客随笔
-        
-      </div>
-    </a>
   
-  
-    <a href="/2022/11/05/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">hexo搭建博客</div>
+    <a href="/2022/11/06/%E5%8D%9A%E5%AE%A2%E9%9A%8F%E7%AC%94/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">博客随笔</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -388,7 +326,7 @@ sublime name.md
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">一、新建文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%85%8D%E7%BD%AE%E7%9B%AE%E5%BD%95"><span class="toc-number">3.</span> <span class="toc-text">二、配置目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%AE%A1%E7%90%86%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0"><span class="toc-number">4.</span> <span class="toc-text">三、管理博客文章</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81typora%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text">一、typora的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81hexo%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">二、hexo的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%9C%89%E9%81%93%E4%BA%91%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">三、有道云的作用</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
