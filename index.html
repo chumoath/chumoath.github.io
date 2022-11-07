@@ -152,6 +152,186 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-gdb调试" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/11/06/gdb%E8%B0%83%E8%AF%95/">hexo搭建博客</a>
+    </h1>
+  
+
+        
+        <a href="/2022/11/06/gdb%E8%B0%83%E8%AF%95/" class="archive-article-date">
+  	<time datetime="2022-11-06T15:18:47.553Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-11-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="需要掌握的工具"><a href="#需要掌握的工具" class="headerlink" title="需要掌握的工具"></a>需要掌握的工具</h3><ul>
+<li>gdb</li>
+<li>cmake</li>
+<li>binutils</li>
+<li>linux命令 及 目录结构</li>
+<li>man find grep 小工具</li>
+<li>malloc 和 new 分配内存的区别</li>
+<li>包管理工具原理</li>
+<li>size</li>
+<li>信号量</li>
+<li>进程</li>
+<li>工具掌握了，看 unix高级环境编程</li>
+<li>使用汇编编写程序，然后总结，总结要迭代</li>
+<li>用 linux来理解进线程，网络，安全，gui，磁盘，IO，文件系统，内存管理，进程调度，性能检测、用户分组等等</li>
+<li>github在工程中的实际使用，issue，pull等等</li>
+<li>linux命令行快捷键</li>
+<li>shell 有趣的指令，比如 |  &gt;&gt;  &amp;&amp;  文件描述符</li>
+<li>宏定义总结</li>
+</ul>
+<p>注意：</p>
+<p>写出linux  C 和  C++编译的实际过程</p>
+<p>编译的目标文件，编译使用的库的查找方法</p>
+<p>学会使用一些库，然后才能模仿这写出库</p>
+<p>不要总是想从头开始，要会模仿</p>
+<ul>
+<li>学习过程中随时记录，一定的时机进行整理</li>
+</ul>
+<p>vscode快捷键</p>
+<p>ctrl + shift + enter     在上一行添加一行</p>
+<p>ctrl + back                  删除单词</p>
+<p>ctrl + &#96;                       打开终端</p>
+<p>分屏</p>
+<p>固定，打开另一个不会被覆盖  双击文件打开</p>
+<p>快速格式化   -&gt;  shift + alt + f</p>
+<p>重命名符号  f2   ctrl + f2</p>
+<p>补全功能不如 clion</p>
+<p>很多快捷键都差不多</p>
+<h2 id="Cmake"><a href="#Cmake" class="headerlink" title="Cmake"></a>Cmake</h2><ul>
+<li>跨平台，linux -&gt;make，vs-&gt;msbuild，xcode-&gt;xcodebuild</li>
+<li>用 cmake 生成 各平台的工程文件</li>
+<li>CMakeLists.txt</li>
+<li>指令 -&gt; 大小写无关</li>
+<li>参数和变量，大小写相关</li>
+<li>指令(参数1 参数2)</li>
+<li>使用变量  ${变量名}</li>
+<li>if(变量名) -&gt; 可直接使用变量名</li>
+</ul>
+<h2 id="指令和变量"><a href="#指令和变量" class="headerlink" title="指令和变量"></a>指令和变量</h2><ul>
+<li><p>cmake_minimum_required - CMake最小版本要求</p>
+</li>
+<li><p>cmake_minimum_required(VERSION 2.8.3)</p>
+</li>
+<li><p>project(工程名) -&gt; 指定工程名</p>
+</li>
+<li><p>[] 可选项</p>
+</li>
+<li><p>set(变量名  str1 str2)   设置变量</p>
+</li>
+<li><p>include_directories(目录1 目录2 …)  -Iinclude 头文件</p>
+</li>
+<li><p>link_directories(dir1 dir2)    -L   库文件</p>
+</li>
+<li><p>add_library(libname [shared|static|module] src1 src2)</p>
+<p> 生成库文件</p>
+</li>
+<li><p>add_compile_options() 添加编译参数</p>
+</li>
+<li><p>add_executable(exename src1 src2 …) 生成执行文件</p>
+</li>
+<li><p>target_link_libraries(main hello)           -l  链接共享库</p>
+</li>
+</ul>
+<p>​             将动态库 hello 添加到 可执行文件 main  (exename lib1 lib2 …)</p>
+<ul>
+<li><p>add_subdirectory(src [binary_dir exclude_from_all])    添加存放源文件的子目录，也就是子模块，即子目录中有 CMakeList.txt</p>
+<p>指定中间二进制，目标二进制存放位置</p>
+</li>
+<li><p>aux_source_directory(dir varname)</p>
+<p>将一个目录下所有原地阿玛文件存在一个变量中</p>
+<p>自动构建原代码列表</p>
+</li>
+</ul>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ul>
+<li>CMAKE_C_FLAGS       gcc编译选项</li>
+<li>CMAKE_CXX_FLAGS   g++</li>
+<li>CMAKE_BUILD_TYPE  编译类型  Debug，Release</li>
+<li></li>
+</ul>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><ul>
+<li>cmake PATH    顶层 CMakeLists所在目录，生成 make文件</li>
+<li>make                编译</li>
+<li>内部构建，外部构建</li>
+<li>cmake .      mkdir build &amp;&amp; cd build &amp;&amp; cmake  ..&#x2F;</li>
+<li>在哪里执行 cmake，Makefile就生成在哪里</li>
+<li>PATH永远是  CmakeLists所在目录</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">配置</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/hexo//" class="article-tag-list-link color5">hexo</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/11/06/gdb%E8%B0%83%E8%AF%95/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-programmer_target" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
