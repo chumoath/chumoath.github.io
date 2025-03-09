@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>chumoath's website</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="chumoath's website">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//npm.elemecdn.com/docsify-darklight-theme@3/dist/docsify-themeable/style.min.css">
+  <link rel="stylesheet" href="//npm.elemecdn.com/docsify-themeable@0/dist/css/theme-simple.css" title="light">
+  <link rel="stylesheet alternative" href="//npm.elemecdn.com/docsify-themeable@0/dist/css/theme-simple-dark.css" title="dark">
+  <link rel="stylesheet" href="//npm.elemecdn.com/gitalk/dist/gitalk.css">
+  <link rel="stylesheet" href="//npm.elemecdn.com/katex@latest/dist/katex.min.css"/>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: "chumoath's website",
+      repo: 'https://github.com/chumoath/chumoath.github.io.git' ,
+      loadSidebar: 'toc.md',
+      subMaxLevel: 3,
+      search: {
+        paths: 'auto',
+        placeholder: '搜索文档内容'
+      },
+      loadFooter: 'footer.md',
+      auto2top: true,
+      customPageTitle: {
+        suffix: '北大编译实践在线文档'
+      },
+      pagination: {
+        previousText: '上一章节',
+        nextText: '下一章节',
+        crossChapter: true,
+        crossChapterText: true
+      },
+      copyCode: {
+        buttonText : '复制',
+        errorText  : '错误',
+        successText: '已复制'
+      }
+    }
+  </script>
+  <script src="//npm.elemecdn.com/docsify/lib/docsify.min.js"></script>
+  <script src="//npm.elemecdn.com/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
+  <script src="//npm.elemecdn.com/docsify-darklight-theme@3/dist/docsify-themeable/main.min.js"></script>
+  <script src="//npm.elemecdn.com/docsify-darklight-theme@3/dist/docsify-themeable/index.min.js"></script>
+  <script src="//npm.elemecdn.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//npm.elemecdn.com/prismjs@1/components/prism-c.min.js"></script>
+  <script src="//npm.elemecdn.com/prismjs@1/components/prism-cpp.min.js"></script>
+  <script src="//npm.elemecdn.com/prismjs@1/components/prism-ebnf.min.js"></script>
+  <script src="//npm.elemecdn.com/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="//npm.elemecdn.com/prismjs@1/components/prism-makefile.min.js"></script>
+  <script src="//npm.elemecdn.com/prismjs@1/components/prism-bison.min.js"></script>
+  <script src="//npm.elemecdn.com/prismjs@1/components/prism-rust.min.js"></script>
+  <script src="//npm.elemecdn.com/docsify/lib/plugins/gitalk.min.js"></script>
+  <script src="//npm.elemecdn.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="//npm.elemecdn.com/@alertbox/docsify-footer/dist/docsify-footer.min.js"></script>
+  <script src="//npm.elemecdn.com/@sujaykumarh/docsify-plugin-title@1.x/dist/plugin.min.js"></script>
+  <script src="//npm.elemecdn.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <script src="//npm.elemecdn.com/docsify-katex@latest/dist/docsify-katex.js"></script>
+  <script src="//npm.elemecdn.com/docsify-copy-code@2.1.0/dist/docsify-copy-code.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: 'Ov23li6fiJ8MWbpfRGtx',
+      clientSecret: '41936aafaffc9ed327ca0e9283b8418d9fa0f6fd',
+      repo: 'chumoath.github.io',
+      owner: 'chumoath',
+      admin: ['chumoath'],
+      id: document.title,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+  </script>
+</body>
+</html>
