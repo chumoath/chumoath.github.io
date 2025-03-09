@@ -9,6 +9,7 @@
  * [fork](/linux/fork)
  * [fs](/linux/fs)
  * [mm](/linux/mm)
+ * [pty](/linux/pty)
  * [vfork](/linux/vfork)
 * [llvm](/llvm/)
  * [backend](/llvm/backend)
