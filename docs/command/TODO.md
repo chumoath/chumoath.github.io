@@ -1,0 +1,36 @@
+# TODO
+
+- dmsetup
+- losetup
+- lvm
+- exportfs
+- showmount
+- autoconf
+- pushd、popd
+- history
+- ld-linux
+- strace
+- ltrace
+- pstack
+- ethtool
+- man history -> 快捷命令
+- man bash -> 快捷键
+- man ld-linux.so
+- 指定动态链接器
+- 查看默认链接脚本: ld --verbose
+- 修改main函数入口点
+- 分析可执行文件链接脚本和动态库链接脚本
+- -no-pie   -fcommon -PIC
+- kernel debug
+- user mode linux
+- sphinx
+- pelican
+- vnc xrdp配置  Xorg、Xvnc、x11vnc、无显卡分辨率配置
+- xrandr
+- loginctl
+- yum provides vncpasswd 查看哪个包有该文件
+- firewall-cmd
+- vmware pc添加串口，使用虚拟串口，用mobaxterm的serial连接
+- boost构建
+- xming使用
+- qemu命令

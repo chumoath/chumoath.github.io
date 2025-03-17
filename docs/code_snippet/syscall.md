@@ -2,6 +2,7 @@
 
 - `gcc -no-pie test.S -g`
 - `gcc -c test.S -o test.o -g && ld -e main test.o -o a.out`
+- x86_64系统调用号：`/usr/include/x86_64-linux-gnu/asm/unistd_64.h`
 
 ```asm
 str:
