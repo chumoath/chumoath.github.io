@@ -98,3 +98,4 @@ curl 10.21.2.184:5000/v2/tbmc/tags/list
 - [kernel labs kernel_build](https://github.com/linux-kernel-labs/linux/tree/master/tools/labs/docker/kernel)
 - [openharmony](https://gitee.com/openharmony/docs/tree/OpenHarmony-4.0-Release/docker)
 - [ros2](https://github.com/ros2/ros2_documentation/tree/rolling/docker/image)
+- [so2 assignments](https://gitlab.cs.pub.ro/so2/so2-assignments)
