@@ -17,3 +17,9 @@
    * `man bash`
    * `type ls`, `type echo`, `type cat`, `type type`
    * `help history`, `help bash`
+   
+5. Xming、Mobaxterm的Xserver失败
+
+   - 使用了全局代理，Mobaxterm经常性卡住也是如此
+   - Mobaxterm: `TCP :6000, export DISPLAY="localhost:10.0"`
+   - Xming：`TCP :6000, export DISPLAY=:0`
