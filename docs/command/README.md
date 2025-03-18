@@ -23,3 +23,7 @@
    - 使用了全局代理，Mobaxterm经常性卡住也是如此
    - Mobaxterm: `TCP :6000, export DISPLAY="localhost:10.0"`
    - Xming：`TCP :6000, export DISPLAY=:0`
+   
+6. socat转发x11vnc的流量
+
+   - `socat TCP-LISTEN:12345,fork TCP:192.168.3.10:5900 &`
