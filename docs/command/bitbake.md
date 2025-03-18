@@ -166,3 +166,6 @@ bitbake-layers show-recipes | grep image
 - [yocto](https://docs.yoctoproject.org/)
 - [bootlin](https://bootlin.com/training/yocto/)
 - [oebuild && crosstools](https://pages.openeuler.openatom.cn/embedded/docs/build/html/openEuler-24.03-LTS/index.html)
+- [bitbake helloworld](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-hello.html)
+- [bitbake 变量-BBPATH...](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-ref-variables.html)
+- [bitbake VariableFlags](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-metadata.html#variable-flags)
