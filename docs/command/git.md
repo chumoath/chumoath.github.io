@@ -10,11 +10,11 @@
 
    - `git stash pop`
 
-3. git cherry-pick解决冲突
+3. 将某个commit应用到当前分支
 
    - `git cherry-pick [commitID]`
    
-4. 将某个commit应用到当前分支
+4. git cherry-pick解决冲突
 
    - 未冲突文件已合并；冲突文件搜HEAD
    - `git add [file]`
