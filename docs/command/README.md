@@ -27,3 +27,10 @@
 6. socat转发x11vnc的流量
 
    - `socat TCP-LISTEN:12345,fork TCP:192.168.3.10:5900 &`
+   
+7. 增加swap分区
+
+   - `dd if=/dev/zero of=swap.img bs=1G count=100`
+   - `mkswap swap.img`
+   - `swapoff -a`
+   - `swapon swap.img`
