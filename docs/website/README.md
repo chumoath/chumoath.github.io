@@ -51,10 +51,7 @@
 - [elixir.bootlin.com](https://elixir.bootlin.com/)
 - [nes game llvm and go](https://andrewkelley.me/post/jamulator.html)
 - [llvm-mos nes 6502](https://llvm-mos.org/wiki/NES_targets)
-- [OpenEmbedded Layer Index](http://layers.openembedded.org/layerindex/branch/master/layers/)
 - [LLVM Command Guide](https://llvm.org/docs/CommandGuide/index.html)
-- [openbmc ipmi netfn cmd](https://computercheese.blogspot.com/)
-- [openbmc User Guide](https://docs.graphcore.ai/projects/bmc-user-guide/en/latest/)
 - [PCIe扫盲](https://blog.chinaaet.com/justlxy/p/5100053328)
 - [systemd.io](https://systemd.io/)
 - [systemd getty](https://0pointer.de/blog/projects/serial-console.html)
@@ -66,6 +63,16 @@
 - [Documentation for /proc/sys/kernel/](https://docs.kernel.org/admin-guide/sysctl/kernel.html)
 - [Kernel subsystem documentation](https://docs.kernel.org/subsystem-apis.html)
 - [世上最好的共享内存](https://cloud.tencent.com/developer/article/1551288)
+- [qemu选项](https://www.qemu.org/docs/master/system/qemu-manpage.html)
+- [yocto](https://docs.yoctoproject.org/)
+- [oebuild && crosstools](https://pages.openeuler.openatom.cn/embedded/docs/build/html/openEuler-24.03-LTS/index.html)
+- [bitbake helloworld](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-hello.html)
+- [bitbake 变量-BBPATH...](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-ref-variables.html)
+- [bitbake VariableFlags](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-metadata.html#variable-flags)
+- [jia.je openbmc qemu](https://jia.je/system/2023/08/11/openbmc-qemu/)
+- [openbmc ipmi netfn cmd](https://computercheese.blogspot.com/)
+- [openbmc User Guide](https://docs.graphcore.ai/projects/bmc-user-guide/en/latest/)
+- [OpenEmbedded Layer Index](http://layers.openembedded.org/layerindex/branch/master/layers/)
 
 ## 2、实践
 
