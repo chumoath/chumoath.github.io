@@ -204,6 +204,8 @@ bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
    - `devtool add --srcbranch main bmcclid https://github.com/chumoath/bmc_clid.git`
 4. recipe发布到指定layer
    - `devtool finish bmcclid /home/gxh/openbmc/meta-evbcustom/`
+5. 从bblayers.conf删除layer
+   - `bitbake-layers remove-layer meta-evbcustom`
 
 ## 7、recipetool工作流
 
@@ -227,17 +229,36 @@ bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
 
    - `TEMPLATECONF=/home/gxh/openbmc/meta-evbcustom/conf/templates/evbcustom . /home/gxh/openbmc/oe-init-build-env build/evb-ast2600`
 
-## 9、总结
+## 9、openbmc runqemu
+
+1. 启动vnc服务器
+   - `runqemu publicvnc`
+   - `runqemu qemuparams="-vnc :0"`
+   - `-vnc :0 -> 5900`, `-vnc :1 -> 5901`
+   - `-serial mon:vc -vnc :0`
+   - `-serial chardev:char0 -chardev vc,id=char0 -vnc :0`
+   - VNC是将VGA显示接口重定向到VNC，因此暂时无法启动多个，可看代码后尝试修改
+   - 查看 qemu chardev vc 的属性：`qemu-system-arm -chardev vc,help`
+2. 指定内核启动参数
+   - `runqemu bootparams="earlyprintk"`
+3. 映射端口
+   - `qemu-system-arm -m 1024 -M ast2600-evb -nographic -drive file=./obmc-phosphor-image-evb-ast2600.static.mtd,format=raw,if=mtd -net nic -net user,hostfwd=:127.0.0.1:2222-:22,hostfwd=:127.0.0.1:2443-:443,hostfwd=:127.0.0.1:12345-:12345,hostfwd=udp:127.0.0.1:2623-:623,hostname=qemu`
+   - `qemu-system-arm -machine ast2600-evb -m 1G -net nic -net user,hostfwd=:127.0.0.1:2222-:22,hostfwd=:127.0.0.1:2443-:443,hostfwd=:127.0.0.1:12345-:12345,hostfwd=udp:127.0.0.1:2623-:623,hostname=qemu -drive file=./core-image-minimal-evb-ast2600.static.mtd,if=mtd,format=raw -serial mon:vc -serial null -vnc :0`
+4. 参考
+   - [qemu选项](https://www.qemu.org/docs/master/system/qemu-manpage.html)
+   - `runqemu --help`
+
+## 10、总结
 
 1. BBPATH是每一层的conf的上层目录，build目录也在BBPATH
 2. 先在环境变量$(BBPATH)/conf中找到bblayers.conf，然后必须在某一层找到bitbake.conf
 
-## 10、依赖
+## 11、依赖
 
 - `pip3 install pyobject`
 - `apt install libgirepository1.0-dev libgtk-3-dev`
 
-## 11、参考
+## 12、参考
 
 - [yocto](https://docs.yoctoproject.org/)
 - [bootlin](https://bootlin.com/training/yocto/)
@@ -246,3 +267,4 @@ bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
 - [bitbake 变量-BBPATH...](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-ref-variables.html)
 - [bitbake VariableFlags](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-metadata.html#variable-flags)
 - [jia.je openbmc qemu](https://jia.je/system/2023/08/11/openbmc-qemu/)
+- [qemu选项](https://www.qemu.org/docs/master/system/qemu-manpage.html)
