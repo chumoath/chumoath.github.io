@@ -77,15 +77,14 @@
 14. 查看每个提交记录的改动
 
     - `git log -p`
-
-    - `git log --oneline`
+- `git log --oneline`
+    - `git log --pretty=oneline --abbrev-commit`
 
 15. 查看某个文件是在哪个提交
 
     - `git log init/main.c`
-
     - `git log --oneline init/main.c`
-
+    
 16. 配置git交互式使用的编辑器
 
     - `git config --global core.editor vim`
@@ -94,14 +93,49 @@
 
     - `git push origin --force`
 
-18. misc
+18. 将本地仓库另一个仓库的commit应用到当前仓库的分支
 
+    - 添加远程仓库
+      - `git remote add other_repo /home/ghx/sdk5_10`
+    - 获取远程分支
+      - `git fetch other_repo`
+    - 将指定commitID应用到当前仓库的当前分支
+      - `git cherry-pick [commitID]`
+
+19. git仓库创建
+
+    - 不创建 .git 目录
+
+      - 把指定目录当作 .git
+        - `git clone --bare https://github.com/openbmc/dbus-sensors.git /home/gxh/dbus-sensors.git`
+
+      - 和指定 .git 共享objects
+        - `git clone -n -s /home/gxh/dbus-sensors.git/ /home/gxh/dbus-sensors`
+
+    - 创建 .git 目录
+
+      - 拉取仓库
+        - `git clone https://github.com/openbmc/dbus-sensors.git`
+      - 和 .git 目录共享objects
+        - `git clone -n -s /home/gxh/dbus-sensors/.git/ /home/gxh/dbus-sensors.git`
+
+    - checkout到指定分支的指定commitID
+
+      - `git checkout -B master [commitID]`
+
+    - 指定master分支的上游分支
+
+      - `git branch master --set-upstream-to origin/master`
+
+    - 指定当前分支的上游分支
+
+      - `git branch --set-upstream-to origin/master`
+
+20. 查看指定分支是否有指定commit
+
+    - `git branch --contains [commitID] --list master 2> /dev/null | wc -l`
+
+21. misc
     - `git add -p `
-
     - `git commit -s -v`
-
     - `git checkout -p [file]`
-
-    - `git log --pretty=oneline --abbrev-commit`
-
-    - `git format-patch -1 HEAD`
