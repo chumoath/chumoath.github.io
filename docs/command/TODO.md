@@ -77,3 +77,6 @@
 - cs144
 - Nand2Tetris
 - csapp labs
+- 海思鲲鹏920，Hi1711
+- 飞腾
+- 鸿蒙PC，HarmonyOS-Next，OpenHarmony
