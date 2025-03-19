@@ -92,6 +92,7 @@
 17. 将远程仓库回退到本地仓库的commit
 
     - `git push origin --force`
+    - `git push -f`
 
 18. 将本地仓库另一个仓库的commit应用到当前仓库的分支
 
