@@ -102,14 +102,29 @@ oe-pkgdata-util lookup-pkg glibc
 ## 3、bitbake-layers命令
 
 ```shell
-# 查看最终的recipes的层结构，最终的软件版本
+# 查看最终的recipes的层结构，最终的软件版本；bbappend也会被添加
 bitbake-layers flatten output
 
-# 创建layer
-bitbake-layers create-layer meta-imxcustom
+# 列出当前配置支持的machine
+bitbake-layers show-machines
+
+# 列出当前配置的layers
+bitbake-layers show-layers
+
+# 从bblayers.conf中删除layer
+bitbake-layers remove-layer meta-evbcustom
+
+# 显示配置的layers中是否有重复的recipe
+bitbake-layers show-overlayed
+
+# 列出当前配置的bbappend
+bitbake-layers show-appends
+
+# 创建layer，添加到bblayers.conf
+bitbake-layers create-layer meta-evbcustom
 
 # 添加layer到bblayers.conf
-bitbake-layers add-layer meta-imxcustom
+bitbake-layers add-layer meta-evbcustom
 
 # 查每个recipes属于某层
 bitbake-layers show-recipes | grep -A1 llvm
@@ -120,6 +135,12 @@ bitbake-layers show-recipes | grep packagegroup
 
 # 查看image
 bitbake-layers show-recipes | grep image
+
+# 查看每个recipe依赖的.bb和.bbclass
+bitbake-layers show-cross-depends -f
+
+# 保存当前配置到模板
+bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
 ```
 
 ## 4、生成件目录结构
@@ -131,37 +152,92 @@ bitbake-layers show-recipes | grep image
    -  `devtool add hello [src]`
 
 2. 修改源代码 或修改recipe
-   - `devtool edit-recipe`
+   - `devtool edit-recipe dbus-sensors`
 
-3. 构建recipe
+3. 构建recipe / image
    - `devtool build dbus-sensors`
-
+   - `devtool build-image obmc-phosphor-image`
+   
 4. 部署到目标环境
+
    - `devtool deploy-target dbus-sensors root@x.x.x.x`
-   - 指定ssh端口；配置覆盖存在的生成件，否则存在会报错：`devtool deploy-target socat root@127.0.0.1 -P 2222 -s -p`
-   - 只列出要拷贝的文件，不做实际拷贝：`devtool deploy-target socat root@127.0.0.1 -P 2222 -s -n`
+     - `-s: 查看状态`
+     - `-p 覆盖存在的文件`
+     - `-S 去掉符号信息, 从/tmp/devtool_deploy.list可以看到文件大小, -S 先后比较大小`
+
+   - 指定ssh端口；配置覆盖存在的生成件，否则存在会报错
+     - `devtool deploy-target socat root@127.0.0.1 -P 2222 -s -p`
+   - 只列出要拷贝的文件，不做实际拷贝
+     - `devtool deploy-target socat root@127.0.0.1 -P 2222 -s -n`
+   - 去掉符号信息，防止空间不足
+     - `devtool deploy-target socat root@127.0.0.1 -P 2222 -s -p -S`
 
 5. 源代码提交到git
    - `git commit`
 
 6. 用 git 补丁生成 *.bbappend
-   - `devtool finish dbus-sensors /home/xxx/openbmc/meta-evbcustom`
+   
    - `devtool update-recipe dbus-sensors -a /home/xxx/openbmc/meta-evbcustom`
 
 7. 清除
    - `devtool reset dbus-sensors`
+   
+8. 生成 *.bbpand 并清除
 
-## 6、总结
+   - `devtool finish dbus-sensors /home/xxx/openbmc/meta-evbcustom`
+
+9. 查看当前状态
+
+   - `devtool status`
+
+10. 参考
+
+   - [devtool](https://docs.yoctoproject.org/ref-manual/devtool-reference.html)
+
+## 6、bitbake-layer添加layer工作流
+
+1. 创建层
+   - `bitbake-layers create-layer meta-evbcustom`
+2. 添加到 bblayers.conf
+   - `bitbake-layers add-layer meta-evbcustom`
+3. 从远程仓库创建recipe
+   - `devtool add --srcbranch main bmcclid https://github.com/chumoath/bmc_clid.git`
+4. recipe发布到指定layer
+   - `devtool finish bmcclid /home/gxh/openbmc/meta-evbcustom/`
+
+## 7、recipetool工作流
+
+1. 参考
+   - [Writing a New Recipe](https://docs.yoctoproject.org/dev/dev-manual/new-recipe.html)
+
+## 8、保存当前配置到模板
+
+1. 保存配置的 conf/local.conf、conf/bblayers.conf 到 meta-evbcustom层，templatename为evbcustom
+
+   - `bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom`
+
+2. 保存的位置
+
+   - `/home/gxh/openbmc/meta-evbcustom/conf/templates/evbcustom/bblayers.conf.sample`
+   - `/home/gxh/openbmc/meta-evbcustom/conf/templates/evbcustom/local.conf.sample`
+
+3. 使用模板
+
+   - local.conf会指定MACHINE，bblayers.conf会指定包含的层
+
+   - `TEMPLATECONF=/home/gxh/openbmc/meta-evbcustom/conf/templates/evbcustom . /home/gxh/openbmc/oe-init-build-env build/evb-ast2600`
+
+## 9、总结
 
 1. BBPATH是每一层的conf的上层目录，build目录也在BBPATH
 2. 先在环境变量$(BBPATH)/conf中找到bblayers.conf，然后必须在某一层找到bitbake.conf
 
-## 7、依赖
+## 10、依赖
 
 - `pip3 install pyobject`
 - `apt install libgirepository1.0-dev libgtk-3-dev`
 
-## 8、参考
+## 11、参考
 
 - [yocto](https://docs.yoctoproject.org/)
 - [bootlin](https://bootlin.com/training/yocto/)
@@ -169,3 +245,4 @@ bitbake-layers show-recipes | grep image
 - [bitbake helloworld](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-hello.html)
 - [bitbake 变量-BBPATH...](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-ref-variables.html)
 - [bitbake VariableFlags](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-metadata.html#variable-flags)
+- [jia.je openbmc qemu](https://jia.je/system/2023/08/11/openbmc-qemu/)
