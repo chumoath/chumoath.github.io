@@ -120,4 +120,24 @@
 
 ## 5、book
 
+- a-profile_architecture_reference_manual.pdf
+- bmbt.pdf
+- Embedded Linux Projects Using Yocto Project Cookbook.pdf
+- embedded-linux-slides.pdf
+- yocto-slides.pdf
+- graphics-slides.pdf
+- ldd3.pdf
+- TutorialLLVMBackendCpu0.pdf
+- Advanced programming in the UNIX environment.pdf
+- The Linux Programming Interface.pdf
+- Algorithms - 4th edition.pdf
+- Computer Architecture, A Quantitative Approach.pdf
+- The Elements of Computing Systems.pdf
+- CSAPP.pdf
+- IMX_YOCTO_PROJECT_USERS_GUIDE.pdf
+- intel-server-obmc-redfish-interface.pdf
+- ipmi-second-gen-interface-spec-v2-rev1-1.pdf
+- How fast can we make interpreted Python?
+- 操作系统真象还原
+- X86汇编语言-从实模式到保护模式
 - 
