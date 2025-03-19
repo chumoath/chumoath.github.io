@@ -34,3 +34,36 @@
 - boost构建
 - xming使用
 - qemu命令
+- slirp
+- libslirp-dev
+- openbmc/phosphor-logging, Structured Logging
+- i2ctool
+- objdump
+- objcopy
+- readelf
+- strings
+- nm
+- patchelf
+- dos2unix
+- find
+- grep
+- constructor
+- \_\_attribute\_\_
+- plymouth
+- `hdparm --yes-i-know-what-i-am-doing --please-destroy-my-drive --fwdownload ME619HXELDF3TE_ISP_TEX38L.bin /dev/sda`
+- bash内建命令
+- Xorg同屏配置
+- kernel shipped
+- dd源代码
+- `find . | cpio -H newc -o | xz -zc9 > ../initrd_boot.cpio.xz`
+- `find . | cpio -H newc -o | gzip -c9 > ../initrd_boot.cpio.gz`
+- `find . | cpio -H newc -o | gzip -c > ../initrd_boot.cpio.gz`
+- `gzip -dc initrd_boot.cpio.gz | cpio -idmv`
+- `gzip -dc initrd_boot.cpio.gz > initrd.cpio`
+- `gunzip -k initrd_boot.cpio.gz`
+- `isoinfo -d -i xxx.iso`
+- `mkisofs -R -J -T -r -l -d -joliet-long -allow-multidot -allow-leading-dots -no-bak -V EulerOS-V2.0SP8-aarch64 -o ./Euler-SP8-aarch64-recovery.iso -e images/efiboot.img -no-emul-boot ./iso/`
+- `lspci -k`  X1 X2 X3 X4，一条lane就可以双向通信
+- `lspci -vvv`
+- qemu PCI 拓扑结构
+- qemu GICv2仿真
