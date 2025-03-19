@@ -66,4 +66,14 @@
 - `lspci -k`  X1 X2 X3 X4，一条lane就可以双向通信
 - `lspci -vvv`
 - qemu PCI 拓扑结构
-- qemu GICv2仿真
+- qemu GICv3仿真
+- llvm cpu0
+- llvm pass
+- qemu nesllvm-mos 6502
+- io_uring
+- fit image
+- 6.s081
+- MIT6.824
+- cs144
+- Nand2Tetris
+- csapp labs
