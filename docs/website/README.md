@@ -55,6 +55,17 @@
 - [LLVM Command Guide](https://llvm.org/docs/CommandGuide/index.html)
 - [openbmc ipmi netfn cmd](https://computercheese.blogspot.com/)
 - [openbmc User Guide](https://docs.graphcore.ai/projects/bmc-user-guide/en/latest/)
+- [PCIe扫盲](https://blog.chinaaet.com/justlxy/p/5100053328)
+- [systemd.io](https://systemd.io/)
+- [systemd getty](https://0pointer.de/blog/projects/serial-console.html)
+- [Linux allocated devices](https://docs.kernel.org/admin-guide/devices.html)
+- [Debugging kernel and modules via gdb](https://docs.kernel.org/process/debugging/gdb-kernel-debugging.html)
+- [The /proc Filesystem](https://docs.kernel.org/filesystems/proc.html)
+- [DeviceTree Kernel API](https://docs.kernel.org/devicetree/kernel-api.html)
+- [The kernel’s command-line parameters](https://docs.kernel.org/admin-guide/kernel-parameters.html)
+- [Documentation for /proc/sys/kernel/](https://docs.kernel.org/admin-guide/sysctl/kernel.html)
+- [Kernel subsystem documentation](https://docs.kernel.org/subsystem-apis.html)
+- [世上最好的共享内存](https://cloud.tencent.com/developer/article/1551288)
 
 ## 2、实践
 
@@ -106,20 +117,6 @@
 - [computer_expert_paper](https://github.com/0voice/computer_expert_paper)
 - [cheat.sh](https://github.com/chubin/cheat.sh)
 - [v2ray](https://github.com/v2ray/v2ray-core)
-- llvm cpu0
-- llvm pass
-- qemu nesllvm-mos 6502
-- io_uring
-- fit image
-- 6.s081
-- MIT6.824
-- cs144
-- Nand2Tetris
-- csapp labs
-- libslirp-dev
-- slirp
-- mon:vc
-- openbmc/phosphor-logging
 
 ## 5、book
 
