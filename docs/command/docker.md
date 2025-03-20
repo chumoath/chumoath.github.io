@@ -16,7 +16,11 @@ docker run --rm -it --cap-add=NET_ADMIN --device /dev/net/tun:/dev/net/tun -v /r
 # 执行单独命令
 docker run --rm -it --cap-add=NET_ADMIN --device /dev/net/tun:/dev/net/tun -v /root:/root --workdir "/root" so2 ls
 
+# 列出正在运行的容器
 docker ps
+
+# 查看所有容器，包括停止的容器
+docker ps -a
 
 # 删除所有image
 docker image prune -a
@@ -26,6 +30,23 @@ docker container prune
 
 # 查看所有container
 docker container list
+
+# 进入正在运行的容器，容器必须启动才能进入
+docker exec -it [containerID] bash
+# 进入正在运行的容器，执行一个命令
+docker exec -it [containerID] ls
+
+# 启动指定container
+docker start [containerID]
+
+# 停止指定container
+docker stop [containerID]
+
+# 删除指定container
+docker rm [containerID]
+
+# 删除正在运行的container
+docker rm -f [containerID]
 ```
 
 
