@@ -80,3 +80,7 @@
 - 海思鲲鹏920，Hi1711
 - 飞腾
 - 鸿蒙PC，HarmonyOS-Next，OpenHarmony
+- overleaf
+- cs444 Compiler Construction
+- `overleaf-toolkit -> ./bin/init ./bin/up  ./bin/start  ./bin/stop`
+- `http://localhost/launchpad`
