@@ -18,6 +18,6 @@ ls $args
 
 - 查询最大参数个数
 
-  ```shell
-  grep -rn ARG_MAX /usr/include/linux/limits.h
-  ```
+```shell
+grep -rn ARG_MAX /usr/include/linux/limits.h
+```
