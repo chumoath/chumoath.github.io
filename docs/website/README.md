@@ -62,7 +62,7 @@
 - [The kernel’s command-line parameters](https://docs.kernel.org/admin-guide/kernel-parameters.html)
 - [Documentation for /proc/sys/kernel/](https://docs.kernel.org/admin-guide/sysctl/kernel.html)
 - [Kernel subsystem documentation](https://docs.kernel.org/subsystem-apis.html)
-- [世上最好的共享内存](https://cloud.tencent.com/developer/article/1551288)
+- [世上最好的共享内存 - dmabuf](https://cloud.tencent.com/developer/article/1551288)
 - [qemu选项](https://www.qemu.org/docs/master/system/qemu-manpage.html)
 - [yocto](https://docs.yoctoproject.org/)
 - [oebuild && crosstools](https://pages.openeuler.openatom.cn/embedded/docs/build/html/openEuler-24.03-LTS/index.html)
