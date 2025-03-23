@@ -328,3 +328,5 @@
   - `apt install libpixman-1-dev`
   - `apt install tio minicom libslirp-dev`
   - `pip3 install tomli`
+
+- evb-ast2600修改obmc-phosphor-image的密码为0penBmc
