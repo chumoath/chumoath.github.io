@@ -13,7 +13,7 @@ docker build -t tianyi/bmc --build-arg ARG_GID=1000 --build-arg ARG_UID=2000 .
 # 映射 volume、net
 docker run --rm -it --cap-add=NET_ADMIN --device /dev/net/tun:/dev/net/tun -v /root:/root --workdir "/root" so2
 
-# 执行单独命令
+# 执行单独命令，执行完成删除创建的container
 docker run --rm -it --cap-add=NET_ADMIN --device /dev/net/tun:/dev/net/tun -v /root:/root --workdir "/root" so2 ls
 
 # 列出正在运行的容器
@@ -47,6 +47,15 @@ docker rm [containerID]
 
 # 删除正在运行的container
 docker rm -f [containerID]
+
+# 统计container的资源使用
+docker stats
+
+# 将文件复制到container的指定目录
+docker cp winfonts.tar.gz sharelatex:/overleaf
+
+# 将 container 保存为 image
+docker commit -a "author" -m "commit massage" [containerID] myimage:1.0
 ```
 
 
