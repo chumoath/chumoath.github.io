@@ -34,3 +34,10 @@
    - `mkswap swap.img`
    - `swapoff -a`
    - `swapon swap.img`
+   
+8. 查看文件的加载，验证外部ko的Makefile加载2次
+
+   - `make -d V=1`
+   - `scripts/Makefile.build`, `scripts/Makefile.lib`
+
+   
