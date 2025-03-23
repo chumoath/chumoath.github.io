@@ -45,3 +45,7 @@
    - qemu配置: `--enable-slirp`
    - `ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up`
    - `route add default gw 10.0.2.2 netmask 0.0.0.0`
+   
+10. 查看devm的符号
+
+   - `grep -rn EXPORT_SYMBOL drivers/ | grep devm`
