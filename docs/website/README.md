@@ -147,6 +147,7 @@
 - How fast can we make interpreted Python?
 - 操作系统真象还原
 - X86汇编语言-从实模式到保护模式
+- [linux0.11](https://github.com/dibingfa/flash-linux0.11-talk)
 
 ## 6、Tex
 
