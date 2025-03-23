@@ -266,12 +266,6 @@
 
 - [overleaf安装中文字体](https://www.bilibili.com/opus/638167200353484805)
 
-- overleaf安装完整版:
-
-  - `tlmgr option repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final/`
-  - `tlmgr update --self`
-  - `tlmgr install scheme-full`
-
 - tex编译
 
   - `apt install texlive-xetex`
@@ -291,6 +285,15 @@
   - 进入web: `http://localhost/launchpad`
   - 后台运行: `./bin/start`
   - 停止: `./bin/stop`
+
+- overleaf配置完整版
+
+  - `docker exec -it sharelatex bash`
+  - `export https_proxy=http://192.168.0.111:10809`
+  - `export https_proxy=http://192.168.0.111:10809`
+  - `tlmgr option repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final/`
+  - `tlmgr update --self`
+  - `tlmgr install scheme-full`
 
 - docker配置代理
 
