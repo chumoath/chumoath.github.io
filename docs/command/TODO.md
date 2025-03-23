@@ -320,3 +320,11 @@
 - 查看systemd启动流程
 
   - `systemd-analyze plot > plot.svg`
+
+- qemu支持vnc
+
+  - `ui/console-vc.c`
+  - `meson.build -> pixman`
+  - `apt install libpixman-1-dev`
+  - `apt install tio minicom libslirp-dev`
+  - `pip3 install tomli`
