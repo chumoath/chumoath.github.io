@@ -147,4 +147,11 @@
 - How fast can we make interpreted Python?
 - 操作系统真象还原
 - X86汇编语言-从实模式到保护模式
-- 
+
+## 6、Tex
+
+- [清华论文模板](https://github.com/tuna/thuthesis)
+- [The Linux Kernel Module Programming Guide](https://github.com/sysprog21/lkmpg)
+- [Tex简历模板](https://github.com/posquit0/Awesome-CV)
+- [简历](https://github.com/billryan/resume)
+- [简历](https://github.com/sb2nov/resume)
