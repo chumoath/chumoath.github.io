@@ -15,6 +15,12 @@
 - [FPGA](https://danstrother.com/)
 - [Learn X in Y minutes - lua](https://learnxinyminutes.com/lua)
 - [csdiy.wiki](https://csdiy.wiki/)
+- [harrynull](https://blog.harrynull.tech/)
+- [linux-insides](https://0xax.gitbooks.io/linux-insides/content/)
+- [linux-insides中文](https://docs.hust.openatom.club/linux-insides-zh)
+- [linux-drivers](https://embetronicx.com/tutorials/linux/device-drivers/)
+- [蜗窝科技](http://www.wowotech.net/)
+- [kernel newbies blogs](https://kernelnewbies.org/PersonalPages)
 
 ## 2、参考资料
 
@@ -61,7 +67,13 @@
 - [DeviceTree Kernel API](https://docs.kernel.org/devicetree/kernel-api.html)
 - [The kernel’s command-line parameters](https://docs.kernel.org/admin-guide/kernel-parameters.html)
 - [Documentation for /proc/sys/kernel/](https://docs.kernel.org/admin-guide/sysctl/kernel.html)
+- [linux completion](https://docs.kernel.org/scheduler/completion.html)
+- [linux kernel labs smp](https://linux-kernel-labs.github.io/refs/heads/master/lectures/smp.html)
+- [linux kernel labs deferred work](https://linux-kernel-labs.github.io/refs/heads/master/labs/deferred_work.html)
 - [Kernel subsystem documentation](https://docs.kernel.org/subsystem-apis.html)
+- [Driver API - Driver Basics](https://docs.kernel.org/driver-api/basics.html)
+- [Index of Further Kernel Documentation](https://docs.kernel.org/process/kernel-docs.html)
+- [Minimal requirements to compile the Kernel](https://docs.kernel.org/process/changes.html)
 - [世上最好的共享内存 - dmabuf](https://cloud.tencent.com/developer/article/1551288)
 - [qemu选项](https://www.qemu.org/docs/master/system/qemu-manpage.html)
 - [yocto](https://docs.yoctoproject.org/)
@@ -124,6 +136,7 @@
 - [computer_expert_paper](https://github.com/0voice/computer_expert_paper)
 - [cheat.sh](https://github.com/chubin/cheat.sh)
 - [v2ray](https://github.com/v2ray/v2ray-core)
+- [linux insides](https://github.com/0xAX/linux-insides)
 
 ## 5、book
 
@@ -148,6 +161,7 @@
 - 操作系统真象还原
 - X86汇编语言-从实模式到保护模式
 - [linux0.11](https://github.com/dibingfa/flash-linux0.11-talk)
+- [Linux Kernel Development Second Edition](https://litux.nl/mirror/kerneldevelopment/0672327201/toc.html)
 
 ## 6、Tex
 
@@ -156,3 +170,6 @@
 - [Tex简历模板](https://github.com/posquit0/Awesome-CV)
 - [简历](https://github.com/billryan/resume)
 - [简历](https://github.com/sb2nov/resume)
+- [csdiy LaTeX](https://csdiy.wiki/%E5%BF%85%E5%AD%A6%E5%B7%A5%E5%85%B7/LaTeX/)
+- [overleaf](https://github.com/overleaf/overleaf)
+- [overleaf toolkit](https://github.com/overleaf/toolkit/)
