@@ -40,4 +40,8 @@
    - `make -d V=1`
    - `scripts/Makefile.build`, `scripts/Makefile.lib`
 
-   
+9. qemu使用user网络模式(slirp)，进入系统后的配置
+
+   - qemu配置: `--enable-slirp`
+   - `ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up`
+   - `route add default gw 10.0.2.2 netmask 0.0.0.0`
