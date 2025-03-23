@@ -74,6 +74,7 @@
 - [Driver API - Driver Basics](https://docs.kernel.org/driver-api/basics.html)
 - [Index of Further Kernel Documentation](https://docs.kernel.org/process/kernel-docs.html)
 - [Minimal requirements to compile the Kernel](https://docs.kernel.org/process/changes.html)
+- [linux外部模块构建](https://docs.kernel.org/kbuild/modules.html)
 - [世上最好的共享内存 - dmabuf](https://cloud.tencent.com/developer/article/1551288)
 - [qemu选项](https://www.qemu.org/docs/master/system/qemu-manpage.html)
 - [yocto](https://docs.yoctoproject.org/)
