@@ -189,7 +189,7 @@
   - `-chardev pty,path=/tmp/pty,id=pty0 -chardev vc,id=vc0 -chardev hub,id=hub0,chardevs.0=pty0,chardevs.1=vc0 -device virtconsole,chardev=hub0 -vnc :0`
   - `-chardev pty,path=/tmp/pty,id=pty0 -chardev vc,id=vc0 -chardev hub,id=hub0,chardevs.0=pty0,chardevs.1=vc0 -serial chardev:hub0`
 
-- `mux=on`: 一个后端被多个前端使用，共享后端
+- `mux=on`: 一个后端可以被多个前端使用，共享后端
 
 - 查看字符设备后端的属性: `qemu-system-arm -chardev vc,help`
 
