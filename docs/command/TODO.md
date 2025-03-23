@@ -160,13 +160,7 @@
 
 - 鸿蒙PC，HarmonyOS-Next，OpenHarmony
 
-- overleaf
-
 - cs444 Compiler Construction
-
-- `overleaf-toolkit -> ./bin/init ./bin/up  ./bin/start  ./bin/stop`
-
-- `http://localhost/launchpad`
 
 - container_of
 
@@ -225,3 +219,96 @@
 - pagemap获取物理地址
 
 - Makefile使用的atime ctime mtime总结
+
+- dtc转换:
+
+  - `build/scripts/dtc/dtc -I dtb -O dts -o *.dts *.dtb`
+  - `build/scripts/dtc/dtc -I dts -o dtb -o *.dtb *.dts`
+
+- ko加载校验
+
+- ko构建Makefile模板
+
+- kernel避免有.git编译出来的kernel版本号结尾有+:
+
+  - `make LOCALVERSION= ARCH=arm64 CROSS_COMPILE=aarch64-target-linux-gnu- O=build zImage`
+
+- arm64的Image改为zImage
+
+- 编译单个ko，ko依赖?
+
+  `make CONFIG_DRM_HISI_HIBMC=m -C kernel/build M=kernel/drivers/gpu/drm/hisilicon/hibmc modules`
+
+- ko调试获取加载地址:
+
+  - `b do_init_module`
+  - `p /x mod->sect_attrs->attrs[1]->address`
+  - `add-symbol-file drivers/net/virtio_net.ko 0xffffffc040e000 -s .data 0xffffc0413000 -s .bss * -s .rodata *`
+
+- 调试ko
+
+  - `make scripts_gdb`
+  - `lx-symbols`
+
+- gdb调试命令及示例，可操作/复现:
+
+  - `info file` 查看加载的文件
+  - `info line mousedev_create` 查看符号所在的文件行号
+
+- local.conf配置示例
+
+  - `VIRTUAL-RUNTIME_obmc-sensors-hwmon ?= "dbus-sensors"`
+  - `VIRTUAL-RUNTIME_obmc-inventory-manager = "entity-manager"`
+
+- overleaf直接上传从github下载的zip，用Makefile直接构建
+
+- docker搭建nfs服务器: `erichough/nfs-server`，docker映射qemu端口
+
+- [overleaf安装中文字体](https://www.bilibili.com/opus/638167200353484805)
+
+- overleaf安装完整版:
+
+  - `tlmgr option repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final/`
+  - `tlmgr update --self`
+  - `tlmgr install scheme-full`
+
+- tex编译
+
+  - `apt install texlive-xetex`
+  - `apt install latexmk`
+  - `latexmk -f -xelatex main.tex`
+  - 网页点击后查看执行的命令: `while [ 1 ]; do ps -ef | grep tex; sleep 0.1; done`
+
+- LaTeX Error: File ctexart.cls not found.
+
+  - `apt install texlive-lang-chinese`
+
+- overleaf部署
+
+  - `git clone https://github.com/overleaf/toolkit.git`
+  - 初始化: `./bin/init`
+  - 第一次启动: `./bin/up`
+  - 进入web: `http://localhost/launchpad`
+  - 后台运行: `./bin/start`
+  - 停止: `./bin/stop`
+
+- docker配置代理
+
+  - `mkdir -p /etc/systemd/system/docker.service.d`
+
+  - `touch /etc/systemd/system/docker.service.d/proxy.conf`
+
+  - ```shell
+    [Service]
+    Environment="http_proxy=http://192.168.0.111:10809"
+    Environment="https_proxy=http://192.168.0.111:10809"
+    Environment="no_proxy=localhost,127.0.0.1,mirrors.tuna.tsinghua.edu.cn"
+    ```
+
+  - `systemctl daemon-reload`
+
+  - `systemctl restart docker`
+
+- 查看systemd启动流程
+
+  - `systemd-analyze plot > plot.svg`
