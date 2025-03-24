@@ -86,6 +86,8 @@
 - [openbmc ipmi netfn cmd](https://computercheese.blogspot.com/)
 - [openbmc User Guide](https://docs.graphcore.ai/projects/bmc-user-guide/en/latest/)
 - [OpenEmbedded Layer Index](http://layers.openembedded.org/layerindex/branch/master/layers/)
+- [qemu monitor](https://www.qemu.org/docs/master/system/monitor.html)
+- [Yocto Patch Upstream Status](https://docs.yoctoproject.org/contributor-guide/recipe-style-guide.html#patch-upstream-status)
 
 ## 2、实践
 
