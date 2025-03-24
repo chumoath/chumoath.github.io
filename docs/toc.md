@@ -27,6 +27,7 @@
   * [tcg](/qemu/tcg)
   * [tlb](/qemu/tlb)
 * [solutions](/solutions/)
+  * [Mobaxterm_Setting](/solutions/Mobaxterm_Setting)
   * [docs](/solutions/docs)
   * [nfs](/solutions/nfs)
   * [systemd](/solutions/systemd)
