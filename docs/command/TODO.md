@@ -330,3 +330,188 @@
   - `pip3 install tomli`
 
 - evb-ast2600修改obmc-phosphor-image的密码为0penBmc
+
+- ROS2
+
+- iproute2
+
+- legit
+
+- agibot_x1_infer
+
+- ss
+
+- netlink
+
+- af_packet
+
+- rclcpp
+
+- rlwrap
+
+- stripcc
+
+- bear
+
+- `ss -x`查看对端inode: `unix_diag.ko`
+
+- nfs依赖的ko: `fscache.ko grace.ko lockd.ko nfs.ko nfs_acl.ko nfsv3.ko sunrpc.ko`
+
+- nfs转发:
+
+  - 转发TCP的2049端口即可
+  - nfs权限问题，使用: `/etc/exports` => `/nfs *(rw,sync,no_subtree_check,insecure)`
+  - `mount.nfs4 10.21.205.129:/nfs /root/nfs`
+
+- run/tap示例
+
+- iptables处理
+
+- pty原理与示例
+
+- qemu tap配置网络
+
+  - `ifconfig eth0 192.168.7.2 netmask 255.255.255.0 up`
+  - `route add default gw 192.168.7.1 netmask 0.0.0.0`
+
+- qemu tap配置
+
+  - tapN(Host): ip = N * 2 + 1, gateway= N * 2 + 2 = ip + 1
+
+  - Guest: client = gateway + 1 = tapnum * 2 + 2, gateway = tapnum * 2 + 1
+
+  - Host和Guest相反，刚好互相走网关
+
+  - `openbmc/scripts/runqemu-ifup 0`
+
+    ```shell
+    # 查看tap
+    ip tuntap list
+    # 创建tap
+    ip tuntap add tap0 mode tap group 0
+    # 配置tap的IP
+    ip addr add 192.168.7.1/32 broadcast 192.168.7.255 dev tap0
+    # up tap0
+    ip link set dev tap0 up
+    # 配置网关
+    ip route add to 192.168.7.2 dev tap0
+    # 配置转发
+    iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.7.1/32
+    iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.7.2/32
+    
+    # 配置
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+    echo 1 > /proc/sys/net/ipv4/conf/tap0/proxy_arp
+    
+    iptables -P FORWARD ACCEPT
+    ```
+
+  - `openbmc/scripts/runqemu-ifdown tap0`
+
+    ```shell
+    # 删除tap
+    ip tuntap del tap0 mode tap
+    # 显示tap0
+    ip link show tap0
+    # 删除tap0
+    ip link del tap0
+    # 删除转发
+    iptables -D POSTROUTING -t nat -j MASQUERADE -s 192.168.7.1/32
+    iptables -D POSTROUTING -t nat -j MASQUERADE -s 192.168.7.2/32
+    ```
+
+  - 查看nat转发表: `iptables -t nat -L`
+
+- if 根据命令的执行结果决定，不是根据输出决定
+
+  - `if ./a.out; then ls; fi`
+
+- test - check file types and compare values
+
+  - [ 本质上是 test 命令
+  - `test -n ""` -> $? 为 1
+  - `test -n "hello"` -> $? 为 0
+  - `if test -n "hello"; then ls; fi` 等同于 `if [ -n "hello" ]; then ls; fi`
+
+- 从一堆rpm中查找某个文件
+
+  - `find . -name "*.rpm" -exec sh -c "if rpm -qlp {} | grep "lsblk" > /dev/null; then echo {}; fi" \;`
+
+- 正则表达式 - grep
+
+- runqemu命令行显示串口
+
+  - `runqemu serialstdio`
+
+- runqemu使用user网络
+
+  - `runqemu slirp` -> `which runqemu`: 查看check_args可知能配置哪些参数
+
+- busybox启动ftp和telnet服务
+
+  - `busybox tcpsvd -vE 0.0.0.0 21 busybox ftpd -w /tmp`
+  - `busybox telnetd`
+
+- losetup扫描一个.img的文件的多个分区
+
+  - `losetup -P /dev/loop10 emmc.img`
+
+- qemu快照
+
+  - 保存快照: `(monitor) savevm hi1711`
+  - 使用快照: `-loadvm hi1711`
+  - snapshot保存在.qcow2中，因此，更换.qcow2没有以前的snapshot
+
+- qemu-img转换raw和qcow2
+
+  - raw转换为qcow2: `qemu-img convert -f raw -O qcow2 input.raw output.qcow2`
+  - qcow2转换为raw: `qemu-img convert -f qcow2 -O raw input.qcow2 output.raw`
+
+- 退出qemu的monitor后，qemu整体就会退出，所以，不能直接退出，退出连接即可
+
+- telnet回到命令行: `ctrl + ]`
+
+- `minicom -D /dev/pts/5`退出: `ctrl + a, x`
+
+- obmc-phosphor-image密码配置
+
+  - meta-phosphor/conf/distro/include/phosphor-defaults.inc
+  - `usermod -p ${DEFAULT_OPENBMC_PASSWORD} root;`
+
+- Yocto使用patch报错: `# OA Issue: Missing Upstream-Status in patch`
+
+  - patch的Subject下添加: `Upstream-Status: Pending`
+
+- qemu的 -kernel 和 -append 必须一起使用
+
+- C++类的静态成员必须要在class外定义
+
+- 静态变量调用函数初始化的时机
+
+  - ```c
+    int test
+    {
+        static int a = add(1, 2);
+    }
+    ```
+
+- ssh转发
+
+  - -g: 监听 0.0.0.0，不是127.0.0.1
+  - -N: 不执行远程命令，只转发端口
+  - -f: 后台运行
+  - -L: 配置转发
+  - `ssh -g -f -N -L proxy_port:server_ip:server_port root@[跳板机ip] -22`
+  - `ssh -g -f -N -L 2221:192.168.3.30:23 root@10.21.199.146 -22`
+  - `ssh -g -f -N -L 12345:/var/run/dbus/system_dbus_socket root@10.21.198.112 -22`
+    - 可以转发，但是需要peer的sshd的支持，RTOS208的不支持
+
+- Nginx的反向代理
+
+  - Nginx接收客户端请求，然后将请求转发给后端的服务器，最后将后端服务器的响应返回给客户端
+
+- FTP
+
+  - 服务端: 21端口用于控制信息传输，发送命令
+  - 被动模式：客户端发送PASV命令，服务端随机起数据端口，客户端连接服务端
+  - 主动模式：客户端发送PORT命令，客户端发送数据端口，服务端主动连接
