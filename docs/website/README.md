@@ -21,6 +21,7 @@
 - [linux-drivers](https://embetronicx.com/tutorials/linux/device-drivers/)
 - [蜗窝科技](http://www.wowotech.net/)
 - [kernel newbies blogs](https://kernelnewbies.org/PersonalPages)
+- [多语言比较-cs444 Compiler Construction](https://thume.ca/2019/04/29/comparing-compilers-in-rust-haskell-c-and-python/)
 
 ## 2、参考资料
 
