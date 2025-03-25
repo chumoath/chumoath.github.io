@@ -515,3 +515,25 @@
   - 服务端: 21端口用于控制信息传输，发送命令
   - 被动模式：客户端发送PASV命令，服务端随机起数据端口，客户端连接服务端
   - 主动模式：客户端发送PORT命令，客户端发送数据端口，服务端主动连接
+  
+- 查看strace使用的所有系统调用
+
+  - `cat task.* | cut -d"(" -f1 | sort | uniq`
+
+- uniq
+
+  - 查看出现一次的行：`sort file | uniq -u`
+  - 查看出现多次的行：`sort file | uniq -d`
+  - 去掉重复的行：`sort file | uniq`
+
+- 列出支持的device
+
+  - `qemu-system-arm --device help`
+
+- 列出该device的配置选项
+
+  - `qemu-system-arm --device e1000,help`
+
+- 设备直通 -> Device Pass Through
+
+- webvirtmgr
