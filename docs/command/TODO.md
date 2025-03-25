@@ -536,4 +536,4 @@
 
 - 设备直通 -> Device Pass Through
 
-- webvirtmgr
+- webvirtcloud
