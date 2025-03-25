@@ -7,6 +7,21 @@
 docker build -t so2 .
 docker run -it -v $(pwd):/root so2
 
+# container停止后自动删除
+docker run -it --rm -v $(pwd):/root so2
+
+# 指定container名称
+docker run --name=webvirt -it --rm -v $(pwd):/root so2
+
+# 后台特权运行container，然后exec进入；使用stop退出
+docker run --name=webvirt --privileged=true -itd --rm --device /dev/kvm -v $(pwd)/run:/run so2
+docker exec -it webvirt bash
+docker stop webvirt
+# 进入virsh命令行
+virsh -c qemu:///system?socket=$(pwd)/run/libvirt/libvirt-sock
+# 进入虚拟机管理GUI
+virt-manager -c qemu:///system?socket=$(pwd)/run/libvirt/libvirt-sock
+
 # 带参数构建
 docker build -t tianyi/bmc --build-arg ARG_GID=1000 --build-arg ARG_UID=2000 .
 
@@ -56,6 +71,15 @@ docker cp winfonts.tar.gz sharelatex:/overleaf
 
 # 将 container 保存为 image
 docker commit -a "author" -m "commit massage" [containerID] myimage:1.0
+
+# docker查看volume
+docker volume ls
+
+# docker查看volume映射信息
+docker volume inspect [volume_id]
+
+# docker删除没有被使用的匿名volume
+docker volume prune
 ```
 
 
