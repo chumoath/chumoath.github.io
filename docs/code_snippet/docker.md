@@ -12,7 +12,9 @@
   RUN apt install -y systemd systemd-sysv locales sudo vim make curl wget net-tools
   RUN apt install -y libvirt-daemon-system  virt-manager
   RUN apt install -y qemu-kvm libvirt-clients bridge-utils libguestfs-tools virt-viewer virtinst
-  RUN apt install -y git python3-pip python3-libvirt python3-libxml2 novnc supervisor nginx
+  RUN apt install -y python3-pip python3-libvirt python3-libxml2 python3-lxml novnc python3-dev virtualenv python3-virtualenv python3-guestfs
+  RUN apt install -y lsb-release pkg-config gcc git supervisor nginx
+  RUN apt install -y libvirt-dev zlib1g-dev libxslt1-dev libsasl2-modules libsasl2-dev libldap2-dev libssl-dev
   RUN ln -sf /usr/bin/python3 /usr/bin/python
   RUN ln -sf /usr/bin/bash /usr/bin/sh
   RUN usermod -p "\$6\$UGMqyqdG\$GqTb3tXPFx9AJlzTw/8X5RoW2Z.100dT.acuk8AFJfNQYr.ZRL8itMIgLqsdq46RNHgiv78XayOSl.IbR4DFU." root;
