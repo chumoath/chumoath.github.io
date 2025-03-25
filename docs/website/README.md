@@ -116,6 +116,12 @@
   - [nes game llvm and go](https://andrewkelley.me/post/jamulator.html)
   - [llvm-mos nes 6502](https://llvm-mos.org/wiki/NES_targets)
 
+- docker
+  - [docker实现原理](https://github.com/Fewbytes/rubber-docker/blob/master/docs/prep.md)
+  - [docker实现](https://github.com/Fewbytes/rubber-docker)
+  - [docker部署libvirtd](https://github.com/Speedy37/docker-libvirtd)
+  - [docker部署webvirtcloud](https://blog.csdn.net/qq_34990532/article/details/124526989)
+
 
 ## 2、实践
 
