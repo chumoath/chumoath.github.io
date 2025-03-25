@@ -82,8 +82,6 @@ docker volume inspect [volume_id]
 docker volume prune
 ```
 
-
-
 ## 2、发布image
 
 - server
