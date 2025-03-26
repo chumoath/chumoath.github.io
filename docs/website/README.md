@@ -22,6 +22,8 @@
 - [蜗窝科技](http://www.wowotech.net/)
 - [kernel newbies blogs](https://kernelnewbies.org/PersonalPages)
 - [多语言比较-cs444 Compiler Construction](https://thume.ca/2019/04/29/comparing-compilers-in-rust-haskell-c-and-python/)
+- [计算机各类知识荟萃-计算机基础知识](https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E5%AE%9E%E6%88%98%E8%AF%BE/%E5%8A%A0%E9%A4%9001%20%E4%BA%91%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80%EF%BC%9A%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E6%90%AD%E5%BB%BA%E4%B8%80%E6%AC%BEIAAS%E8%99%9A%E6%8B%9F%E5%8C%96%E5%B9%B3%E5%8F%B0.md)
+- [加餐01 云计算基础：自己动手搭建一款IAAS虚拟化平台](https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E5%AE%9E%E6%88%98%E8%AF%BE/%E5%8A%A0%E9%A4%9001%20%E4%BA%91%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80%EF%BC%9A%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E6%90%AD%E5%BB%BA%E4%B8%80%E6%AC%BEIAAS%E8%99%9A%E6%8B%9F%E5%8C%96%E5%B9%B3%E5%8F%B0.md)
 
 ## 2、参考资料
 
