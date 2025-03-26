@@ -80,6 +80,10 @@ docker volume inspect [volume_id]
 
 # docker删除没有被使用的匿名volume
 docker volume prune
+
+# 查看 container 运行日志
+docker-compose logs -f [containerID]
+docker logs -f [containerID]
 ```
 
 ## 2、发布image
