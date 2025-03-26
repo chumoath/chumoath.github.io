@@ -45,8 +45,8 @@
   # 不映射 /run
   docker run --name webvirt --privileged=true -d --rm --device /dev/kvm -p 80:80 -p 6080:6080 libvirt
   
-  # 不需要映射6080也可以，只要访问localhost即可
-  docker run --name webvirt --privileged=true -d --rm --device /dev/kvm -p 80:80 libvirt
+  # 不需要映射6080也可以，只要访问localhost即可；映射images
+  docker run --name webvirt --privileged=true -d --rm --device /dev/kvm -p 80:80 -v $(pwd)/images:/var/lib/libvirt/images/ libvirt
   
   # 进入container执行bash
   docker exec -it webvirt bash
