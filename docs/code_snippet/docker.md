@@ -126,6 +126,7 @@
   - 从webvirtcloud推送公钥到compute1
 
       ```shell
+      # 进入 webvirtcloud 的 docker 命令行
       chown www-data -R ~www-data
       sudo -u www-data ssh-keygen
       cat > ~www-data/.ssh/config << EOF
@@ -139,5 +140,4 @@
       
       # web 使用ssh添加计算节点: 192.168.0.159:2222  root
       ```
-
   
