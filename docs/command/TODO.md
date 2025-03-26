@@ -300,23 +300,6 @@
   - `tlmgr update --self`
   - `tlmgr install scheme-full`
 
-- docker配置代理
-
-  - `mkdir -p /etc/systemd/system/docker.service.d`
-
-  - `touch /etc/systemd/system/docker.service.d/proxy.conf`
-
-  - ```shell
-    [Service]
-    Environment="http_proxy=http://192.168.0.111:10809"
-    Environment="https_proxy=http://192.168.0.111:10809"
-    Environment="no_proxy=localhost,127.0.0.1,mirrors.tuna.tsinghua.edu.cn"
-    ```
-
-  - `systemctl daemon-reload`
-
-  - `systemctl restart docker`
-
 - 查看systemd启动流程
 
   - `systemd-analyze plot > plot.svg`
@@ -535,3 +518,5 @@
   - `qemu-system-arm --device e1000,help`
 
 - 设备直通 -> Device Pass Through
+
+- /dev/kvm: `apt install qemu-kvm`
