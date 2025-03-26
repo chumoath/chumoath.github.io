@@ -38,12 +38,12 @@
 - [PCIe扫盲](https://blog.chinaaet.com/justlxy/p/5100053328)
 - [systemd.io](https://systemd.io/)
 - [systemd getty](https://0pointer.de/blog/projects/serial-console.html)
+- [ROS2文档](https://docs.ros.org/en/foxy/index.html)
 - nes
   - [nesdev.org](https://www.nesdev.org/)
   - [6502指令集](https://www.nesdev.org/obelisk-6502-guide/reference.html)
   - [nes game llvm and go](https://andrewkelley.me/post/jamulator.html)
   - [llvm-mos nes 6502](https://llvm-mos.org/wiki/NES_targets)
-
 - linux kernel
   - [kernel newbies](https://kernelnewbies.org/)
   - [kernel bugzilla](https://bugzilla.kernel.org/)
@@ -71,7 +71,8 @@
   - [世上最好的共享内存 - dmabuf](https://cloud.tencent.com/developer/article/1551288)
   - [100个gdb小技巧](https://wizardforcel.gitbooks.io/100-gdb-tips/content/)
   - [linux RCU](https://docs.kernel.org/RCU/)
-
+  - [cgroup](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+  - [Cgroup Kernel APIs](https://docs.kernel.org/core-api/cgroup.html)
 - yocto
   - [yocto](https://docs.yoctoproject.org/)
   - [Yocto Patch Upstream Status](https://docs.yoctoproject.org/contributor-guide/recipe-style-guide.html#patch-upstream-status)
@@ -85,7 +86,6 @@
   - [bitbake 变量-BBPATH...](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-ref-variables.html)
   - [bitbake VariableFlags](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-metadata.html#variable-flags)
   - [jia.je openbmc qemu](https://jia.je/system/2023/08/11/openbmc-qemu/)
-
 - qemu
   - [qemu patch](https://patchew.org/QEMU/)
   - [qemu mail-archive](https://www.mail-archive.com/qemu-commits@nongnu.org/)
@@ -115,12 +115,12 @@
   - [LLVM Command Guide](https://llvm.org/docs/CommandGuide/index.html)
   - [nes game llvm and go](https://andrewkelley.me/post/jamulator.html)
   - [llvm-mos nes 6502](https://llvm-mos.org/wiki/NES_targets)
-
 - docker
   - [docker实现原理](https://github.com/Fewbytes/rubber-docker/blob/master/docs/prep.md)
   - [docker实现](https://github.com/Fewbytes/rubber-docker)
   - [docker部署libvirtd](https://github.com/Speedy37/docker-libvirtd)
   - [docker部署webvirtcloud](https://blog.csdn.net/qq_34990532/article/details/124526989)
+  - [docker安装webvirtcloud官网](https://github.com/retspen/webvirtcloud/wiki/Docker-Installation-&-Update)
 
 
 ## 2、实践
@@ -174,6 +174,10 @@
 - [cheat.sh](https://github.com/chubin/cheat.sh)
 - [v2ray](https://github.com/v2ray/v2ray-core)
 - [linux insides](https://github.com/0xAX/linux-insides)
+- [webots ROS2](https://github.com/cyberbotics/webots)
+- [autoware自动驾驶](https://github.com/autowarefoundation/autoware)
+- [无人机](https://github.com/PX4/PX4-Autopilot)
+- [three.js](https://github.com/mrdoob/three.js)
 
 ## 5、book
 
