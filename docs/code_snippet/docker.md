@@ -5,6 +5,7 @@
   ```shell
   # wsl映射的端口在windows上是127.0.0.1，只能通过localhost访问，不能通过192.168.39.45访问
   # 403: CSRF verification failed. Request aborted.
+  # 出现502: systemctl restart supervisor nginx
   
   FROM ubuntu:22.04
   RUN sed -i s#archive.ubuntu.com#mirrors.tuna.tsinghua.edu.cn#g /etc/apt/sources.list
