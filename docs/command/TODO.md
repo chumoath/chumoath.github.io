@@ -519,4 +519,85 @@
 
 - 设备直通 -> Device Pass Through
 
-- /dev/kvm: `apt install qemu-kvm`
+- `/dev/kvm`: `apt install qemu-kvm`
+
+- qemu运行ubuntu22.04: `initramfs unpacking failed: write error`
+
+  - 分配内存过小，分配更多内存即可。
+
+- webvirtcloud启动串口
+
+  ```shell
+  # /lib/systemd/system/serial-getty@.service
+  systemctl enable serial-getty@ttyS0.service
+  systemctl start serial-getty@ttyS0.service
+  
+  minicom -D /dev/pts/*
+  ```
+
+- openEuler kernel cmdline: 
+
+  - `cgroup_disable=files apparmor=0 crashkernel=2048M,high logo.nologo selinux=0 selinux=0 console=ttyAMA0,115200`
+
+- ttyS0和tty0同时显示内核日志
+
+  - `/etc/default/grub`: `GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0 console=tty0 maybe-ubiquity"`
+  - `update-grub`
+
+- VGA 一般显示动画，所以不显示日志也可以
+
+- OpenEuler plymouth
+
+  - 查看当前系统支持的theme: `plymouth-set-default-theme -l`
+  - 设置theme: `plymouth-set-default-theme longsight`
+  - 需要修改的服务:
+    - `plymouth-halt.service`
+    - `plymouth-kexec.service`
+    - `plymouth-poweroff.service`
+    - `plymouth-reboot.service`
+    - `plymouth-start.service`
+  - 服务ExecStart添加参数: `--ignore-serial-consoles --kernel-command-line="splash quiet" --debug`
+
+- libvirt默认iso/qcow2存在位置 /var/lib/libvirt/images
+
+- taskset - 设置cpu亲和性
+
+  - 亲和性绑定: `taskset -cp 2-3 <vhost-pid>`
+
+- exec -> 替换shell的代码段，而不是fork新进程
+
+  - `exec 84<> /dev/net/tun`: 打开文件到shell进程84文件描述符
+  - `exec 84<> [file]`
+  - `read -r -u 84 data`   =>  `-r`: 不解析转义字符  `-u`: 指定文件描述符读取，而不是从标准输入
+  - `exec 84>&-` => 关闭shell的文件描述符 84
+
+- virtio、vhost=on、vhost-user 优缺点
+
+  - virtio: 兼容性好，性能低
+  - vhost=on: 性能提升50%，需要内核支持
+  - vhost-user: DPDK兼容，配置复杂
+
+- webvirtcloud默认使用 NAT (TAP)网络
+
+  - 网络后端配置
+    - `-netdev tap,fd=84,id=hostnet0,vhost=on,vhostfd=86`
+  - 192.168.122.* 网段
+    - NAT转发表: `iptables -t nat -L`
+      - `MASQUERADE tcp -- 192.168.122.0/24 ! 192.168.122.0/24 masq ports: 1024-65535`
+      - `MASQUERADE udp -- 192.168.122.0/24 ! 192.168.122.0/24 masq ports: 1024-65535`
+      - `MASQUERADE all -- 192.168.122.0/24 ! 192.168.122.0/24 masq ports: 1024-65535`
+    - 网桥: `brctl show`
+      - `virbr0 -> yes -> vnet19 vnet26`
+    - TAP: `ip tuntap list`
+      - `vnet19: tap vnet_hdr`
+      - `vnet26: tap vnet_hdr`
+
+- docker compose 版本问题
+
+  - does not match any of the regexes: \`^x-\`
+  - Not supported URL scheme http+docker
+  - 解决方案：从docker-compose github下载最新的可执行文件，放到`/usr/bin/`即可
+
+- 查看systemd的After参数：`man systemd | grep After`
+
+- webvirtcloud的compute必须安装libvirtd，controller可以通过ssh隧道在compute节点执行命令；compute节点通过访问`/run/libvirt/libvirt-sock`管理虚拟机
