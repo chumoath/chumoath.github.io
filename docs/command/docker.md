@@ -128,7 +128,24 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
 
 - [kernel labs Makefile](https://github.com/linux-kernel-labs/linux/blob/master/tools/labs/Makefile)
 
-## 4、misc
+## 4、docker配置代理
+
+- `mkdir -p /etc/systemd/system/docker.service.d`
+
+- `touch /etc/systemd/system/docker.service.d/proxy.conf`
+
+- ```shell
+  [Service]
+  Environment="http_proxy=http://192.168.0.111:10809"
+  Environment="https_proxy=http://192.168.0.111:10809"
+  Environment="no_proxy=localhost,127.0.0.1,mirrors.tuna.tsinghua.edu.cn"
+  ```
+
+- `systemctl daemon-reload`
+
+- `systemctl restart docker`
+
+## 5、misc
 
 ```shell
 # 打包镜像
