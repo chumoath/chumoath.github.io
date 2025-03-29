@@ -149,7 +149,60 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
 
 - `systemctl restart docker`
 
-## 5、misc
+## 5、docker nework
+
+- command
+
+    ```shell
+    # 查看docker network (bridge): bridge(docker0)、host、none 为默认的
+    docker network ls
+
+    # docker container 添加多个网卡
+    # 创建网桥 network1 => 会自动创建该网段的MASQUERADE
+    docker network create network1
+    # 指定网桥子网 和 网桥IP(子网网关)
+    docker network create --subnet 10.21.0.0/16 --gateway 10.21.0.1 network1
+
+    # 指定网桥为network1
+    docker run --name webvirt --privileged=true -d --rm --device /dev/kvm --network network1 weblibvirt
+    # docker 默认network为 bridge，即docker0网桥
+    docker run --name webvirt --privileged=true -d --rm --device /dev/kvm --network bridge weblibvirt
+
+    # 将 network1网桥添加到container weblibvirt => 创建veth pairs虚拟以太网设备，并添加到network1网桥
+    docker network connect network1 weblibvirt
+
+    # 删除网桥network1
+    docker network rm network1
+
+    # 查看网桥network1信息
+    docker network inspect network1
+
+    # 查看网桥
+    brctl show
+    ```
+
+- docker网络流量
+
+  ```shell
+  # 访问 wsl 网络
+  # docker: ping 192.168.39.45，目的IP 在docker route表未匹配到，走默认网关，进入wsl的路由选择路由接口
+  container1 -> eth0 -> veth0 \
+  container2 -> eth0 -> veth1 -->(docker default gateway) docker0 -> wsl路由选择 -> 本地处理报文
+  
+  # 访问外网
+  container1 -> eth0 -> veth0 \
+  container2 -> eth0 -> veth1 -->(default gateway) docker0 -> wsl路由选择 -> 非WSL内部接口转发 -> wsl 默认网关 -> eth0 (外网接口: ip forward/MASQUERADE)
+  
+  # brctl show
+  docker0 -> veth0
+          -> veth1
+          
+  # 虚拟以太网设备
+  # 虚拟以太网设备(veth pairs)成对出现
+  ```
+  
+
+## 6、misc
 
 ```shell
 # 打包镜像
@@ -165,7 +218,7 @@ curl 10.21.2.184:5000/v2/_catalog
 curl 10.21.2.184:5000/v2/tbmc/tags/list
 ```
 
-## 5、参考
+## 7、参考
 
 - [kernel labs docs](https://github.com/linux-kernel-labs/linux/blob/master/tools/labs/docker/docs)
 - [kernel labs kernel_build](https://github.com/linux-kernel-labs/linux/tree/master/tools/labs/docker/kernel)
