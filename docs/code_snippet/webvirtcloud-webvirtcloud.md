@@ -275,3 +275,62 @@
   ```
 
 - wsl支持wireguard(nft)
+
+## 3、wireguard配置
+
+- WSL
+
+  ```shell
+  # /etc/wireguard/wg0.conf
+  
+  [Interface]
+  Address = 192.168.33.1/24
+  PrivateKey = 4O6gBgrMBz+nGR0lqEiMdzwq4IzwRiom6T1RYxQbI0M=
+  ListenPort = 51820
+  PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o br-6a7541fe74a1 -j MASQUERADE
+  PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o br-6a7541fe74a1 -j MASQUERADE
+  
+  
+  [Peer]
+  PublicKey = 5dYw8RR4dEmP172lV0povGO/hUemFRUfegZU7TvrLG0=
+  AllowedIPs = 192.168.33.2/32
+  ```
+
+- windows
+
+  ```shell
+  [Interface]
+  PrivateKey = gAw98k/7d7i2KTOm8720zL8xt+Ml8f/vsBRy7smBTms=
+  Address = 192.168.33.2/24
+  
+  [Peer]
+  PublicKey = JjMr+eFD06oydpYCp2jPtp9PFBfudakwVXDmNE7yzRg=
+  AllowedIPs = 192.168.33.1/24, 172.19.0.0/16 # 将要访问 server 的 IP 放开即可
+  Endpoint = 192.168.39.45:51820
+  PersistentKeepalive = 25
+  ```
+
+- command
+
+  ```shell
+  apt install wireguard
+  
+  # 生成服务端密钥对
+  cd /etc/wireguard/
+  wg genkey | tee privatekey | wg pubkey > publickey
+  
+  # 生成客户端私钥
+  wg genkey > client1.key
+  # 通过私钥生成客户端密钥
+  wg pubkey < client1.key > client1.key.pub
+  
+  systemcel enable wg-quick@wg0.service
+  systemcel start wg-quick@wg0.service
+  systemctl list-units --type=service
+  
+  wg-quick up wg0
+  wg-quick down wg0
+  wg show
+  ```
+
+  
