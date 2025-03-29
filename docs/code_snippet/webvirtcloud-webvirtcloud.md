@@ -73,7 +73,8 @@
   RUN apt install -y prometheus prometheus-node-exporter
   RUN apt install -y linux-image-generic
   RUN apt install -y iputils-ping bind9-dnsutils
-  
+  # 防止 ebtables: RULE_APPEND failed
+  RUN apt install -y ebtables
   RUN ln -sf /usr/bin/python3 /usr/bin/python
   RUN ln -sf /usr/bin/bash /usr/bin/sh
   
@@ -174,6 +175,8 @@
   #     暂时通过去掉 webvirtcompute/src/vrtmgr/libvrt.py 注释掉nwfilter的分支部分规则
   # 4、compute端无法访问 https://cloud-images.webvirt.cloud/ubuntu-22-04-x64.qcow2
   #     webvirtcompute.service 添加 Environment="https_proxy=http://192.168.0.111:10809 代理
+  # 5、ebtables --concurrent -t nat -A J-vnet0-ipv4-ip -p ipv4 --ip-source 0.0.0.0 --ip-protocol 17 -j RETURN: RULE_APPEND failed (No such file or directory): rule in chain J-vnet0-ipv4-ip
+  #     apt install ebtables
   ```
 
 - 源码构建并手动安装 webvirtcompute
