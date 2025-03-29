@@ -680,11 +680,11 @@
     /etc/wireguard/wg0.conf
     [Interface]
     Address = 192.168.33.1/24  # VPN子网配置给wg0接口的IP
-    PrivateKey = $(cat /etc/wireguard/privatekey)      # 服务器私钥
+    PrivateKey = <服务器私钥>    # 服务器私钥
     ListenPort = 51820
     
     [Peer]
-    PublicKey = $(cat /etc/wireguard/client1.key.pub)  # 客户端公钥
+    PublicKey = <客户端公钥>     # 客户端公钥
     AllowedIPs = 192.168.33.2/32  # 分配给客户端的VPN子网的IP地址
     
     # 客户端配置
