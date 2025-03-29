@@ -163,6 +163,7 @@
   
   systemctl daemon-reload
   systemctl restart webvirtcompute.service
+  systemctl cat webvirtcompute.service
   
   # 六、FAQ
   # 1、supermin: failed to find a suitable kernel (host_cpu=x86_64)
