@@ -158,12 +158,18 @@
   # 五、安装 webvirtcompute
   curl -fsSL https://raw.githubusercontent.com/webvirtcloud/webvirtcompute/master/scripts/install.sh | bash
   
+  # 确保 compute 能访问 https://cloud-images.webvirt.cloud/ubuntu-22-04-x64.qcow2
+  sed -i '8a\Environment="https_proxy=http://192.168.0.111:10809"'  /etc/systemd/system/webvirtcompute.service
+  
+  systemctl daemon-reload
+  systemctl restart webvirtcompute.service
+  
   # 六、FAQ
   # 1、supermin: failed to find a suitable kernel (host_cpu=x86_64)
   #     apt install linux-image-generic
   # 2、Network not found: no network with matching name 'public'
   #     完全执行 libvirt.sh
-  # 3、ebtables -> TABLE_ADD
+  # 3、ebtables --concurrent -t nat -N libvirt-J-vnet0 -> TABLE_ADD
   #     暂时通过去掉 webvirtcompute/src/vrtmgr/libvrt.py 注释掉nwfilter的分支部分规则
   # 4、compute端无法访问 https://cloud-images.webvirt.cloud/ubuntu-22-04-x64.qcow2
   #     webvirtcompute.service 添加 Environment="https_proxy=http://192.168.0.111:10809 代理
@@ -242,11 +248,15 @@
     -> Networking options                                                     
       -> Network packet filtering framework (Netfilter) (NETFILTER [=y])     
         -> Ethernet Bridge tables (ebtables) support (BRIDGE_NF_EBTABLES [=n]) 
-        
+  
+  # 进入目录，全部加 m
+  
   BRIDGE
   -> Networking support (NET [=y])                                               
     -> Networking options                                                     
       -> 802.1d Ethernet Bridging (BRIDGE [=n]) 
+      
+  find . -name ebt*.ko | xargs -I{} insmod {}
   ```
 
 - wsl支持wireguard(nft)
