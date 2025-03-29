@@ -223,3 +223,24 @@
   ```
 
 - compute端使用virsh
+
+- wsl支持ebtables
+
+  ```shell
+  # apt install libelf-dev flex bison libssl-dev dwarves
+  
+  BRIDGE_NF_EBTABLES
+  -> Networking support (NET [=y])                                             
+    -> Networking options                                                     
+      -> Network packet filtering framework (Netfilter) (NETFILTER [=y])     
+        -> Ethernet Bridge tables (ebtables) support (BRIDGE_NF_EBTABLES [=n]) 
+        
+  BRIDGE
+  -> Networking support (NET [=y])                                               
+    -> Networking options                                                     
+      -> 802.1d Ethernet Bridging (BRIDGE [=n]) 
+  ```
+
+  
+
+- wsl支持wireguard(nft)
