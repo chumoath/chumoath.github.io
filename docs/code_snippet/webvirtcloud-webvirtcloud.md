@@ -149,6 +149,7 @@
   
   export https_proxy="http://192.168.0.111:10809"
   # 三、安装 libvirt: 会配置 virsh 的 public、private 网络、nwfilter，virsh 的 images、isos，sysctl ip_forward；所以必须全部执行
+  # 如不全部执行，会出现 => Network not found: no network with matching name 'public'
   curl -fsSL https://raw.githubusercontent.com/webvirtcloud/webvirtcompute/master/scripts/libvirt.sh | sed '98a\systemctl restart libvirtd'| bash
   
   # 四、安装 Prometheus
