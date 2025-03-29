@@ -233,7 +233,7 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
     # up 网桥后，执行该命令会卡住；所以，应该是破坏了iptables的转发
     iptables -t nat -L
     
-    # 解决方案
+    # 解决方案: docker container 本身就可以通过默认网关访问外网
     echo "nameserver 8.8.8.8" > /etc/resolv.conf
     docker run --dns 8.8.8.8 ...
     ```
