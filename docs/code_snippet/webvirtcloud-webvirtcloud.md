@@ -81,7 +81,7 @@
   
   CMD ["/sbin/init"]
   ```
-  
+
 - 配置
 
   ```shell
@@ -222,4 +222,4 @@
   rm -rf /tmp/webvirtcompute*
   ```
 
-  
+- compute端使用virsh
