@@ -156,27 +156,27 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
     ```shell
     # 查看docker network (bridge): bridge(docker0)、host、none 为默认的
     docker network ls
-
+    
     # docker container 添加多个网卡
     # 创建网桥 network1 => 会自动创建该网段的MASQUERADE
     docker network create network1
     # 指定网桥子网 和 网桥IP(子网网关)
     docker network create --subnet 10.21.0.0/16 --gateway 10.21.0.1 network1
-
+    
     # 指定网桥为network1
     docker run --name webvirt --privileged=true -d --rm --device /dev/kvm --network network1 weblibvirt
     # docker 默认network为 bridge，即docker0网桥
     docker run --name webvirt --privileged=true -d --rm --device /dev/kvm --network bridge weblibvirt
-
+    
     # 将 network1网桥添加到container weblibvirt => 创建veth pairs虚拟以太网设备，并添加到network1网桥
     docker network connect network1 weblibvirt
-
+    
     # 删除网桥network1
     docker network rm network1
-
+    
     # 查看网桥network1信息
     docker network inspect network1
-
+    
     # 查看网桥
     brctl show
     ```
@@ -200,7 +200,43 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
   # 虚拟以太网设备
   # 虚拟以太网设备(veth pairs)成对出现
   ```
-  
+
+- dns
+
+    ```shell
+    # docker DNS配置
+    # iptables -t nat -L
+    Chain OUTPUT (policy ACCEPT)
+    target     prot opt source               destination
+    DOCKER_OUTPUT  all  --  anywhere             127.0.0.11
+    
+    Chain POSTROUTING (policy ACCEPT)
+    target     prot opt source               destination
+    DOCKER_POSTROUTING  all  --  anywhere             127.0.0.11
+    
+    Chain DOCKER_OUTPUT (1 references)
+    target     prot opt source               destination
+    DNAT       tcp  --  anywhere             127.0.0.11           tcp dpt:domain to:127.0.0.11:35073
+    DNAT       udp  --  anywhere             127.0.0.11           udp dpt:domain to:127.0.0.11:50562
+    
+    Chain DOCKER_POSTROUTING (1 references)
+    target     prot opt source               destination
+    SNAT       tcp  --  127.0.0.11           anywhere             tcp spt:35073 to::53
+    SNAT       udp  --  127.0.0.11           anywhere             udp spt:50562 to::53
+    
+    # netstat -tulnp
+    Active Internet connections (only servers)
+    Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+    tcp        0      0 127.0.0.11:35073        0.0.0.0:*               LISTEN      -
+    udp        0      0 127.0.0.11:50562        0.0.0.0:*                           -
+    
+    # up 网桥后，执行该命令会卡住；所以，应该是破坏了iptables的转发
+    iptables -t nat -L
+    
+    # 解决方案
+    echo "nameserver 8.8.8.8" > /etc/resolv.conf
+    docker run --dns 8.8.8.8 ...
+    ```
 
 ## 6、misc
 
