@@ -229,6 +229,14 @@
   ```shell
   # apt install libelf-dev flex bison libssl-dev dwarves
   
+  # 编译 wsl 内核
+  # 1、下载 linux-msft-wsl-5.15.167.4 源码
+  # 2、cat /proc/config.gz | gunzip -dc > .config
+  # 3、make -j24 bzImage modules
+  
+  # wsl --shutdown
+  # 用 arch/x86/boot/bzImage 替换 C:\ProgramFiles\WSL\tools\kernel
+  
   BRIDGE_NF_EBTABLES
   -> Networking support (NET [=y])                                             
     -> Networking options                                                     
@@ -240,7 +248,5 @@
     -> Networking options                                                     
       -> 802.1d Ethernet Bridging (BRIDGE [=n]) 
   ```
-
-  
 
 - wsl支持wireguard(nft)
