@@ -658,8 +658,11 @@
 
   - wsl内核配置: 
 
+    - `cat /proc/config.gz | gunzip -dc > .config`
+    - `make bzImage` -> 编译出的 bzImage 即可满足 ebtables 和 wireguard的需要
+  
   - wireguard配置
-
+  
     ```shell
     apt install wireguard
     
@@ -706,9 +709,9 @@
     systemcel start wg-quick@wg0.service
     systemctl list-units --type=service
     ```
-
+  
   - 参考:
-
+  
     -  [wireguard访问内网](https://xiexiage.com/posts/vpn-wireguard)
     - [wsl使用wireguard](https://medium.com/@emryslvv)
     - [wireguard中继组网](https://blog.csdn.net/networken/article/details/137670459)
