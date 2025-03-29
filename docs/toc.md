@@ -1,6 +1,8 @@
+* [assets](/assets/)
 * [code_snippet](/code_snippet/)
   * [docker](/code_snippet/docker)
   * [syscall](/code_snippet/syscall)
+  * [webvirtcloud-webvirtcloud](/code_snippet/webvirtcloud-webvirtcloud)
 * [command](/command/)
   * [TODO](/command/TODO)
   * [bitbake](/command/bitbake)
