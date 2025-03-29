@@ -157,6 +157,16 @@
   
   # 五、安装 webvirtcompute
   curl -fsSL https://raw.githubusercontent.com/webvirtcloud/webvirtcompute/master/scripts/install.sh | bash
+  
+  # 六、FAQ
+  # 1、supermin: failed to find a suitable kernel (host_cpu=x86_64)
+  #     apt install linux-image-generic
+  # 2、Network not found: no network with matching name 'public'
+  #     完全执行 libvirt.sh
+  # 3、ebtables -> TABLE_ADD
+  #     暂时通过去掉 webvirtcompute/src/vrtmgr/libvrt.py 注释掉nwfilter的分支部分规则
+  # 4、compute端无法访问 https://cloud-images.webvirt.cloud/ubuntu-22-04-x64.qcow2
+  #     webvirtcompute.service 添加 Environment="https_proxy=http://192.168.0.111:10809 代理
   ```
 
 - 源码构建并手动安装 webvirtcompute
