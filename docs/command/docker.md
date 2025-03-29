@@ -235,7 +235,7 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
     
     # 解决方案: docker container 本身就可以通过默认网关访问外网
     echo "nameserver 8.8.8.8" > /etc/resolv.conf
-    docker run --dns 8.8.8.8 ...
+    # 无效: docker run --dns 8.8.8.8 ...
     ```
 
 ## 6、misc
