@@ -239,10 +239,12 @@
   # 1、下载 linux-msft-wsl-5.15.167.4 源码
   # 2、cat /proc/config.gz | gunzip -dc > .config
   # 3、make -j24 bzImage modules
+  # 4、添加 ko 后，最好把 bzImage 也重新加载，因为vmlinux会被重新编译
   
   # wsl --shutdown
   # 用 arch/x86/boot/bzImage 替换 C:\ProgramFiles\WSL\tools\kernel
   
+  # 不确定
   BRIDGE_NF_EBTABLES
   -> Networking support (NET [=y])                                             
     -> Networking options                                                     
@@ -251,11 +253,20 @@
   
   # 进入目录，全部加 m
   
+  # 不确定
   BRIDGE
   -> Networking support (NET [=y])                                               
     -> Networking options                                                     
       -> 802.1d Ethernet Bridging (BRIDGE [=n]) 
-      
+  
+  # 确定，WSL /proc/config.gz CONFIG_NF_TABLES_BRIDGE=m，所以把bzImage编译后拿过来即可
+  NF_TABLES_BRIDGE
+  -> Networking support (NET [=y])                                             
+    -> Networking options 
+      -> Network packet filtering framework (Netfilter) (NETFILTER [=y]) 
+        -> Ethernet Bridge nf_tables support
+  # 进入目录，全部加 m
+  
   find . -name ebt*.ko | xargs -I{} insmod {}
   ```
 
