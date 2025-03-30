@@ -185,13 +185,15 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
 
   ```shell
   # 访问 wsl 网络
-  # docker: ping 192.168.39.45，目的IP 在docker route表未匹配到，走默认网关，进入wsl的路由选择路由接口
+  # docker: ping 192.168.39.45，目的IP 路由选择走默认网关，为WSL的IP，WSL直接处理
   container1 -> eth0 -> veth0 \
-  container2 -> eth0 -> veth1 -->(docker default gateway) docker0 -> wsl路由选择 -> 本地处理报文
+  container2 -> eth0 -> veth1 -->(docker default gateway) docker0 -> wsl(192.168.39.45就是WSL一个网口的IP，所以直接处理报文)
   
-  # 访问外网
+  # 访问外网: 192.168.0.111
   container1 -> eth0 -> veth0 \
-  container2 -> eth0 -> veth1 -->(default gateway) docker0 -> wsl路由选择 -> 非WSL内部接口转发 -> wsl 默认网关 -> eth0 (外网接口: ip forward/MASQUERADE)
+  container2 -> eth0 -> veth1 -->(default gateway) docker0 -> wsl (192.168.0.111不是WSL的IP，需要 NAT 转发)
+  
+  WSL路由选择 -> wsl 默认网关 -> eth0 (ip forward/MASQUERADE，WSL代替container访问外网，src IP替换为WSL的eth0 的 IP地址 192.168.39.45)
   
   # brctl show
   docker0 -> veth0
@@ -199,6 +201,16 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
           
   # 虚拟以太网设备
   # 虚拟以太网设备(veth pairs)成对出现
+  
+  # wsl 查看 veth 对端接口的index
+  wsl: ethtool -S veth0 => peer_ifindex: 11
+  
+  # container 查找 index
+  container: ip a | grep 11
+  
+  # 12为wsl的veth index, @if11为对端的veth index
+  wsl: ip -o link
+  # 12: veth711c275@if11
   ```
 
 - dns
