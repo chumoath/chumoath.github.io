@@ -128,7 +128,6 @@
   # 激活网桥 (external)
   ip link set br-ext up
   
-  
   # 清除eth0所有IP，被桥接的设备不配IP，否则网会不通
   ip addr flush dev eth1
   brctl addbr br-int
