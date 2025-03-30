@@ -1,4 +1,3 @@
-* [assets](/assets/)
 * [code_snippet](/code_snippet/)
   * [docker](/code_snippet/docker)
   * [syscall](/code_snippet/syscall)
