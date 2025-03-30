@@ -234,7 +234,7 @@
 
 - compute端使用virsh
 
-- wsl支持ebtables
+- wsl支持ebtables 和 wireguard(nft)
 
   ```shell
   # apt install libelf-dev flex bison libssl-dev dwarves
@@ -244,6 +244,7 @@
   # 2、cat /proc/config.gz | gunzip -dc > .config
   # 3、make -j24 bzImage modules
   # 4、添加 ko 后，最好把 bzImage 也重新加载，因为vmlinux会被重新编译
+  # 5、总结：通过重新编译wsl的内核即可满足 ebtalbes 和 wireguard 的需求，不需要加载ko
   
   # wsl --shutdown
   # 用 arch/x86/boot/bzImage 替换 C:\ProgramFiles\WSL\tools\kernel
@@ -274,9 +275,21 @@
   find . -name ebt*.ko | xargs -I{} insmod {}
   ```
 
-- wsl支持wireguard(nft)
+- FAQ
 
-## 3、wireguard配置
+    - Failed to generate BTF for vmlinux -> `apt install dwarves`
+
+    - WSL kernel 位置：C:\ProgramFiles\WSL\tools\kernel
+
+    - WSL配置：C:\Users\xxx\.wslconfig
+
+      ```shell
+      [wsl2]
+      memory=24G
+      kernel=C:\\bzImage
+      ```
+
+## 3、wireguard 配置 VPN
 
 - WSL - 中继服务器
 
@@ -329,7 +342,7 @@
   Endpoint = 192.168.39.45:51820
   PersistentKeepalive = 25
   ```
-  
+
 - command
 
   ```shell
@@ -357,5 +370,9 @@
   wg-quick down wg0
   wg show
   ```
-  
-  
+
+- 参考
+
+  - [wireguard访问内网](https://xiexiage.com/posts/vpn-wireguard)
+  - [wsl使用wireguard](https://medium.com/@emryslvv)
+  - [wireguard中继组网](https://blog.csdn.net/networken/article/details/137670459)
