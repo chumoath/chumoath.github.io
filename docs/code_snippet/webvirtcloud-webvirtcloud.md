@@ -496,3 +496,24 @@
      - 默认网关本质上就是一个掩码网关，只不过掩码为 0.0.0.0
      - 非网关主机对 NAT 不感知，只有网关主机才需要关心其子网的 NAT 转发
   6. 系统从各个网口接收到报文，之后的处理流程 ?
+
+## 5、webvirtcloud各服务端口及访问流程
+
+- 端口
+
+  ```shell
+  webvirtcloud-frontend -> 172.19.0.3:80
+  webvirtcloud-backend  -> 172.19.0.5:8000
+  webvirtcloud-novnc    -> 172.19.0.6:6080
+  webvirtcloud-compute  -> 172.19.0.9:8884
+  ```
+
+- 访问流程
+
+  ```shell
+  1、webvirtcloud-frontend  request post       -> webvirtcloud-backend
+  2、web localhost/admin/compute/6/overview    -> webvirtcloud-backend
+  3、webvirtcloud-backend  create、qcow2       -> webvirtcloud-compute (libvirtd)
+  ```
+
+  
