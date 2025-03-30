@@ -659,3 +659,7 @@
   - `ethtool -S eth0` -> 网口报文统计，查看veth对端网口的 index
 
 - strace 传递环境变量: `strace -ff -o task -E TEST_ENV=1 ls`
+
+- 网络流量NAT可视化
+
+- iptables
