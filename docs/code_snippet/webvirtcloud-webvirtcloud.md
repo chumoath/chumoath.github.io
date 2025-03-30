@@ -56,7 +56,7 @@
   # 进入 admin，查看虚拟机创建情况；先要下载对应Distribution的qcow2文件
   ```
 
-### 2、webvirtcloud compute
+## 2、webvirtcloud compute
 
 - Dockerfile
 
@@ -234,6 +234,18 @@
 
 - compute端使用virsh
 
+    ```shell
+    # 进入虚拟机串口： 已经被libvirtd连接了，所以无法使用minicom连接了;monitor也是如此
+    virsh console Virtance-12
+    
+    # 执行 monitor 命令
+    virsh qemu-monitor-command Virtance-12 --hmp help
+    
+    # 查看所有的虚拟机 domain
+    virsh list --all
+    
+    ```
+
 - wsl支持ebtables 和 wireguard(nft)
 
   ```shell
@@ -376,3 +388,65 @@
   - [wireguard访问内网](https://xiexiage.com/posts/vpn-wireguard)
   - [wsl使用wireguard](https://medium.com/@emryslvv)
   - [wireguard中继组网](https://blog.csdn.net/networken/article/details/137670459)
+
+## 4、虚拟机网络分析
+
+- docker里虚拟机访问外网：
+
+  ```shell
+  # slave(虚拟机)
+      ip route del default
+  	ip route add default via 192.168.33.1
+  
+  # 必须执行，否则虚拟机就是无法访问代理IP地址
+  # docker host:
+  	ip addr add 192.168.33.1/24 dev br-ext
+  	iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.33.1/24
+  	# iptables -A POSTROUTING -t nat -j MASQUERADE
+  	iptables -t nat -L POSTROUTING --line-number
+  	# 删除一条指定的 POSTROUTING规则
+  	iptables -t nat -D POSTROUTING [N]
+  ```
+
+- slave 虚拟机报文流程(NAT)：
+
+  - 访问外网流程
+
+    ```shell
+    # 目的IP(代理所在的 IP): 192.168.0.111
+    192.168.33.71(虚拟机IP) -> 路由选择(本地无匹配网络接口) -> 使用默认网关(192.168.33.1) -> docker host
+    
+    docker host (目标非 docker host IP，需 NAT) -> 路由选择(仍然无本地网络接口可处理) -> 172.19.0.1(报文流出 docker host) -> MASQUERADE(src替换为172.19.0.9，由 docker host 代替 虚拟机 访问外网)
+    ```
+
+  - 访问docker host 的 172.17.0.2 流程
+
+    ```shell
+    # 目的IP(docker host 的 另一个网口 IP): 172.17.0.2
+    192.168.33.71(虚拟机IP) -> 路由选择(本地无匹配网络接口) -> 使用默认网关(192.168.33.1) -> docker host
+    
+    docker host (目标 为 docker host IP) -> 直接处理
+    ```
+
+  - 访问docker host 的 所在子网的其他主机(docker0 的 另一个IP 172.17.0.3)
+
+    ```shell
+    # 目的IP(docker0 的 另一个IP): 172.17.0.3
+    192.168.33.71(虚拟机IP) -> 路由选择(本地无匹配网络接口) -> 使用默认网关(192.168.33.1) -> docker host
+    
+    docker host (目标非 docker host IP，需 NAT) -> 路由选择(br-int 172.17.0.2/16) -> br-int(流出docker host) -> MASQUERADE(src替换为172.17.0.2，由 docker host 代替 虚拟机 访问 另一个子网) -> docker0
+    
+    br-int(docker host) -> eth1(docker host) -> (veth paris) -> veth0 (wsl tap) -> docker0 -> 另一个docker container
+    ```
+
+- 虚拟机网络总结(重点是NAT)
+
+  1. 当一台主机的 IP 作为默认网关时，该子网内任何主机访问 网关所在的另一个子网时，网关都必须要配置 NAT，相当于路由器
+  2. docker host中的虚拟机，可直接 ping通 172.17.0.2, 10.255.0.1 等 docker host 的 IP，因为是docker host 本地处理；不可以 ping 通 172.17.0.3，只要虚拟机通过网关访问另一个子网，不必是默认网关，都必须配置NAT(MASQUERADE)，网关代替虚拟机访问(因为必须修改 src IP，否则无法收到响应)。
+  3. 虚拟机网络：
+     - 桥接： 虚拟机网卡 和 host 网卡添加到同一个网桥，虚拟机网卡配置为 和 host 访问外网的同网段IP，直接和外网通信
+     - NAT： 虚拟机网卡 和 host 一个网卡组成一个内网网段，添加到一个网桥；host 另一个网卡(或同一个网卡)可访问外网，虚拟机访问外网的流程由 docker host 转发(src IP 替换为 docker host 在另一个子网的 IP)
+  4. 路由器就是通过NAT功能代替内网访问外网的
+     - 解决ipv4地址不足问题
+     - 隐藏内网结构
+     - 一有网关(默认网关/掩码网关)，网关必须实现 NAT 转发，即 MASQUERADE
