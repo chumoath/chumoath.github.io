@@ -244,7 +244,46 @@
     # 查看所有的虚拟机 domain
     virsh list --all
     
+    # 查看 libvirtd 的网络配置，会被 domain 的 xml source
+    virsh net-list --all
+    
+    # 查看 default 的网络xml配置
+    virsh net-dumpxml default
+    
+    # 修改 network xml配置
+    virsh net-edit public
+    
+    # 查看 一个命令的 help
+    virsh help net-dumpxml
+    
+    # 注册 libvirt 网络
+    virsh net-define public.xml
+    # 启动网络
+    virt net-start public
+    # 设置自启动
+    virsh net-autostart public
+    
+    # 修改 domain 的xml
+    virsh edit Virtance-10
+    
+    # python3-livirt使用 - apt install python3-libvirt
+    ipython3
+    > import libvirt
+    > wvm = libvirt.open("qemu:///system")
+    > vm = wvm.lookupByName("Virtance-6")
+    > wvm.listAllDomains()[0].name()
+    > wvm.listAllDomains()[0].XMLDesc()
+    
+    # 格式化查看 domain 的 xml
+    # 去掉 \n
+    sed -i 's@\\n@@g' input.xml
+    xmllint --format input.xml -o output.xml
+    # 格式化json
+    python3 -m json.tool input.json > output.json
+    jq . input.json > output.json
     ```
+
+    [virsh](https://www.cnblogs.com/qiuhom-1874/p/13510721.html)
 
 - wsl支持ebtables 和 wireguard(nft)
 
@@ -389,6 +428,7 @@
   - [wsl使用wireguard](https://medium.com/@emryslvv)
   - [wireguard中继组网](https://blog.csdn.net/networken/article/details/137670459)
   - [ebtables](https://www.cnblogs.com/xuanxuanBOSS/p/11424290.html)
+  - [Ethernet Bridging](http://docs.kernel.org/networking/bridge.html)
 
 ## 4、虚拟机网络分析
 
