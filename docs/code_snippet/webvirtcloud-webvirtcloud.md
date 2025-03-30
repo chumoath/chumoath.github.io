@@ -98,7 +98,7 @@
   # 网桥不能 up，否则 也会导致 域名无法解析；因为影响了 iptables 对 DNS(53端口) 的转发
   
   # docker run --name compute1 --privileged=true --cap-add=NET_ADMIN -d --rm --device /dev/kvm --network=webvirtcloud_default ubuntu_system
-  docker run --dns 8.8.8.8 --name compute1 --privileged=true --cap-add=NET_ADMIN -d --rm --device /dev/kvm --network webvirtcloud_default ubuntu_system
+  docker run --name compute1 --privileged=true --cap-add=NET_ADMIN -d --rm --device /dev/kvm --network webvirtcloud_default ubuntu_system
   docker network connect bridge compute1
   docker exec -it compute1 bash
   echo "nameserver 8.8.8.8" > /etc/resolv.conf
