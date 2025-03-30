@@ -278,38 +278,58 @@
 
 ## 3、wireguard配置
 
-- WSL
+- WSL - 中继服务器
 
   ```shell
   # /etc/wireguard/wg0.conf
   
   [Interface]
-  Address = 192.168.33.1/24
+  Address = 192.168.3.1/24                 # wsl 的 wg0 配置的 VPN 网段IP
   PrivateKey = 4O6gBgrMBz+nGR0lqEiMdzwq4IzwRiom6T1RYxQbI0M=
   ListenPort = 51820
   PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o br-6a7541fe74a1 -j MASQUERADE
   PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o br-6a7541fe74a1 -j MASQUERADE
   
-  
+  # windows client
   [Peer]
   PublicKey = 5dYw8RR4dEmP172lV0povGO/hUemFRUfegZU7TvrLG0=
-  AllowedIPs = 192.168.33.2/32
+  AllowedIPs = 192.168.3.2/32  # 目的IP在该范围的，通过VPN隧道(wg0网卡)发送；此处指定 VPN IP 192.168.3；此处 windows 所在的子网网段不被开放，也不会被中继服务器转发
+  
+  # docker client
+  [Peer]
+  PublicKey = FTt7tPJG8Vi049qKDTnCSl+4ggJmdGJTPbjz2Mjx+XA=
+  AllowedIPs = 192.168.3.3/32, 192.168.33.0/24 # 目的IP在该范围的，通过VPN隧道(wg0网卡)发送；此处指定 VPN 网段 192.168.3.3 和 192.168.33.0/24 网段；外部访问 192.168.33.0/24网段的，会被代为转发到 192.168.3.3
   ```
 
-- windows
+- windows client
 
   ```shell
   [Interface]
   PrivateKey = gAw98k/7d7i2KTOm8720zL8xt+Ml8f/vsBRy7smBTms=
-  Address = 192.168.33.2/24
+  Address = 192.168.3.2/24
   
   [Peer]
   PublicKey = JjMr+eFD06oydpYCp2jPtp9PFBfudakwVXDmNE7yzRg=
-  AllowedIPs = 192.168.33.1/24, 172.19.0.0/16 # 将要访问 server 的 IP 放开即可
+  AllowedIPs = 192.168.3.0/24, 172.19.0.0/16  # 目的IP在该范围的，通过VPN隧道(wg0网卡)发送；此处指定 VPN 网段 192.168.3.0/24 和 172.19.0.0/16 网段
   Endpoint = 192.168.39.45:51820
   PersistentKeepalive = 25
   ```
 
+- docker client
+
+  ```shell
+  Address = 192.168.3.3/24
+  PrivateKey = UFaEIO800ipqydm8/6NDtu6ZBbWGgDtjcX8AKeacdlA=
+  PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o br-ext -j MASQUERADE
+  PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o br-ext -j MASQUERADE
+  
+  [Peer]
+  PublicKey = JjMr+eFD06oydpYCp2jPtp9PFBfudakwVXDmNE7yzRg=
+  AllowedIPs = 192.168.3.0/24              # 目的IP在该范围的，通过VPN隧道(wg0网卡)发送；此处指定 VPN 网段 192.168.3.0/24 网段；不是开放给别人的子网网段，对本地子网的访问由中继服务器转发
+  Endpoint = 192.168.39.45:51820
+  PersistentKeepalive = 25
+  ```
+  
 - command
 
   ```shell
@@ -319,10 +339,15 @@
   cd /etc/wireguard/
   wg genkey | tee privatekey | wg pubkey > publickey
   
-  # 生成客户端私钥
+  # 生成客户端1私钥
   wg genkey > client1.key
-  # 通过私钥生成客户端密钥
+  # 通过私钥生成客户端1密钥
   wg pubkey < client1.key > client1.key.pub
+  
+  # 生成客户端2私钥
+  wg genkey > client2.key
+  # 通过私钥生成客户端2密钥
+  wg pubkey < client2.key > client2.key.pub
   
   systemcel enable wg-quick@wg0.service
   systemcel start wg-quick@wg0.service
@@ -332,5 +357,5 @@
   wg-quick down wg0
   wg show
   ```
-
+  
   
