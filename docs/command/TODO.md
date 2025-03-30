@@ -602,18 +602,6 @@
 
 - webvirtcloud的compute必须安装libvirtd，controller可以通过ssh隧道在compute节点执行命令；compute节点通过访问`/run/libvirt/libvirt-sock`管理虚拟机
 
-- Failed to generate BTF for vmlinux -> `apt install dwarves`
-
-- WSL kernel 位置：C:\ProgramFiles\WSL\tools\kernel
-
-- WSL配置：C:\Users\xxx\.wslconfig
-
-  ```shell
-  [wsl2]
-  memory=24G
-  kernel=C:\\bzImage
-  ```
-
 - ip命令
 
   ```shell
@@ -654,66 +642,4 @@
   ip addr show eth0.100
   ```
 
-- wireguard配置
-
-  - wsl内核配置: 
-
-    - `cat /proc/config.gz | gunzip -dc > .config`
-    - `make bzImage` -> 编译出的 bzImage 即可满足 ebtables 和 wireguard的需要
-  
-  - wireguard配置
-  
-    ```shell
-    apt install wireguard
-    
-    # 生成服务端密钥对
-    cd /etc/wireguard/
-    wg genkey | tee privatekey | wg pubkey > publickey
-    
-    # 生成客户端私钥
-    wg genkey > client1.key
-    # 通过私钥生成客户端密钥
-    wg pubkey < client1.key > client1.key.pub
-    
-    
-    # 服务端配置
-    /etc/wireguard/wg0.conf
-    [Interface]
-    Address = 192.168.33.1/24  # VPN子网配置给wg0接口的IP
-    PrivateKey = <服务器私钥>    # 服务器私钥
-    ListenPort = 51820
-    
-    [Peer]
-    PublicKey = <客户端公钥>     # 客户端公钥
-    AllowedIPs = 192.168.33.2/32  # 分配给客户端的VPN子网的IP地址
-    
-    # 客户端配置
-    [Interface]
-    PrivateKey = <客户端私钥>
-    Address = 192.168.33.2/24 # 分配给客户端的VPN IP地址
-    
-    [Peer]
-    PublicKey = <服务器公钥>
-    Endpoint = <服务器外部IP地址>:51820
-    AllowedIPs = 192.168.33.1/24 # windows进入vpn隧道的IP范围，不能配置为0.0.0.0/0，会导致所有流量都过去
-    PersistentKeepalive = 25
-    
-    
-    # 启动/停止wireguard
-    启动：wg-quick up wg0
-    停止：wg-quick down wg0
-    状态：wg show
-    
-    # 自启动
-    systemcel enable wg-quick@wg0.service
-    systemcel start wg-quick@wg0.service
-    systemctl list-units --type=service
-    ```
-  
-  - 参考:
-  
-    -  [wireguard访问内网](https://xiexiage.com/posts/vpn-wireguard)
-    - [wsl使用wireguard](https://medium.com/@emryslvv)
-    - [wireguard中继组网](https://blog.csdn.net/networken/article/details/137670459)
-  
 - 查看apt包的内容: `dpkg -L iputils-ping`
