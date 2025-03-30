@@ -663,3 +663,7 @@
 - 网络流量NAT可视化
 
 - iptables
+
+- plymouth
+
+- hwmon
