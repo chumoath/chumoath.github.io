@@ -643,3 +643,19 @@
   ```
 
 - 查看apt包的内容: `dpkg -L iputils-ping`
+
+- nmcli
+
+  - `nmcli device`
+  - `nmcli connection show`
+
+- 查看系统的socket连接，可与 `netstat -tunp 对照` -> `conntrack -L`
+
+- 查看网口接口类型
+
+  - `ethtool -i tap0`
+  - `ethtool -i docker0`
+  - `ethtool -i eth0`
+  - `ethtool -S eth0` -> 网口报文统计
+
+- strace 传递环境变量: `strace -ff -o task -E TEST_ENV=1 ls`
