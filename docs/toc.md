@@ -34,6 +34,8 @@
   * [systemd](/solutions/systemd)
   * [test_bash_args](/solutions/test_bash_args)
   * [vim](/solutions/vim)
+  * [vm_forward_topology](/solutions/vm_forward_topology)
+  * [wireguard_hand](/solutions/wireguard_hand)
 * [website](/website/)
 * [yocto](/yocto/)
   * [bitbake_minimal](/yocto/bitbake_minimal)
