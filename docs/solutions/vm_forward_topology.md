@@ -2,6 +2,11 @@
 
 ## 搭建用qemu调试ip_foward的网络拓扑结构
 
+- 概述
+
+  - veth pair通常用于连接不同的网络命令空间
+  - tap
+  
 - 基础命令
 
   ```shell
@@ -138,6 +143,8 @@ bool "IP: advanced router"
 ```
 
 ## iptables流量图
+
+- 重点是上下行流量
 
 <img src="../assets/iptables_packet.png"  />
 
