@@ -83,13 +83,16 @@
 
     - `git log init/main.c`
     - `git log --oneline init/main.c`
+    
 16. 配置git交互式使用的编辑器
 
     - `git config --global core.editor vim`
+    
 17. 将远程仓库回退到本地仓库的commit
 
     - `git push origin --force`
     - `git push -f`
+    
 18. 将本地仓库另一个仓库的commit应用到当前仓库的分支
 
     - 添加远程仓库
@@ -98,6 +101,7 @@
       - `git fetch other_repo`
     - 将指定commitID应用到当前仓库的当前分支
       - `git cherry-pick [commitID]`
+    
 19. git仓库创建
 
     - 不创建 .git 目录
@@ -126,26 +130,53 @@
     - 指定当前分支的上游分支
 
       - `git branch --set-upstream-to origin/master`
+    
 20. 查看指定分支是否有指定commit
 
     - `git branch --contains [commitID] --list master 2> /dev/null | wc -l`
+    
 21. 查看tag
     - `git tag -l`
+    
 22. 查看指定commitID在哪些tag中
     - `git log --oneline --reverse kernel/fork.c` -> 查看commitID
     - `git tag --contains [commitID]`
+    
 23. linux查看tag，一个tag本质上是一个commitID的别名
     - `git log --oneline | grep "Linux .*"`
+    
 24. 查看一个文件指定内容在哪个commit第一次被添加
     - `git log --reverse --oneline -S"SYSCALL_DEFINE1(unshare" -- kernel/fork.c | head -n 1`
     - `git show [commitID] kernel/fork.c` -> 查看一个commit的指定文件的改动
+    
 25. 查看一个commit最早出现在哪个tag
     - `git describe --tags --contains [commitID] 2>/dev/null | cut -d"~" -f1 | head -n1`
     - `git describe --tags --contains [commitID] 2>/dev/null | awk -F'~' '{print $1}' | head -n1`
+    
 26. 查看指定文件在哪个tag第一次被添加
     - `git log --reverse --oneline --pretty=format:%H -S"SYSCALL_DEFINE1(unshare" -- kernel/fork.c | head -n1 | xargs -I{} git describe --tags --contains {} 2>/dev/null | cut -d"~" -f1 | head -n1`
-22. misc
+    
+27. 列出修改指定文件的commit
 
-    - `git add -p `
-    - `git commit -s -v`
-    - `git checkout -p [file]`
+    - `git log --oneline -- socket.c`
+    - 只看最近三个commit：`git log --oneline -3 -- socket.c`
+    
+28. 查看指定文件内容历史改动
+
+    - `git log --oneline -p socket.c`
+    
+29. 查看一个commit中指定文件的改动(oneline一行显示commit信息)
+
+    - `git show --oneline [commitID] -- socket.c`
+    
+30. 只查看一个commit改动的文件列表
+
+    - `git show --oneline --name-only [commitID]`
+    
+31. commit信息添加 Signed-off-by
+
+    - `git commit -s -m "test"`
+    
+32. 交互式添加commit信息
+
+    - `git commit -v`
