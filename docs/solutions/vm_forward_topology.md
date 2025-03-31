@@ -100,7 +100,7 @@
   # 配置 br-int 网桥IP
   # - 需判断网桥不配IP，vm1 和 vm2 能否通过 tap1 和 tap2 ping 通；
   # - 若可以ping通，则 tap1 (vm1 eth0) 就可以作为网关，ns-qemu 就无法访问 vm2
-  # - 不让 ns-qemu访问 vm2，可以通过 iptables 将192.168.7.1/24网段的Output拦截
+  # - 不让 ns-qemu访问 vm2，可以通过 iptables 将通过ns-qemu访问192.168.7.1/24网段在Forward拦截
   # ip addr add 192.168.7.1/24 dev br-int
   
   # 激活网口
@@ -136,3 +136,7 @@ bool "IP: advanced router"
 # - 桥接：在同一网段的一定能收到响应
 # - NAT：不在同一网段，请求报文可以发过去，但由于源地址对于目标不可达，所以网关必须进行NAT，以修改源IP
 ```
+
+## iptables流量图
+
+<img src="../assets/iptables_packet.png"  />
