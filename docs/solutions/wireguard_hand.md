@@ -39,3 +39,29 @@ wg showconf wg0
 wg set ...
 ```
 
+## 验证 net.ipv4.ip_forward的有效性
+
+```shell
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 0 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+wsl:
+docker run --privileged=true -d --rm ubuntu_system
+
+windows vpn:
+# 肯定能ping通，因为本身就是wsl的IP，不需要wsl NAT
+ping 172.17.0.1
+
+# 必须 NAT
+ping 172.17.0.2
+
+
+# net/ipv4/Kconfig
+IP_ADVANCED_ROUTER
+bool "IP: advanced router"
+# NAT 是为了能收到报文响应
+# - 桥接：在同一网段的一定能收到响应
+# - NAT：不在同一网段，请求报文可以发过去，但由于源地址对于目标不可达，所以网关必须进行NAT，以修改源IP
+```
+
