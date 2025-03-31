@@ -174,7 +174,7 @@ docker-compose exec -u ubuntu docs-build bash -c "cd /linux/tools/labs && make d
     # 删除网桥network1
     docker network rm network1
     
-    # 查看网桥network1信息
+    # 查看网桥network1信息，可以查看网桥中各节点IP
     docker network inspect network1
     
     # 查看网桥
