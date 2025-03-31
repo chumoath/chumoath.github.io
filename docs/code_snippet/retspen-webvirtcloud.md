@@ -9,6 +9,8 @@
     
         - 出现502: systemctl restart supervisor nginx
     
+        - systemd权限问题: 必须要加 `--privileged=true`
+        
         - ```shell
           FROM ubuntu:22.04
           RUN sed -i s#archive.ubuntu.com#mirrors.tuna.tsinghua.edu.cn#g /etc/apt/sources.list
@@ -140,4 +142,4 @@
       
       # web 使用ssh添加计算节点: 192.168.0.159:2222  root
       ```
-  
+
