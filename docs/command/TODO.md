@@ -667,3 +667,20 @@
 - plymouth
 
 - hwmon
+
+- 网桥配置vlan
+
+- wireshark使用
+
+- bpftrace
+
+- 去掉wireguard的加密
+
+- wireguard安装
+
+  - `apt install wireguard`
+  - 查看包依赖：`apt-cache depends wireguard` -> `Depends: wireguard-tools`
+
+- 查看tar.gz里面的文件列表和权限：`tar -tvf plymouth.tar.gz`
+
+- `ls -l /`查不到根目录的权限：`stat /`
