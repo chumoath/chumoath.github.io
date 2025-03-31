@@ -268,3 +268,5 @@ bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
 - [bitbake VariableFlags](https://docs.yoctoproject.org/bitbake/2.10/bitbake-user-manual/bitbake-user-manual-metadata.html#variable-flags)
 - [jia.je openbmc qemu](https://jia.je/system/2023/08/11/openbmc-qemu/)
 - [qemu选项](https://www.qemu.org/docs/master/system/qemu-manpage.html)
+- [Yocto quick start](https://docs.yoctoproject.org/brief-yoctoprojectqs/index.html)
+- [github poky](https://github.com/yoctoproject/poky.git)
