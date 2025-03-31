@@ -140,3 +140,7 @@ bool "IP: advanced router"
 ## iptables流量图
 
 <img src="../assets/iptables_packet.png"  />
+
+## 参考
+
+- [iptables的四表五链与NAT工作原理 _](https://tinychen.com/20200414-iptables-principle-introduction/)
