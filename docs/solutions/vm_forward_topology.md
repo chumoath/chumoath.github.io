@@ -6,6 +6,7 @@
 
   - veth pair通常用于连接不同的网络命令空间
   - tap
+  - `net.ipv4.ip_forward=1`    `sysctl -p`   `/proc/sys/net/ipv4/ip_forward`
   
 - 基础命令
 
