@@ -338,14 +338,6 @@
 
 - `ss -x`查看对端inode: `unix_diag.ko`
 
-- nfs依赖的ko: `fscache.ko grace.ko lockd.ko nfs.ko nfs_acl.ko nfsv3.ko sunrpc.ko`
-
-- nfs转发:
-
-  - 转发TCP的2049端口即可
-  - nfs权限问题，使用: `/etc/exports` => `/nfs *(rw,sync,no_subtree_check,insecure)`
-  - `mount.nfs4 10.21.205.129:/nfs /root/nfs`
-
 - run/tap示例
 
 - iptables处理
@@ -772,4 +764,5 @@
 - yocto总流程
   - 组件: `do_build -> do_install -> image -> package -> *.rpm`
   - image: `core-image-minimal -> do_build -> 根据依赖关系从rpm包构建image`
+  
 - yocto根据编译出来的ko目录生成 `kernel-module-*`目标，所有 `kernel-module-*`都被设置为`kernel-modules`的依赖
