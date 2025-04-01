@@ -381,6 +381,7 @@
 - docker client
 
   ```shell
+  [Interface]
   Address = 192.168.3.3/24
   PrivateKey = UFaEIO800ipqydm8/6NDtu6ZBbWGgDtjcX8AKeacdlA=
   PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o br-ext -j MASQUERADE
@@ -421,6 +422,11 @@
   wg show
   ```
 
+- 总结
+
+  - Address：配置wg0网口IP，并配置其掩码路由
+  - AllowedIPs：添加从 wg0 转发的子网 / IP
+  
 - 参考
 
   - [wireguard访问内网](https://xiexiage.com/posts/vpn-wireguard)
