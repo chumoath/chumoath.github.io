@@ -58,7 +58,9 @@
   # host-ns
   # 创建 ns-qemu 网络空间
   ip netns add ns-qemu
-  # 创建veth对并将该端放入 ns-qemu 网络空间
+  # 创建veth对
+  ip link add veth-qemu type veth peer name veth-host
+  # 将该端放入 ns-qemu 网络空间
   ip link set veth-qemu netns ns-qemu
   # 配置host网络
   ip addr add 192.168.33.1/24 dev veth-host
@@ -76,7 +78,7 @@
   # 将访问外部网络的 veth-qemu 加入 br-ext 网桥
   ip link set veth-qemu master br-ext
   # 创建连接 vm1 的 tap0
-  ip tuntap add tap0 mode tap gourp 0
+  ip tuntap add tap0 mode tap group 0
   # 将 tap0 添加到 br-ext 网桥
   ip link set tap0 master br-ext
   
@@ -113,8 +115,11 @@
   ip link set tap1 up
   ip link set tap2 up
   ip link set br-int up
+  
+  # 清除IP
+  ip addr flush dev eth0
   ```
-
+  
   
 
 ## 验证 net.ipv4.ip_forward的有效性
