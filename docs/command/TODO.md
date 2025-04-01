@@ -684,3 +684,53 @@
 - 查看tar.gz里面的文件列表和权限：`tar -tvf plymouth.tar.gz`
 
 - `ls -l /`查不到根目录的权限：`stat /`
+
+- yocto所有ko都打到image
+
+  ```shell
+  # conf/local.conf
+  INIT_MANAGER = "systemd"
+  IMAGE_INSTALL:append = "iptables kernel-modules openssh bash bash-completion"
+  ```
+
+- 查看ulimit使用的系统调用
+
+  ```shell
+  type ulimit
+  # ulimit is a shell builtin
+  
+  # 在shell内部执行命令，strace的是bash本身，因为是内建命令
+  strace bash -c "ulimit -a"
+  # 执行一个脚本
+  bash xxx.sh
+  
+  # prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=1024, rlim_max=1024*1024}) -> open files
+  # prlimit64(0, RLIMIT_NPROC, NULL, {rlim_cur=96103, rlim_max=96103}) -> max user processes
+  # prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) -> stack size
+  # prlimit64(0, RLIMIT_CORE, NULL, {rlim_cur=0, rlim_max=RLIM64_INFINITY}) -> core file size 
+  ```
+
+- kvm
+
+  - virt/lib/irqbypass.ko
+  - kvm.ko
+  - kvm-intel.ko
+
+- 关闭内核基地址随机化
+
+  - CONFIG_RANDOMIZE_BASE
+  - nokaslr
+
+- linux-yocto添加调试信息，生成vmlinux-gdb.py
+
+  ```shell
+  bitbake -c do_menuconfig linux-yocto
+  bitbake linux-yocto
+  bitbake core-image-minimal
+  bitbake -c devshell linux-yocto
+  make scripts_gdb
+  ```
+
+- MASQUERADE需要该ko: `xt_MASQUERADE`
+
+- yocto拆分包全流程：以kernel-module为例
