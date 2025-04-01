@@ -734,3 +734,42 @@
 - MASQUERADE需要该ko: `xt_MASQUERADE`
 
 - yocto拆分包全流程：以kernel-module为例
+
+- `iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT`
+
+- `iptables -A FORWARD -i br0 -o br0 -s 192.168.1.1 -d 192.168.1.2 -j ACCEPT`
+
+- `iptables -A FORWARD -i br0 -o br0 -s 192.168.1.1 -d 192.168.1.3 -j DROP`
+
+- `tcpdump -i br0 -nn -e vlan`
+
+- `bridge monitor fdb`
+
+- `bridge fdb show br br-ext`
+
+- NAT是为了三层能收到报文响应，在同一个网段的一定能收到响应报文
+
+- 虚拟机应用 -> eth0(Guest) -> 虚拟化层 -> tap0(Host) -> 宿主网络栈
+
+- 通过vm1调试ip_forward网络拓扑
+
+  ```shell
+  # 目标: host <-> vm1; vm1 <-> vm2; host x> vm2
+  br-ext: (192.168.33.2)
+     veth0-qemu (不配IP)
+     tap0 (不配IP)           -> vm1 (eth0 192.168.33.3)
+     
+  br-int: (不配IP)
+     tap1 (不配IP)           -> vm1 (eth1 192.168.7.1)
+     tap2 (不配IP)           -> vm2 (eth0 192.168.7.2)
+     
+     
+  # qemu
+  vm1: net0 -> tap0, net1 -> tap1
+  vm2: net0 -> tap2
+  ```
+
+- yocto总流程
+  - 组件: `do_build -> do_install -> image -> package -> *.rpm`
+  - image: `core-image-minimal -> do_build -> 根据依赖关系从rpm包构建image`
+- yocto根据编译出来的ko目录生成 `kernel-module-*`目标，所有 `kernel-module-*`都被设置为`kernel-modules`的依赖
