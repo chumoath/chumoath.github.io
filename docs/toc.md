@@ -20,6 +20,8 @@
   * [backend](/llvm/backend)
   * [front](/llvm/front)
   * [optimizer](/llvm/optimizer)
+* [misc](/misc/)
+  * [typora_expire](/misc/typora_expire)
 * [qemu](/qemu/)
   * [hpm](/qemu/hpm)
   * [hw](/qemu/hw)
