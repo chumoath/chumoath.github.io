@@ -754,13 +754,12 @@
   br-int: (不配IP)
      tap1 (不配IP)           -> vm1 (eth1 192.168.7.1)
      tap2 (不配IP)           -> vm2 (eth0 192.168.7.2)
-     
-     
+  
   # qemu
   vm1: net0 -> tap0, net1 -> tap1
   vm2: net0 -> tap2
   ```
-
+  
 - yocto总流程
   - 组件: `do_build -> do_install -> image -> package -> *.rpm`
   - image: `core-image-minimal -> do_build -> 根据依赖关系从rpm包构建image`
