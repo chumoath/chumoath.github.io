@@ -30,7 +30,7 @@
 * [solutions](/solutions/)
   * [Mobaxterm_Setting](/solutions/Mobaxterm_Setting)
   * [docs](/solutions/docs)
-  * [nfs](/solutions/nfs)
+  * [nfs_forward](/solutions/nfs_forward)
   * [systemd](/solutions/systemd)
   * [test_bash_args](/solutions/test_bash_args)
   * [vim](/solutions/vim)
