@@ -765,3 +765,55 @@
   - image: `core-image-minimal -> do_build -> 根据依赖关系从rpm包构建image`
   
 - yocto根据编译出来的ko目录生成 `kernel-module-*`目标，所有 `kernel-module-*`都被设置为`kernel-modules`的依赖
+
+- 修改 /etc/passwd，将/bin/bash改为/usr/bin/ipython3，即可登录使用ipython命令行
+
+- wsl -d ubuntu不能重新启动，必须 wsl --shutdown
+
+- perf 监控报文被丢弃
+
+  ```shell
+  # 1、生成 perf.data
+  perf record -g -a -e skb:free_skb
+  # 2、解析perf.data
+  perf script
+  # 3、查看支持的trace
+  perf list
+  ```
+
+- 负数的小数表示
+
+  - -0.5表示
+  - 负数：表面值越大，负数越大(负号后面的数越小)
+  - 正数：表面值越大，正数越大
+  - 11111.0 -> -1
+  - 11111.1 -> -0.5
+  - 1 1111.1 = -2^4 + 2^3 + 2^2 + 2^1 + 2^0 + 2^-1 = -16+8+4+2+1+0.5 = -0.5
+
+- so2的hvc*不能自动创建解决办法
+
+  - `-chardev pty,id=ttyS0 -serial chardev:ttyS0`
+  - `console=ttyS0`
+  - `minicom -D /dev/pts/*`
+
+- linux v3.0 so2调试配置
+
+  - 需打开内核选项
+    - X86_32, LGUEST_GUEST, PARAVIRT_GUEST, VIRTIO_PCI, VIRTIO_BLK, VIRTIO_NET
+  - 构建内核
+    - `make ARCH=i386 defconfig`
+    - `make ARCH=i386 menuconfig`
+    - `make  ARCH=i386 -j$(nproc)`
+  - 有git仓需要加LOCALVERSION，否则内核版本号会多一个+
+    - `make LOCALVERSION= ARCH=i386 -j$(nproc)`
+  - 创建 hvc* 设备节点
+    - `mknod /dev/hvc0 c 229 0`
+    - `mknod /dev/hvc0 c 229 7`
+  - 注意点
+    - linux v3.0缺乏一些ext4特性，所以使用的是ext3的老应用，不能自动创建hvc*设备节点
+    - linux v2.6.19-rc2开始即支持ext4，但是v3.0内核有不兼容的特性，即使ext4文件系统内容全部拷到ext3会提示内核太旧
+  - yocto x86文件系统生成件 链接
+    - [yocto-1.1.1 ext3](https://downloads.yoctoproject.org/releases/yocto/yocto-1.1.1/machines/qemu/qemux86/core-image-minimal-qemux86.ext3)
+    - [yocto-3.4.4 ext4](https://downloads.yoctoproject.org/releases/yocto/yocto-3.4.4/machines/qemu/qemux86/core-image-minimal-qemux86.ext4)
+
+- `udevadm info -a /dev/hvc0`
