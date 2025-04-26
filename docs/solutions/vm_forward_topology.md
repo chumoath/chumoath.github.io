@@ -6,7 +6,7 @@
 
   - veth pair通常用于连接不同的网络命令空间
   - tap
-  - `net.ipv4.ip_forward=1`    `sysctl -p`   `/proc/sys/net/ipv4/ip_forward`
+  - `net.ipv4.ip_forward=1`    `sysctl -p`   =  `/proc/sys/net/ipv4/ip_forward`
   
 - 基础命令
 
@@ -54,6 +54,7 @@
   ```shell
   # 拓扑: host <-> vm1, host x> vm2, vm1 <-> vm2
   # 目标：host -> vm1 -> vm2
+  # 大网: 192.168.33.0/24 小网: 192.168.3.0/24
   
   # host-ns
   # 创建 ns-qemu 网络空间
@@ -69,6 +70,7 @@
   iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.33.0/24
   
   # ns-qemu
+  # 不需要配置iptables转发，因为vm1流量不被ns-qemu网络命名空间转发
   ip netns exec ns-qemu bash
   
   # br-ext
@@ -90,7 +92,7 @@
   ip link set tap0 up
   ip link set br-ext up
   
-  # 配置默认网关
+  # 配置默认网关 - 若 ns-qemu 不需要访问外网，不必配置
   ip route add default via 192.168.33.1
   
   # br-int - 不访问外网，不需要桥接访问外网的接口
@@ -116,11 +118,80 @@
   ip link set tap2 up
   ip link set br-int up
   
+  # 若 ns-qemu 网络空间不 up lo，则 qemu -s 只会有tcp6，没有tcp4；qemu -gdb tcp:127.0.0.1:1234 无法请求该地址
+  ip link set lo up
+  
   # 清除IP
   ip addr flush dev eth0
   ```
   
+- guest配置
+
+  - iptables需要 `xt_MASQUERADE.ko` 内核模块，否则使用iptables配置MASQUERADE 会提示**Extension MASQUERADE revision 0 not supported**
+
+  ```shell
+  # vm1
+  ip addr add 192.168.33.3/24 dev enp0s3
+  ip addr add 192.168.3.1/24 dev enp0s4
+  ip route add default via 192.168.33.1
+  # ns-qemu不需要用iptables转发vm1，vm1直接和veth-qemu桥接，可直接通过veth-host访问host；
+  # 因此只需要host配置iptables转发vm1(192.168.33.0/24)的流量即可
+  iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.3.0/24
+  iptables -t nat -L -n
   
+  echo 1 > /proc/sys/net/ipv4/ip_forward
+  
+  # vm2
+  ip addr add 192.168.3.2/24 dev enp0s3
+  ip route add default via 192.168.3.1
+  
+  # host
+  iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.33.0/24
+  ```
+
+- 虚拟机运行
+
+  - 必须指定 cpu，否则会提示**systemd trap invalid opcode**
+
+  ```shell
+  cp /home/xxx/yocto/build/qemux86/tmp/deploy/images/qemux86/core-image-minimal-qemux86.rootfs.ext4 ./vm1.ext4
+  
+  cp vm1.ext4 vm2.ext4
+  
+  cp /home/xxx/yocto/build/qemux86/tmp/deploy/images/qemux86/bzImage ./
+  
+  # vm1
+  qemu-system-i386 -kernel bzImage -cpu IvyBridge -smp 4 -serial pty -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no -net nic,netdev=tap0,model=virtio -netdev tap,id=tap1,ifname=tap1,script=no,downscript=no -net nic,netdev=tap1,model=virtio -drive file=vm1.ext4,if=virtio,format=raw --append 'root=/dev/vda loglevel=15 console=ttyS0 pci=noacpi nokaslr' --display none -s -m 256 &
+  
+  # vm2
+  qemu-system-i386 -kernel bzImage -cpu IvyBridge -smp 4 -serial pty -netdev tap,id=tap2,ifname=tap2,script=no,downscript=no -net nic,netdev=tap2,model=virtio -drive file=vm2.ext4,if=virtio,format=raw --append 'root=/dev/vda loglevel=15 console=ttyS0 pci=noacpi nokaslr' --display none -m 256 &
+  
+  # 查看rpm包的内容
+  rpm -qlp kernel-module-xt-masquerade-6.10.11-yocto-standard-6.10.11+git0+4bf82718cf_6c956b2ea6-r0.qemux86_64.rpm
+  
+  # 测试转发是否起作用 
+  # - vm1切换如下命令，看IP是否能ping通
+  # - 看 ns-qemu 网络空间能否ping通外网
+  echo 1 > /proc/sys/net/ipv4/ip_forward
+  echo 0 > /proc/sys/net/ipv4/ip_forward
+  ```
+
+- yocto 配置
+
+  ```shell
+  . oe-init-build-env build/qemux86
+  
+  # conf/local.sh
+  MACHINE ??= "qemux86"
+  IMAGE_INSTALL:append = "iptables kernel-modules bash bash-completion"
+  INIT_MANAGER = "systemd"
+  
+  bitbake -s
+  bitbake -c devshell linux-yocto
+  bitbake -c do_menuconfig linux-yocto
+  bitbake -c listtasks linux-yocto
+  bitbake core-image-minimal
+  ```
 
 ## 验证 net.ipv4.ip_forward的有效性
 
