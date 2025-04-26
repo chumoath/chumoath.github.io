@@ -118,7 +118,9 @@
   ip link set tap2 up
   ip link set br-int up
   
-  # 若 ns-qemu 网络空间不 up lo，则 qemu -s 只会有tcp6，没有tcp4；qemu -gdb tcp:127.0.0.1:1234 无法请求该地址
+  # 若 ns-qemu 网络空间不 up lo，则 qemu -s 只会有tcp6，没有tcp4；
+  # 1. qemu -gdb tcp:127.0.0.1:1234 无法请求该地址
+  # 2. (gdb) target remote :1234 无法连接 
   ip link set lo up
   
   # 清除IP
