@@ -380,8 +380,8 @@ arch/x86/boot/vmlinux.bin
   - smp执行流程
 
   ```shell
-  // cpu_stop_threads 和 softirq_threads 的调用 - 都是主核创建
-  // 1. kernel_init -> do_pre_smp_initcalls
+  // cpu_stop_threads 和 softirq_threads 的调用 - 并不一定都是主核创建，而是内核线程都是kthreadd 创建的，看kthreadd由哪个cpu执行
+  // 1. kernel_init -> do_pre_smp_initcalls (先执行，此时其他核未启动)
   // 2. kernel_init -> smp_init -> cpu_up -> smpboot_create_threads 
   
   // 设置 x86_idle 为 default_idle
@@ -395,7 +395,7 @@ arch/x86/boot/vmlinux.bin
       ...
   };
   
-  // smp idle
+  // smp核 启动后idle
   arch/x86/realmode/rm/trampoline_32.S: trampoline_start(0x9c000) -> arch/x86/kernel/head_32.S: startup_32_smp(trampoline_header.tr_start) -> arch/x86/kernel/smpboot.c: start_secondary(initial_code) -> kernel/sched/idle.c: cpu_startup_entry -> cpu_idle_loop -> while (!need_resched()) cpuidle_idle_call -> default_idle_call -> arch/x86/kernel/process.c: arch_cpu_idle -> default_idle(x86_idle) -> include/linux/irqflags.h: safe_halt(raw_safe_halt,arch_safe_halt) -> arch/x86/include/asm/paravirt.h: arch_safe_halt(pv_irq_ops.safe_halt) -> arch/x86/include/asm/irqflags.h: native_safe_halt("sti; hlt")
   
   // 注册每个cpu内核线程 -> 为什么注册两次？
@@ -465,8 +465,8 @@ arch/x86/boot/vmlinux.bin
           __smpboot_create_thread(cur, cpu);
       }
   
-  // smp 调度
-  kernel/sched/idle.c:
+  // smp核和进程调度
+  kernel/sched/idle.c: cpu_startup_entry -> cpu_idle_loop -> kernel/sched/core.c: schedule_preempt_disabled -> schedule
   ```
 
 - 虚拟地址
@@ -494,4 +494,10 @@ arch/x86/boot/vmlinux.bin
   (gdb) watch *(unsigned short*)0xC0000467    // 0x0000
   ```
 
-  
+- preempt 场景
+
+- 中断场景
+
+- 进程调度场景
+
+- percpu
