@@ -327,3 +327,171 @@ arch/x86/boot/vmlinux.bin
 16、32、64bit 的 函数调用参数传递、系统调用参数传递
 ```
 
+## 内核启动流程
+
+- 主核启动流程
+
+  ```shell
+  qemu/pc-bios/optionrom/linuxboot_dma.c: load_kernel(cs:ip设置为0x1020:0, setup.bin加载地址为0x10000) -> arch/x86/boot/header.S: _start,start_of_setup (setup.bin,0x10000) -> arch/x86/boot/compressed/head_32.S: startup_32(compressed_vmlinux,code32_start,0x100000) -> arch/x86/kernel/head_32.S: startup_32(/vmlinux,pref_address,CONFIG_PHYSICAL_START,0x1000000) -> default_entry -> arch/x86/kernel/head32.c: i386_start_kernel(initial_code) -> init/main.c: start_kernel -> rest_init 
+  
+  rest_init -> kernel/fork.c: kernel_thread(kernel_init -> _do_fork -> copy_process -> arch/x86/kernel/process_32.c: copy_thread_tls { child: [ childregs->bx = sp(kernel_init); p->thread.ip = ret_from_kernel_thread; ] parent: [p->thread.ip = ret_from_fork; ] } -> ret_from_kernel_thread -> init/main.c: kernel_init -> kernel_init_freeable
+  
+  rest_init -> kernel_thread(kthreadd ...
+  
+  // 主核创建完内核线程后，和其他smp核一样，都进入idle状态，谓：SMP；内核线程也都在所有cpu调度
+  rest_init -> cpu_startup_entry -> kernel/sched/idle.c: cpu_startup_entry -> cpu_idle_loop -> while (!need_resched()) cpuidle_idle_call -> default_idle_call -> arch/x86/kernel/process.c: arch_cpu_idle -> default_idle(x86_idle) -> include/linux/irqflags.h: safe_halt(raw_safe_halt,arch_safe_halt) -> arch/x86/include/asm/paravirt.h: arch_safe_halt(pv_irq_ops.safe_halt) -> arch/x86/include/asm/irqflags.h: native_safe_halt("sti; hlt")
+  ```
+
+- smp核启动流程
+
+  - 主核设置smp核的tr_start 为 startup_32_smp
+
+    ```shell
+    init/main.c: start_kernel -> arch/x86/kernel/setup.c: setup_arch -> arch/x86/realmode/init.c: setup_real_mode(trampoline_header->start = __pa_symbol(startup_32_smp), arch/x86/realmode/rm/trampoline_32.S 的 trampoline_header->tr_start)
+    ```
+
+  - 主核设置smp核的trampoline入口为trampoline_header. trampoline_start，设置initial_code为start_secondary，启动smp核
+
+    ```shell
+    init/main.c: start_kernel -> rest_init -> kernel/fork.c: kernel_thread(kernel_init -> _do_fork -> copy_process -> arch/x86/kernel/process_32.c: copy_thread_tls { child: [ childregs->bx = sp(kernel_init); p->thread.ip = ret_from_kernel_thread; ] parent: [p->thread.ip = ret_from_fork; ] } -> ret_from_kernel_thread -> init/main.c: kernel_init -> kernel_init_freeable -> kernel/smp.c: smp_init(for_each_present_cpu(cpu)) -> kernel/cpu.c: cpu_up -> _cpu_up -> arch/x86/include/asm/smp.h: __cpu_up(smp_ops.cpu_up) -> arch/x86/kernel/smp.c: (.cpu_up = native_cpu_up) -> arch/x86/kernel/smpboot.c: native_cpu_up -> do_boot_cpu
+    
+    arch/x86/include/asm/apic.h
+    #define TRAMPOLINE_PHYS_LOW             0x467
+    #define TRAMPOLINE_PHYS_HIGH            0x469
+    
+    arch/x86/kernel/smpboot.c: do_boot_cpu
+    start_ip = real_mode_header->trampoline_start;
+    initial_code = (unsigned long)start_secondary;
+    
+    // 设置 IPI 的启动地址为arch/x86/realmode/rm/trampoline_32.S的trampoline_start  - start_ip: 0x9c000 
+    smpboot_setup_warm_reset_vector(start_ip);
+        *((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) = start_eip >> 4;
+        *((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = start_eip & 0xf;
+        
+    wakeup_cpu_via_init_nmi
+        wakeup_secondary_cpu_via_init
+            // 设置APIC，Send IPI 
+    
+    // 恢复
+    smpboot_restore_warm_reset_vector();
+        *((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
+    ```
+
+  - smp执行流程
+
+  ```shell
+  // cpu_stop_threads 和 softirq_threads 的调用 - 都是主核创建
+  // 1. kernel_init -> do_pre_smp_initcalls
+  // 2. kernel_init -> smp_init -> cpu_up -> smpboot_create_threads 
+  
+  // 设置 x86_idle 为 default_idle
+  arch/x86/kernel/smpboot.c: start_secondary -> smp_callin -> smp_store_cpu_info -> arch/x86/kernel/cpu/common.c: identify_secondary_cpu -> identify_cpu -> arch/x86/kernel/process.c: select_idle_routine(x86_idle = default_idle;)
+  
+  // pv_irq_ops.safe_halt 设置
+  arch/x86/kernel/paravirt.c
+  pv_irq_ops pv_irq_ops = {
+      ...
+      .safe_halt = native_safe_halt;
+      ...
+  };
+  
+  // smp idle
+  arch/x86/realmode/rm/trampoline_32.S: trampoline_start(0x9c000) -> arch/x86/kernel/head_32.S: startup_32_smp(trampoline_header.tr_start) -> arch/x86/kernel/smpboot.c: start_secondary(initial_code) -> kernel/sched/idle.c: cpu_startup_entry -> cpu_idle_loop -> while (!need_resched()) cpuidle_idle_call -> default_idle_call -> arch/x86/kernel/process.c: arch_cpu_idle -> default_idle(x86_idle) -> include/linux/irqflags.h: safe_halt(raw_safe_halt,arch_safe_halt) -> arch/x86/include/asm/paravirt.h: arch_safe_halt(pv_irq_ops.safe_halt) -> arch/x86/include/asm/irqflags.h: native_safe_halt("sti; hlt")
+  
+  // 注册每个cpu内核线程 -> 为什么注册两次？
+  include/linux/init.h
+  #define early_initcall(fn) __define_initcall(fn, early)
+  __section__(".initcallearly.init")
+  
+  // 链接脚本
+  arch/x86/kernel/vmlinux.lds: section(.init.data)
+  
+  // early_initcall 的调用
+  init/main.c: kernel_init -> kernel_init_freeable -> do_pre_smp_initcalls
+      for (fn = __initcall_start; fn < __initcall0_start; fn++)
+          do_one_initcall(*fn);
+  
+  // 其他 initcall 的调用
+  init/main.c: kernel_init -> kernel_init_freeable -> do_basic_setup -> do_initcalls
+      for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++)
+          do_initcall_level(level);
+              for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
+                  do_one_initcall(*fn);
+  
+  // initcall 顺序
+      __initcall_start: early
+  initcall_levels
+      __initcall0_start: pure
+      __initcall1_start: core
+      __initcall2_start: postcore
+      __initcall3_start: arch
+      __initcall4_start: subsys
+      __initcall5_start: fs
+      (.initcallrootfs.init: rootfs)
+      __initcall6_start: device
+      __initcall7_start: late
+      __initcall_end
+  
+  kernel/stop_machine.c 
+  smp_hotplug_thread cpu_stop_threads = {
+      ...
+      .thread_fn              = cpu_stopper_thread,
+      .thread_comm            = "migration/%u",
+      ...
+  };
+  cpu_stop_init
+      for_each_possible_cpu(cpu)
+          include/linux/smpboot.h: smpboot_register_percpu_thread(&cpu_stop_threads)
+          kernel/smpboot.c: smpboot_register_percpu_thread_cpumask
+              for_each_online_cpu(cpu) __smpboot_create_thread(plug_thread, cpu);
+              list_add(&plug_thread->list, &hotplug_threads);
+  early_initcall(cpu_stop_init);
+  
+  kernel/softirq.c
+  struct smp_hotplug_thread softirq_threads = {
+      ...
+      .thread_fn              = run_ksoftirqd,
+      .thread_comm            = "ksoftirqd/%u",
+      ...
+  };
+  spawn_ksoftirqd
+      smpboot_register_percpu_thread(&softirq_threads);
+  early_initcall(spawn_ksoftirqd);
+  
+  // 在启动smp核创建的线程
+  init/main.c: kernel_init -> kernel_init_freeable -> kernel/smp.c: smp_init(for_each_present_cpu(cpu)) -> kernel/cpu.c: cpu_up -> _cpu_up -> kernel/smpboot.c: smpboot_create_threads
+      // softirq_threads 和 cpu_stop_threads
+      list_for_each_entry(cur, &hotplug_threads, list) {
+          __smpboot_create_thread(cur, cpu);
+      }
+  
+  // smp 调度
+  kernel/sched/idle.c:
+  ```
+
+- 虚拟地址
+
+  - x86_32 的 低内存空间，直接映射到虚拟地址的高1G，即0xC0000000
+
+  ```shell
+  CONFIG_PAGE_OFFSET=0xC0000000
+  arch/x86/include/asm/page_32_types.h
+  #define __PAGE_OFFSET  _AC(CONFIG_PAGE_OFFSET, UL)
+  
+  arch/x86/include/asm/page_32.h
+  #define __phys_addr(x)  __phys_addr_nodebug(x)
+  
+  arch/x86/include/asm/page_32.h
+  #define __phys_addr_nodebug(x) ((x) - PAGE_OFFSET)
+  
+  arch/x86/include/asm/page.h
+  #define __pa(x)         __phys_addr((unsigned long)(x))
+  #define __va(x)         ((void *)((unsigned long)(x)+PAGE_OFFSET))
+  
+  // 通过虚拟地址查看SMP的IPI的内容
+  (gdb) x/10x 0xC0000000
+  (gdb) watch *(unsigned short*)0xC0000467    // 0x9C00
+  (gdb) watch *(unsigned short*)0xC0000467    // 0x0000
+  ```
+
+  
