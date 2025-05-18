@@ -817,3 +817,38 @@
     - [yocto-3.4.4 ext4](https://downloads.yoctoproject.org/releases/yocto/yocto-3.4.4/machines/qemu/qemux86/core-image-minimal-qemux86.ext4)
 
 - `udevadm info -a /dev/hvc0`
+
+- so2命令
+
+  - `./local.sh docker interactive --privileged`
+  - `make boot`
+
+- 设置cpu亲和性
+
+  ```shell
+  # 启动新进程
+  taskset -c 0,1 [cmd]
+  taskset -c 0-10 [cmd]
+  numactl --physcpubind=0,1,2 [cmd]
+  
+  # 设置已有进程
+  taskset -pc 0,1 [pid]
+  
+  # 查看进程的cpu亲和性
+  taskset -cp [pid]
+  cat /proc/[pid]/status
+  # 第 0、20 个cpu
+  # Cpus_allowed:   0100001
+  # Cpus_allowed_list:      0,20
+  
+  # 第 0-27 个cpu
+  # Cpus_allowed:   fffffff
+  # Cpus_allowed_list:      0-27
+  
+  # 查看进程当前运行的cpu
+  ps -o psr [pid]
+  ```
+
+- 条件编译
+  - Makefile 引入 .config 配置：控制文件/目录参与编译
+  - 生成的宏 include/generated/autoconf.h：控制代码片段参与编译
