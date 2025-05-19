@@ -19,6 +19,7 @@
   * [iomem](/linux/iomem)
   * [mm](/linux/mm)
   * [network](/linux/network)
+  * [percpu](/linux/percpu)
   * [pipe](/linux/pipe)
   * [pty](/linux/pty)
   * [rcu](/linux/rcu)
