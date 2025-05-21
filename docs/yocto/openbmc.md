@@ -38,6 +38,29 @@
    - 措施：
      1. 删除clion的远程头文件：`C:\Users\xxx\AppData\Local\JetBrains\CLion2022.2\.remote\192.168.39.45_22`
      2. clion点击`File->Invalidate Caches`
+   
+3. 启动sdbusplus的example的流程
+
+   ```shell
+   # 1、配置dbus总线的环境变量
+   # 解决：sdbusplus::bus::bus sdbusplus::bus::new_default()：org.freedesktop.DBus.Error.FileNotFound: No such file or directorys
+   export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/0/bus'
+   export DBUS_STARTER_BUS_TYPE='system'
+   
+   # 2、添加配置文件
+   # 解决：sd_bus_request_name: org.freedesktop.DBus.Error.AccessDenied: Permission denied
+   cp openbmc/meta-phosphor/recipes-phosphor/dbus/dbus-perms/org.openbmc.conf /usr/share/dbus-1/system.d/
+   
+   <busconfig>
+     <policy context="default">
+       <allow own="*"/>
+       <allow send_destination="*"/>
+     </policy>
+   </busconfig>
+   
+   # 3、执行sdbusplus的example
+   ./sdbusplus/_build/example/asio-example
+   ```
 
 ## 3、传感器数据上报web全流程
 
