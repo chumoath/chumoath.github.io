@@ -6,6 +6,7 @@
    - `bmcweb/src/dbus_utility.cpp`
    - `bmcweb/include/dbus_utility.hpp`
 2. 使用dbus-send
+2. [dbus-send源码](https://dbus.freedesktop.org/releases/dbus/): `dbus/tools/dbus-send.c`
 
 ## 2、Ubuntu22.04使用sdbusplus和boost
 
@@ -61,6 +62,12 @@
    # 3、执行sdbusplus的example
    ./sdbusplus/_build/example/asio-example
    ```
+
+4. FAQ
+   - boost大多数时候只是用头文件，不怎么用动态库
+   - `CMAKE_EXE_LINKER_FLAGS`不能添加 `-L`选项，否则链接时会报Scrt1.o未定义的符号：main
+   - 模板一般在头文件中，否则会出现链接找不到符号问题；若要在.cpp文件中定义，则先要声明指定类型的模板存在
+   - `dbus_request_name`只是取一个别名；sd_bus_default的时候就把app注册到bus上了，通过`busctl list`即可查看；只有app提供服务的时候，才需要注册别名，使用boost异步接口。
 
 ## 3、传感器数据上报web全流程
 
