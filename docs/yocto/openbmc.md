@@ -69,3 +69,22 @@
 - 使用 phosphor-dbus-interfaces
 
 ## 5、boost库交叉编译
+
+## 6、obmc-console
+
+- `bmcweb/include/obmc_console.hpp`
+
+- `xyz.openbmc_project.Console.Access`
+
+- obmc-console的dbus返回的是一个文件描述符，供web的websocket使用
+
+  ```c
+  // obmc-console/console-dbus.c
+  int method_connect(sd_bus_message *msg, void *userdata, sd_bus_error *err)
+      socket_fd = dbus_create_socket_consumer(console);
+      rc = sd_bus_reply_method_return(msg, "h", socket_fd);
+  
+  obmc-console/socket-handler.c
+      /* Create a socketpair */
+      rc = socketpair(AF_UNIX, SOCK_STREAM, 0, fds);
+  ```
