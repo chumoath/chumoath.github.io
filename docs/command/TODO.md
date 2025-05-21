@@ -852,3 +852,22 @@
 - 条件编译
   - Makefile 引入 .config 配置：控制文件/目录参与编译
   - 生成的宏 include/generated/autoconf.h：控制代码片段参与编译
+  
+- win键的锁定和解锁
+
+  - fn + win
+  - 若 锁定，则 win键不能使用，比如 win + l 不能锁屏
+
+- dpkg
+
+  - 列出包状态：`dpkg -l | grep [pkg]`
+  - 列出包安装到系统的内容和路径：`dpkg -L [pkg]`
+
+- rpm
+
+  - 查看系统安装的rpm包：`rpm -qa`
+  - 查看一个rpm包的内容：`rpm -qlp [*.rpm]`
+  - 安装一个rpm包：`rpm -ivh [*.rpm]`
+  - 强制安装一个rpm包：`rpm --force --ivh [*.rpm]`
+  - 卸载一个rpm包：`rpm -e [rpm包名]`
+  - openEuler查看哪个包提供一个文件：`yum provides busybox`
