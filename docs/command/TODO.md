@@ -871,3 +871,27 @@
   - 强制安装一个rpm包：`rpm --force --ivh [*.rpm]`
   - 卸载一个rpm包：`rpm -e [rpm包名]`
   - openEuler查看哪个包提供一个文件：`yum provides busybox`
+  
+- 查看当前系统的glibc版本
+
+  - `getconf GNU_LIBC_VERSION`
+
+- 解决 `grantpt` 告警问题
+
+  - `man grantpt`
+
+  - ```shell
+    Since glibc 2.24:
+        _XOPEN_SOURCE >= 500 || (_XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED)
+    
+    Glibc 2.23 and earlier:
+    	_XOPEN_SOURCE
+    
+    # 例子 
+    #  - 必须在文件的开头，否则 stdlib.h 可能会在其他头文件 include，_XOPEN_SOURCE 还未定义
+    #define _XOPEN_SOURCE 600
+    #include <stdlib.h>
+    #define __USE_MISC
+    #include <sys/ioctl.h>
+    #include <termios.h>
+    ```
