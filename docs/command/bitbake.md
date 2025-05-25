@@ -149,15 +149,11 @@ bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
 
 1. 在工作区生成备份
    - `devtool modify dbus-sensors` 
-   -  `devtool add hello [src]`
-
 2. 修改源代码 或修改recipe
    - `devtool edit-recipe dbus-sensors`
-
 3. 构建recipe / image
    - `devtool build dbus-sensors`
    - `devtool build-image obmc-phosphor-image`
-   
 4. 部署到目标环境
 
    - `devtool deploy-target dbus-sensors root@x.x.x.x`
@@ -171,41 +167,108 @@ bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
      - `devtool deploy-target socat root@127.0.0.1 -P 2222 -s -n`
    - 去掉符号信息，防止空间不足
      - `devtool deploy-target socat root@127.0.0.1 -P 2222 -s -p -S`
-
 5. 源代码提交到git
    - `git commit`
-
 6. 用 git 补丁生成 *.bbappend
    
    - `devtool update-recipe dbus-sensors -a /home/xxx/openbmc/meta-evbcustom`
-
 7. 清除
    - `devtool reset dbus-sensors`
-   
-8. 生成 *.bbpand 并清除
+8. 生成 *.bbappend 并清除 (同 6 + 7)
 
    - `devtool finish dbus-sensors /home/xxx/openbmc/meta-evbcustom`
-
 9. 查看当前状态
-
    - `devtool status`
-
 10. 参考
+    - [devtool](https://docs.yoctoproject.org/ref-manual/devtool-reference.html)
 
-   - [devtool](https://docs.yoctoproject.org/ref-manual/devtool-reference.html)
-
-## 6、bitbake-layer添加layer工作流
+## 6、bitbake-layer添加layer工作流(以bmc-clid为例)
 
 1. 创建层
    - `bitbake-layers create-layer meta-evbcustom`
+   
 2. 添加到 bblayers.conf
    - `bitbake-layers add-layer meta-evbcustom`
-3. 从远程仓库创建recipe
-   - `devtool add --srcbranch main bmcclid https://github.com/chumoath/bmc_clid.git`
+   
+3. 从远程仓库创建recipe - 源代码路径默认为 `build/evb-ast2600/workspace/sources`
+   
+   - `devtool add bmc-clid https://github.com/chumoath/bmc_clid.git -B main`
+   
+3. 修改recipe
+   
+   - `devtool edit-recipe bmc-clid`
+   
 4. recipe发布到指定layer
-   - `devtool finish bmcclid /home/gxh/openbmc/meta-evbcustom/`
+   - `mkdir -p /home/gxh/openbmc/meta-evbcustom/recipes-phosphor`
+   - `devtool finish bmc-clid /home/gxh/openbmc/meta-evbcustom/recipes-phosphor`
+   
 5. 从bblayers.conf删除layer
    - `bitbake-layers remove-layer meta-evbcustom`
+   
+6. 常用命令
+
+   ```shell
+   # 一、调试
+   devtool edit-recipe bmc-clid
+   bitbake obmc-phosphor-image
+   
+   bitbake-getvar -r obmc-phosphor-image PACKAGE_INSTALL
+   bitbake-getvar -r obmc-phosphor-image IMAGE_INSTALL
+   bitbake-getvar -r bmc-clid DEPENDS
+   bitbake-getvar -r bmc-clid RDEPENDS:bmc-clid
+   bitbake-getvar -r bmc-clid PACKAGES
+   bitbake -s
+   bitbake -g
+   bitbake -e
+   oe-pkgdata-browser
+   bitbake package-index
+   # 查看打出了哪些包
+   ls openbmc/build/evb-ast2600/tmp/deploy/rpm/armv7ahf_vfpv4d16 | grep bmc-clid
+   # 查看生成文件系统的日志
+   openbmc/build/evb-ast2600/tmp/work/evb_ast2600-openbmc-linux-gnueabi/obmc-phosphor-image/1.0/temp/log.do_rootfs
+   # 查看rpm包推荐的
+   rpm -q --recommends bmc-clid-1.0+git-r0.armv7ahf_vfpv4d16.rpm
+   # 查看rpm包提供的
+   rpm -q --provides bmc-clid-1.0+git-r0.armv7ahf_vfpv4d16.rpm
+   # 查看 rpm 包的内容
+   rpm -ql bmc-clid-1.0+git-r0.armv7ahf_vfpv4d16.rpm
+   # 查看rpm包的依赖
+   rpm -qR bmc-clid-1.0+git-r0.armv7ahf_vfpv4d16.rpm
+   
+   # 二、运行 qemu
+   runqemu publicvnc
+   runqemu serialstdio
+   
+   # guest
+   ip addr add 192.168.7.2/24 dev eth0
+   ip route add default via 192.168.7.1
+   # host
+   telnet 192.168.7.2 8888
+   
+   # 三、分析
+   # 一个 *.bb 的继承流程
+   meta/conf/bitbake.conf(变量配置等) -> meta/classes-global/base.bbclass -> meta/classes-recipe/cmake.bbclass -> *.bb
+   
+   # 一个*.bb文件默认的PACKAGES
+   meta/conf/bitbake.conf
+   PACKAGES = "${PN}-src ${PN}-dbg ${PN}-staticdev ${PN}-dev ${PN}-doc ${PN}-locale ${PACKAGE_BEFORE_PN} ${PN}"
+   
+   # openbmc/meta/lib/oe/rootfs.py
+   IMAGE_ROOTFS
+   IMAGE_PKGTYPE
+   ROOTFS_PREPROCESS_COMMAND
+   ROOTFS_POSTPROCESS_COMMAND
+   ROOTFS_POSTINSTALL_COMMAND
+   
+   # openbmc/meta/lib/oe/package_manager/rpm/rootfs.py
+   bb.note(str())
+   bb.warn(str())
+   bb.error(str())
+   
+   # 依赖
+   DEPENDS -> 构建时依赖
+   RDEPENDS -> 运行时依赖，例如：设置为自定义的 PACKAGES
+   ```
 
 ## 7、recipetool工作流
 
