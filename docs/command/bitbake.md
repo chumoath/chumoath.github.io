@@ -198,7 +198,7 @@ bitbake-layers save-build-conf /home/gxh/openbmc/meta-evbcustom evbcustom
    
    - `devtool edit-recipe bmc-clid`
    
-4. recipe发布到指定layer
+4. recipe发布到指定路径
    - `mkdir -p /home/gxh/openbmc/meta-evbcustom/recipes-phosphor`
    - `devtool finish bmc-clid /home/gxh/openbmc/meta-evbcustom/recipes-phosphor`
    
