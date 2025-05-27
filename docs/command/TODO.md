@@ -368,10 +368,10 @@
     ip addr add 192.168.7.1/32 broadcast 192.168.7.255 dev tap0
     # up tap0
     ip link set dev tap0 up
-    # 配置网关
+    # 配置网关 - IP地址配置为 192.168.7.1/32，不会生成 192.168.7.0/24的路由表，所以必须手动配置路由表
     ip route add to 192.168.7.2 dev tap0
-    # 配置转发
-    iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.7.1/32
+    # 配置转发 - 只需要配置guest的转发即可，不需要配置host的；iptables就是为了guest能够访问外网
+    # iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.7.1/32
     iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.7.2/32
     
     # 配置
