@@ -900,3 +900,7 @@
 
   - qemu 配置：`-serial telnet::55555,server,nowait,nodelay`
   - 连接：`telnet 127.0.0.1 55555`
+  
+- qemu使用用户层协议栈 - 映射guest端口到host
+
+  - `qemu-system-arm -m 1024 -M ast2600-evb -nographic -drive file=./obmc-phosphor-image-evb-ast2600.static.mtd,format=raw,if=mtd -net nic -net user,hostfwd=:127.0.0.1:2222-:22,hostfwd=:127.0.0.1:2443-:443,hostfwd=udp:127.0.0.1:2623-:623,hostname=qemu`
