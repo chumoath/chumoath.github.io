@@ -908,6 +908,7 @@
 - 使用runqemu运行openbmc的evb-ast2600
 
   ```shell
+  # 1、配置网络
   # host
   runqemu
   ip addr add 192.168.7.1/32 broadcast 192.168.7.255 dev tap0
@@ -921,6 +922,14 @@
   # 必须要配置路由表，配置默认网关前必须要先能通
   ip route add to 192.168.7.1 dev eth0
   ip route add default via 192.168.7.1
+  
+  # 2、访问dbus
+  # guest
+  socat TCP-LISTEN:12345,fork UNIX-CONNECT:/var/run/dbus/system_bus_socket &
+  
+  # host
+  d-feet &
+  # Connect to other bus -> tcp:host=192.168.7.2,port=12345
   ```
 
   
