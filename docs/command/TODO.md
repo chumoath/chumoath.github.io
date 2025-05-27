@@ -895,3 +895,8 @@
     #include <sys/ioctl.h>
     #include <termios.h>
     ```
+  
+- qemu串口使用telnet做后端
+
+  - qemu 配置：`-serial telnet::55555,server,nowait,nodelay`
+  - 连接：`telnet 127.0.0.1 55555`
