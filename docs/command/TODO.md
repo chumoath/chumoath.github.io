@@ -904,3 +904,23 @@
 - qemu使用用户层协议栈 - 映射guest端口到host
 
   - `qemu-system-arm -m 1024 -M ast2600-evb -nographic -drive file=./obmc-phosphor-image-evb-ast2600.static.mtd,format=raw,if=mtd -net nic -net user,hostfwd=:127.0.0.1:2222-:22,hostfwd=:127.0.0.1:2443-:443,hostfwd=udp:127.0.0.1:2623-:623,hostname=qemu`
+
+- 使用runqemu运行openbmc的evb-ast2600
+
+  ```shell
+  # host
+  runqemu
+  ip addr add 192.168.7.1/32 broadcast 192.168.7.255 dev tap0
+  ip link set dev tap0 up
+  # 使用 192.168.7.1/32 不会自动生成路由表，必须手动配置
+  ip route add to 192.168.7.2 dev tap0
+  
+  # guest
+  ip addr add 192.168.7.2/32 broadcast 192.168.7.255 dev eth0
+  ip link set dev eth0 up
+  # 必须要配置路由表，配置默认网关前必须要先能通
+  ip route add to 192.168.7.1 dev eth0
+  ip route add default via 192.168.7.1
+  ```
+
+  
