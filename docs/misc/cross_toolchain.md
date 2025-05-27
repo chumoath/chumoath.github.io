@@ -88,7 +88,25 @@ ct-ng build
 9. complete C library
 10. final compiler
 
-## 4、参考
+## 4、交叉编译GDB
+
+1. 准备好gdb、gmp、mpfr、mpc源代码
+
+2. 不要使用 `DESTDIR`，会导致 *.la 出问题
+
+3. gmp、mpfr、mpc、gdb依次执行如下命令
+
+   ```shell
+   # gmp、mpfr、mpc头文件、库，全都从编译、链接选项中找，不手动指定
+   # --disable-shared 防止 gdb 依赖 gmp、mpfr、mpc 的动态库
+   mkdir build && cd build
+   CFLAGS="-isystem /root/gdb-13.2/sysroot/include" LDFLAGS="-L/root/gdb-13.2/sysroot/lib" ../configure --host=aarch64-target-linux-gnu --prefix=/root/gdb-13.2/sysroot/ --disable-shared
+   make -j$(nproc)
+   make install
+   cd -
+   ```
+
+## 5、参考
 
 - [components](https://crosstool-ng.github.io/docs/toolchain-construction/)
 - MPC依赖GMP和MPFR，MPFR 依赖GMP，GMP没有依赖
