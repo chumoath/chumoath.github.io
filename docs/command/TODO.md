@@ -759,11 +759,11 @@
   vm1: net0 -> tap0, net1 -> tap1
   vm2: net0 -> tap2
   ```
-  
+
 - yocto总流程
   - 组件: `do_build -> do_install -> image -> package -> *.rpm`
   - image: `core-image-minimal -> do_build -> 根据依赖关系从rpm包构建image`
-  
+
 - yocto根据编译出来的ko目录生成 `kernel-module-*`目标，所有 `kernel-module-*`都被设置为`kernel-modules`的依赖
 
 - 修改 /etc/passwd，将/bin/bash改为/usr/bin/ipython3，即可登录使用ipython命令行
@@ -852,7 +852,7 @@
 - 条件编译
   - Makefile 引入 .config 配置：控制文件/目录参与编译
   - 生成的宏 include/generated/autoconf.h：控制代码片段参与编译
-  
+
 - win键的锁定和解锁
 
   - fn + win
@@ -871,7 +871,7 @@
   - 强制安装一个rpm包：`rpm --force --ivh [*.rpm]`
   - 卸载一个rpm包：`rpm -e [rpm包名]`
   - openEuler查看哪个包提供一个文件：`yum provides busybox`
-  
+
 - 查看当前系统的glibc版本
 
   - `getconf GNU_LIBC_VERSION`
@@ -895,12 +895,12 @@
     #include <sys/ioctl.h>
     #include <termios.h>
     ```
-  
+
 - qemu串口使用telnet做后端
 
   - qemu 配置：`-serial telnet::55555,server,nowait,nodelay`
   - 连接：`telnet 127.0.0.1 55555`
-  
+
 - qemu使用用户层协议栈 - 映射guest端口到host
 
   - `qemu-system-arm -m 1024 -M ast2600-evb -nographic -drive file=./obmc-phosphor-image-evb-ast2600.static.mtd,format=raw,if=mtd -net nic -net user,hostfwd=:127.0.0.1:2222-:22,hostfwd=:127.0.0.1:2443-:443,hostfwd=udp:127.0.0.1:2623-:623,hostname=qemu`
@@ -930,6 +930,175 @@
   # host
   d-feet &
   # Connect to other bus -> tcp:host=192.168.7.2,port=12345
+  ```
+
+- openbmc添加内核模块示例
+
+  ```shell
+  meta/classes-global/base.bbclass -> oe_runmake
+  
+  meta/classes-recipe/kernel.bbclass
+  meta/classes-recipe/module.bbclass -> module_do_compile -> oe_runmake
+  
+  meta-openembedded/meta-networking/recipes-kernel/wireguard/wireguard-module_1.0.20220627.bb
+  meta-openembedded/meta-oe/recipes-support/vboxguestdrivers/vboxguestdrivers_7.0.14.bb
+  meta-security/recipes-kernel/lkrg/lkrg-module_0.9.7.bb
+  ```
+
+- binutils命令
+
+  ```shell
+  # 查看重定位信息
+  readelf -r *.ko
+  
+  # 查看ELF header、section header、segment header
+  readelf -e *.o
+  
+  # 查看ELF头
+  readelf -h *.o
+  
+  # 查看secion header
+  readelf -S *.o
+  
+  # ko 文件，只需要 strip -d 即可，不能直接 strip，会丢失符号。
+  
+  # 查看一个符号在哪个section
+  # 1、readelf
+  # readelf -s 查看符号 - Ndx列为符号所在的seciton的index
+  readelf -s rtos_load_kallsyms.o
+  # readelf -S 查看 section header
+  readelf -S rtos_load_kallsyms.o
+  
+  # 2、objdump
+  # 查看指定section的符号
+  objdump -t -j .bss rtos_load_kallsyms.o
+  
+  # 3、nm
+  # 通过符号类型判断 - T -> .text, D -> .data, B -> .bss, U -> 未定义
+  nm rtos_load_kallsyms.o
+  ```
+
+- aarch64 GOT
+
+  - aarch64避免内核生成 R_AARCH64_ADR_GOT_PAGE(311) 和 R_AARCH64_LD64_GOT_LO12_NC(312) 重定位信息
+    - 尽量避免使用 __weak；使用条件编译代替
+    - 内核模块重定位不能解析 R_AARCH64_ADR_GOT_PAGE 和 R_AARCH64_LD64_GOT_LO12_NC，代码位置：`arch/arm64/kernel/module.c`
+
+- 用户态复现 `R_AARCH64_ADR_GOT_PAGE` 和 `R_AARCH64_LD64_GOT_LO12_NC`：
+
+  - 重定位信息是编译器的行为，在汇编代码中就已经出现了`got`，汇编器只是翻译为二进制
+
+  - 必须指定 `-fno-PIE`，否则即使不使用弱符号，也会有这两个重定位信息
+
+  - 只在gcc13.2验证
+
+    ```c
+    // aarch64-target-linux-gnu-gcc -fno-PIE -c main.c -o main.o
+    // aarch64-target-linux-gnu-strip -d main.o
+    // readelf -r main.o
+    
+    // main.c
+    #include <stdio.h>
+    // 使用该行，不会出现 GOT
+    extern int test_var[];
+    // 使用弱符号，就会出现 GOT_PAGE 和 GOT_LO12_NC
+    // extern int test_var[] __attribute__((weak));
+    int add(int a, int b)
+    {
+        return a + b;
+    }
+    
+    int test_main(void)
+    {
+        int *p = test_var;
+        printf ("%d\n", add(*p, 1)); // 要确保使用，否则会被编译器优化
+        return 0;
+    }
+    ```
+
+- 测试弱符号
+
+  ```c
+  // gcc main.c strong.c -o weak  => 输出 this is a strong func.
+  
+  // main.c
+  #include <stdio.h>
+  __attribute__((weak)) void test_weak_attr(void)
+  {
+      printf ("this is a weak func\n");
+  }
+  void main(void)
+  {
+      test_weak_attr();
+  }
+  
+  // strong.c
+  #include <stdio.h>
+  void test_weak_attr(void)
+  {
+      printf ("this is a strong func\n");
+  }
+  ```
+  
+
+- 测试弱引用：符号和实现代码的关系
+
+  - 使用弱引用，可以不实现函数，即可通过编译；
+
+  - 未实现函数的符号为NULL；
+
+  - 弱引用仅在静态编译中有效，动态链接中可能无效。
+
+  - ```c
+    // main.c
+    static void test_weakref(void) __attribute__((weakref("test_weak_ref_func")));
+    
+    void test_weak_ref_func(void)
+    {
+        printf ("this is a weak ref\n");
+    }
+    
+    void main(void)
+    {
+        if (test_weakref) {
+            test_weakref(); // 调用符号，而不是实现
+        } else {
+            printf ("There is no weakref\n");
+        }
+    }
+    ```
+
+- 全局变量访问方式
+
+  - PC相对寻址
+  - GOT
+  - 自定义section放所有地址，用绝对地址重定位；.text使用自定义section的地址
+
+- PIC、PIE、LTO、PLT、GOT示例
+
+- 所有重定位信息和全局变量访问的重定位信息示例
+
+- 在C语言中，编译器默认 函数和初始化了的全局变量为强符号，未初始化的全局变量为弱符号
+
+  - 是否和 `-fcommon`有关？
+
+- gcc、binutils选项整理
+
+  ```shell
+  # gcc
+  -fcommon  # 可以多次定义未初始化的全局变量，但只能初始化一次
+  --verbose # 查看编译时传递给编译器和链接器的选项
+  -dynamic-linker /lib64/ld-linux-x86-64.so.2 # 设置可执行文件的动态链接器路径
+  -v        # 查看gcc配置和版本
+  
+  # ld
+  -r                # Generate relocatable output，用于将 *.o 链接为 ko
+  -z noexecstack    # Mark executable as not requiring executable stack
+  -EL               # Link little-endian objects
+  -EB               # Link big-endian objects
+  --verbose         # 显示生成可执行文件的内置链接脚本
+  -shared --verbose # 显示生成动态库的内置链接脚本
+  -E                # Export all dynamic symbols，*.so 插件可以使用可执行文件的符号
   ```
 
   
