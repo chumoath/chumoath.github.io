@@ -33,6 +33,7 @@
   * [front](/llvm/front)
   * [optimizer](/llvm/optimizer)
 * [misc](/misc/)
+  * [classic](/misc/classic)
   * [cross_toolchain](/misc/cross_toolchain)
   * [typora_expire](/misc/typora_expire)
 * [qemu](/qemu/)
