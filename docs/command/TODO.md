@@ -1086,10 +1086,11 @@
 
   ```shell
   # gcc
-  -fcommon  # 可以多次定义未初始化的全局变量，但只能初始化一次
-  --verbose # 查看编译时传递给编译器和链接器的选项
+  -fcommon   # 可以多次定义未初始化的全局变量，但只能初始化一次
+  --verbose  # 查看编译时传递给编译器和链接器的选项
   -dynamic-linker /lib64/ld-linux-x86-64.so.2 # 设置可执行文件的动态链接器路径
-  -v        # 查看gcc配置和版本
+  -v         # 查看gcc配置和版本
+  --coverage # 代码覆盖率 gcov
   
   # ld
   -r                # Generate relocatable output，用于将 *.o 链接为 ko
@@ -1135,4 +1136,70 @@
   ```
 
 - 监听guest报文: `tcpdump -i tap0 -n`
+
 - guest挂载nfs：`mount 192.168.33.1:/nfs nfs -o nolock`
+
+- 代码覆盖率 - 可用于裁剪代码
+
+  ```shell
+  # 1、gcov
+  # src + gcc + -profile-arcs -ftest-coverage => *.gcno (每个.c文件一个)
+  # 运行可执行文件(必须运行结束)                   => *.gcda (每个.c文件一个)
+  # gcov + src                                 => *.gcov
+  
+  # 2、meson
+  meson -> unit tests, coverage reports, Valgrind, Ccache and the like.
+  
+  # b_coverage 为 meson 内部命令，会自动给gcc编译选项添加 --coverage
+  
+  meson setup -Db_coverage=true builddir
+  
+  # 生成代码覆盖率报告
+  ninja coverage-html
+  
+  # 3、qemu
+  --enable-gcov => -Db_coverage=true
+  # qemu配置文件
+  configure -> qemu/scripts/meson-buildoptions.sh
+  
+  # 4、gcc --coverage
+  # a synonym for -fprofile-arcs -ftest-coverage (when compiling) and -lgcov (when linking).
+  ```
+
+- 统计文件个数/代码行数: `cloc qemu/hw`
+
+- openssl验证密码: `openssl passwd -6 -salt [salt] [passwd]`
+
+- sdbusplus的异步和同步方法调用
+
+  ```c
+  // 异步 -> 最终调到systemd的sdbus的接口，把callback传给systemd的接口
+  async_method_call -> async_method_call_timed -> async_send -> async_send_handler -> sdbus_call_async(..., callback, ...)
+      
+  // 同步
+  call -> sd_bus_call
+  ```
+
+- 显示升级进度 - 用控制字符
+
+  ```c++
+  // 让输出一直显示在同一行
+  // \r 回车，到行首
+  // \033[K 删除当前光标当行尾的字符
+  std::cout << "\r\033[K" << std::flush << "Upgrade Progress: " << upgradeProgress << "%." << std::flush;
+  ```
+
+- printf 刷新缓冲区的时机 - 看文档
+
+  1. 遇到换行符
+  2. flush
+  3. 缓冲区满
+  4. ?
+
+- ethtool总结
+
+  ```shell
+  ethtool -T eth0 # Show time stamping capabilities
+  ```
+
+  
