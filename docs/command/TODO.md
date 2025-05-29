@@ -1133,3 +1133,6 @@
   # 或
   ninja -v libqemu-i386-softmmu.fa.p/accel_tcg_cpu-exec.c.o
   ```
+
+- 监听guest报文: `tcpdump -i tap0 -n`
+- guest挂载nfs：`mount 192.168.33.1:/nfs nfs -o nolock`
