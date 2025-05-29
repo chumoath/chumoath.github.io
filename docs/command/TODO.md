@@ -1101,4 +1101,35 @@
   -E                # Export all dynamic symbols，*.so 插件可以使用可执行文件的符号
   ```
 
+- SSL验证失效解决方案
+
+  - 现象：Chrome和Edge显示 `ERR_CERT_AUTHORITY_INVALID`
+  - Chrome解决方案
+    1. 快捷方式右键属性：添加启动参数 `--ignore-certicate-errors`
+       - Target: `"C:\Program Files\Google\Chrome\Application\chrome.exe" --ignore-certicate-errors`
+    2. 在 ERR_CERT_AUTHORITY_INVALID 提示页面直接敲`thisisunsafe`并回车
+
+  - Linux解决方案
+
+    - wget包装
+
+      ```shell
+      # /usr/local/bin/wget
+      
+      #!/bin/bash
+      exec /usr/bin/wget "$@" --no-check-certificate
+      ```
+
+    - 修改yocto的 `tmp/hosttools/wget`
+
+- qemu查看一个文件的编译选项
+
+  ```shell
+  cd qemu/build
+  # 先删除 *.o，保证重新构建
+  rm -f libqemu-i386-softmmu.fa.p/accel_tcg_cpu-exec.c.o
+  make V=1 libqemu-i386-softmmu.fa.p/accel_tcg_cpu-exec.c.o
   
+  # 或
+  ninja -v libqemu-i386-softmmu.fa.p/accel_tcg_cpu-exec.c.o
+  ```
