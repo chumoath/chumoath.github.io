@@ -911,10 +911,14 @@
   # 1、配置网络
   # host
   runqemu
+  ip tuntap add tap0 mode tap group 0
   ip addr add 192.168.7.1/32 broadcast 192.168.7.255 dev tap0
   ip link set dev tap0 up
   # 使用 192.168.7.1/32 不会自动生成路由表，必须手动配置
   ip route add to 192.168.7.2 dev tap0
+  
+  # 监听guest报文
+  tcpdump -i tap0
   
   # guest
   ip addr add 192.168.7.2/32 broadcast 192.168.7.255 dev eth0
@@ -930,6 +934,34 @@
   # host
   d-feet &
   # Connect to other bus -> tcp:host=192.168.7.2,port=12345
+  
+  # 3、guest 访问外网
+  # host
+  iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.7.2/32
+  
+  # 4、配置host iptables后不能访问外网
+  # 前置条件
+  # 1) /proc/sys/net/ipv4/ip_forward 为 1
+  # 2) iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.7.2/32 已配置
+  # 定位
+  # 1) 查看FORWARD链状态：iptables -L，状态为 DROP
+  # 2) 开启转发策略：iptables -P FORWARD ACCEPT，FORWARD状态为 ACCEPT；guest即可访问外网
+  
+  # 允许基础转发
+  iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+  
+  # 查看配置序号
+  iptables -t nat -L --line-numbers
+  # 删除配置
+  iptables -t nat -D PREROUTING/POSTROUTING/INPUT/OUTPUT [number]
+  
+  # 5、其他转发
+  # 1) 将本机的7777端口转发到guest的80端口 - 不需要配 POSTROUTING也可以返回，为什么？
+  #     -d 192.168.39.45  指定进入主机报文的目的IP；
+  #     DNAT              修改报文的目的地址:端口
+  iptables -t nat -A PREROUTING -p tcp --dport 7777 -j DNAT --to-destination 192.168.7.2:80
+  # 2) 将本机输出报文的 源IP:端口 替换
+  iptables -t nat -A POSTROUTING -s 192.168.7.2 -p tcp --sport 80 -j SNAT --to-source 192.168.39.45:7777
   ```
 
 - openbmc添加内核模块示例
@@ -1040,7 +1072,6 @@
   }
   ```
   
-
 - 测试弱引用：符号和实现代码的关系
 
   - 使用弱引用，可以不实现函数，即可通过编译；
@@ -1091,6 +1122,23 @@
   -dynamic-linker /lib64/ld-linux-x86-64.so.2 # 设置可执行文件的动态链接器路径
   -v         # 查看gcc配置和版本
   --coverage # 代码覆盖率 gcov
+  -Wl        # 给链接器传递选项
+  -Wa        # 给汇编器传递选项
+  -Wp        # 给预处理器传递选项
+  --sysroot  # Use <directory> as the root directory for headers
+  -fno-PIE
+  -shared    # (传递给链接器)Create a shared library.
+  -fPIC
+  -no-pie    # (传递给链接器)编译出 EXEC (Executable file) 可执行文件
+  -pie       # (传递给链接器)编译出 DYN (Position-Independent Executable file) 可执行文件
+  
+  # 注：
+  # 1、上述除了Wl，其他传递给链接器选项的，都是gcc生成可执行文件或动态库调用ld时传递的参数
+  # 2、gcc main.c --verbse 会调用ld生成可执行文件，可以看到链接器选项
+  # 3、gcc -c main.c --verbose 不会调 ld，不会看到链接选项
+  
+  # 构建gcc配置选项
+  --enable-default-pie
   
   # ld
   -r                # Generate relocatable output，用于将 *.o 链接为 ko
@@ -1100,6 +1148,17 @@
   --verbose         # 显示生成可执行文件的内置链接脚本
   -shared --verbose # 显示生成动态库的内置链接脚本
   -E                # Export all dynamic symbols，*.so 插件可以使用可执行文件的符号
+  -pie              # Create a position independent executable
+  -no-pie           # Create a position dependent executable (default)，虽然是ld默认，但是gcc会传递 -pie
+  -dynamic-linker   # 指定动态链接器路径
+  -m                # Set emulation
+  
+  # 注：
+  # 1、ld内置链接脚本
+  #   1) ld --verbose            => EXEC
+  #   2) ld -no-pie --verbose    => EXEC  (默认选项)
+  #   3) ld -shared --verbose    => DYN (Shared object file)
+  #   4) ld -pie --verbose       => DYN (Position-Independent Executable file)
   ```
 
 - SSL验证失效解决方案
@@ -1149,11 +1208,8 @@
   
   # 2、meson
   meson -> unit tests, coverage reports, Valgrind, Ccache and the like.
-  
   # b_coverage 为 meson 内部命令，会自动给gcc编译选项添加 --coverage
-  
   meson setup -Db_coverage=true builddir
-  
   # 生成代码覆盖率报告
   ninja coverage-html
   
@@ -1161,6 +1217,16 @@
   --enable-gcov => -Db_coverage=true
   # qemu配置文件
   configure -> qemu/scripts/meson-buildoptions.sh
+  
+  # qemu手动生成代码覆盖率报告
+  # 1) 开启 --enable-gcov，生成 *.gcno
+  ../configure --enable-gcov --target-list=i386-softmmu --prefix=/usr
+  ninja install
+  # 2) 运行结束后，生成 *.gcda，生成报告
+  # 3) 使用lcov生成报告
+  cd qemu/build
+  lcov --capture --directory . --output-file coverage.info
+  genhtml coverage.info --output-directory lcov_coverage
   
   # 4、gcc --coverage
   # a synonym for -fprofile-arcs -ftest-coverage (when compiling) and -lgcov (when linking).
@@ -1201,5 +1267,3 @@
   ```shell
   ethtool -T eth0 # Show time stamping capabilities
   ```
-
-  
