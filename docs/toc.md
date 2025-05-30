@@ -16,6 +16,7 @@
   * [fork](/linux/fork)
   * [fs](/linux/fs)
   * [hwmon](/linux/hwmon)
+  * [idle](/linux/idle)
   * [interface](/linux/interface)
   * [iomem](/linux/iomem)
   * [mm](/linux/mm)
