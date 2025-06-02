@@ -962,6 +962,44 @@
   iptables -t nat -A PREROUTING -p tcp --dport 7777 -j DNAT --to-destination 192.168.7.2:80
   # 2) 将本机输出报文的 源IP:端口 替换
   iptables -t nat -A POSTROUTING -s 192.168.7.2 -p tcp --sport 80 -j SNAT --to-source 192.168.39.45:7777
+  
+  # 6、windows访问evb-ast2600的web
+  # 配置wireguard
+  # 1) wsl
+  # /etc/wireguard/wg0.conf
+  [Interface]
+  Address = 192.168.3.1/24
+  PrivateKey = 4O6gBgrMBz+nGR0lqEiMdzwq4IzwRiom6T1RYxQbI0M=
+  ListenPort = 51820
+  [Peer]
+  PublicKey = 5dYw8RR4dEmP172lV0povGO/hUemFRUfegZU7TvrLG0=
+  AllowedIPs = 192.168.3.2/32
+  
+  # 2) windows
+  [Interface]
+  PrivateKey = gAw98k/7d7i2KTOm8720zL8xt+Ml8f/vsBRy7smBTms=
+  Address = 192.168.3.2/24
+  [Peer]
+  PublicKey = JjMr+eFD06oydpYCp2jPtp9PFBfudakwVXDmNE7yzRg=
+  AllowedIPs = 192.168.3.1/24, 192.168.7.0/24           # 为了生成路由表
+  Endpoint = 192.168.39.45:51820
+  PersistentKeepalive = 25
+  
+  # 3) wsl启动wg0
+  wg-quick up wg0
+  wg-quick down wg0
+  wg show
+  
+  # 4) 注：
+  #   - windows只要配置了 AllowedIPs，就可以访问对端的所有子网，不需要配置转发
+  #   - 发包流量：windows src: 192.168.3.2 dest:192.168.7.2
+  #           wg UDP封装发送: src: 192.168.32.1 dest: 192.168.39.45
+  #              wsl wg0拆包后，路由
+  #                  src: 192.168.3.2 dest: 192.168.7.2 -> tap0
+  #   - 收包流量: src: 192.168.7.2 dest:192.168.3.2  (默认网关，区分路由和NAT)
+  #           wg UDP封装发送：src: 192.168.39.45 dest: 192.168.32.1 -> wg0
+  #               windows拆包后，路由
+  #                  src: 192.168.7.2 dest: 192.168.3.2
   ```
 
 - openbmc添加内核模块示例
