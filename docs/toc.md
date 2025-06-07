@@ -42,6 +42,7 @@
   * [hw](/qemu/hw)
   * [kvm](/qemu/kvm)
   * [pc_default_serial](/qemu/pc_default_serial)
+  * [qemu_ubuntu](/qemu/qemu_ubuntu)
   * [tcg](/qemu/tcg)
   * [tlb](/qemu/tlb)
 * [solutions](/solutions/)
