@@ -79,3 +79,35 @@ apt update
 apt install -y nfs-common gcc git make libncurses5-dev
 ```
 
+## 五、配置软盘
+
+```shell
+# 1、创建软盘
+# dd创建
+dd if=/dev/zero of=floppy.img bs=512 count=2880
+# qemu-img创建
+qemu-img create -f raw floppy.img 1440k
+
+# 2、qemu 使用
+# 第一种：不能通过 eject 移除
+-blockdev driver=file,node-name=f0,filename=floppy.img -device floppy,drive=f0
+# 第二种：可以通过 eject 移除
+-fda  floppy.img
+
+# 3、移除/改变映射软盘文件
+-monitor stdio
+# 查看块设备
+(qemu) info block
+# 改变映射文件: 敲 TAB 自动提示 device；change floppy0 floppy.img
+(qemu) change [device] [file]
+# 移除软盘: eject floppy0
+(qemu) eject [device]
+
+# 4、ubuntu使用命令
+qemu-system-i386 -M pc-i440fx-trusty -m 4G -smp 8 -accel kvm -hda ubuntu.qcow2 -net nic,netdev=tap0,model=virtio -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no -display none -monitor stdio -fda floppy.img
+
+# 5、v2.4 linux启动使用
+# boot选项：floppy (a), hard disk (c), CD-ROM (d), network (n)
+qemu-system-i386 -m 4G -boot a -serial stdio -blockdev driver=file,node-name=f0,filename=floppy.img -device floppy,drive=f0
+```
+
