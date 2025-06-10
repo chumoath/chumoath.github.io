@@ -105,9 +105,9 @@
     [debug]
     log_level = 2
     
-    # 运行
-    export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/0/bus'
-    export DBUS_STARTER_BUS_TYPE='system'
+    # 运行 - bmc_clid 也要添加这两个环境变量，且不能有 单引号，否则会报错
+    export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/0/bus
+    export DBUS_STARTER_BUS_TYPE=system
     
     ./obmc-console-server -c test.conf
     ./obmc-console-client -i debug
