@@ -60,8 +60,8 @@
    local-tty = pts/8
    
    # obmc-console-server运行
-   export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/0/bus'
-   export DBUS_STARTER_BUS_TYPE='system'
+   export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/0/bus
+   export DBUS_STARTER_BUS_TYPE=system
    ./obmc-console-server -c test.conf /dev/pts/3
    
    # 同shell交互
