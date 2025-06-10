@@ -57,5 +57,6 @@
 * [website](/website/)
 * [yocto](/yocto/)
   * [bitbake_minimal](/yocto/bitbake_minimal)
+  * [obmc_console](/yocto/obmc_console)
   * [openbmc](/yocto/openbmc)
   * [yocto_dbus_forward](/yocto/yocto_dbus_forward)
