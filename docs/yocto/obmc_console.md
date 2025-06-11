@@ -175,3 +175,55 @@
    agetty -n -l /usr/bin/bash pts/8
    ```
 
+## 六、web端使用console
+
+1. bmcweb选择 console 对象
+
+   ```c++
+   // bmcweb/include/obmc_console.hpp: onOpen
+   // 通过 websocket 的链接的 leaf，获取 console 对象路径
+   
+       // Keep old path for backward compatibility
+       if (conn.url().path() == "/console0")
+       {
+           consoleLeaf = "default";
+       }
+       else
+       {
+           consoleLeaf = conn.url().segments().back();
+       }
+       std::string consolePath =
+           sdbusplus::message::object_path("/xyz/openbmc_project/console") /
+           consoleLeaf;
+   
+       // mapper call lambda
+       constexpr std::array<std::string_view, 1> interfaces = {
+           "xyz.openbmc_project.Console.Access"};
+   
+       dbus::utility::getDbusObject(
+           consolePath, interfaces,
+           [&conn, consolePath](const boost::system::error_code& ec,
+                                const ::dbus::utility::MapperGetObject& objInfo) {
+               processConsoleObject(conn, consolePath, ec, objInfo);
+           });
+   ```
+
+2. webui-vue 发送websocket
+
+   ```vue
+   webui-vue/src/views/Operations/SerialOverLan/SerialOverLanConsole.vue
+   
+   openTerminal() {
+   	const token = this.$store.getters['authentication/token'];
+   	this.ws = new WebSocket(`wss://${window.location.host}/console/default`, [token,]);
+   	...
+   }
+   ```
+
+3. 可通过web端下拉选项，同后端通信，切换 CHAN，获取不同板卡的串口输出。
+
+4. 注意：
+
+   (1) websocket不能缓存，点击其他地方，再点回来，没有历史记录，所以没有必要开多个选项卡；
+
+   (2) 点回来后，重新创建websocket。
