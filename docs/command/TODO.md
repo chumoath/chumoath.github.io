@@ -1109,7 +1109,7 @@
       printf ("this is a strong func\n");
   }
   ```
-  
+
 - 测试弱引用：符号和实现代码的关系
 
   - 使用弱引用，可以不实现函数，即可通过编译；
@@ -1305,3 +1305,70 @@
   ```shell
   ethtool -T eth0 # Show time stamping capabilities
   ```
+
+- xrandr命令总结
+
+- 将一个文件 dd 到另一个文件，保留原始文件大小
+
+  ```shell
+  # 创建512M文件
+  dd if=/dev/zero of=hda.img bs=1M count=512
+  # 将另一个文件放到文件开头
+  dd if=bzImage of=hda.img conv=notrunc
+  ```
+
+- dd 所有选项总结
+
+- 反汇编16bit代码
+
+  ```shell
+  objdump -m i8086 -d bbootsect.o
+  # 查看支持的 -m 选项
+  objdump --verbose
+  ```
+
+- loginctl使用
+
+  ```shell
+  # 查看一个seat使用的输入输出设备 (键盘、鼠标、显卡接口、触摸屏...)
+  loginctl seat-status seat0
+  # 通过dbus查看seat
+  loginctl list-seats
+  ```
+
+- linux v2.4重点数据结构
+
+  ```c
+  fs/block_dev.c
+  blkdevs
+  register_blkdev
+  
+  fs/super.c
+  mount_root
+  ```
+
+- cdrom引导
+
+  ```shell
+  qemu-system-i386 -m 4G -boot d -serial pty -fda floppy.img -hda hda.img -cdrom debian-2.2r0-i386-CD1.iso
+  
+  # linux v2.4 cdrom => hdc (dev_t: 0x1600)
+  ```
+
+  
+
+- TTY总结，为什么要用TTY?
+- 关于TTY的数据流
+  - telnet: (client /dev/pts/*) TTY -> socket (telnet协议) -> (server) TTY pts
+  - qemu: (host) TTY pts -> 设备前端 -> (guest) 串口驱动 -> (guest) TTY
+- 可以通过 SCM_RIGHTS发送任何文件描述符，包括打开的文件的描述符。
+- linux跨进程传递文件描述符的方法有哪些？dma_buf
+- 待写代码片段：
+  - 跨进程传递 文件描述符
+  - 将一个函数复制到一段缓冲区执行
+  - sleep sort
+  - 链接器自动生成 \_\_start\_\_[section_name]、\_\_stop\_\_[section_name] 的使用，结合复制函数
+  - 复制函数后访问全局变量的符号重定位
+- socketpair 和 pipe 的区别
+- pty的内核实现
+- 查看符号对应的文件和行号: `objdump -ld vmlinux`
