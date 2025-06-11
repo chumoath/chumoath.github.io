@@ -38,7 +38,13 @@
    
    (4) 使用execve运行程序，必须添加 `TERM=xterm`环境变量，否则无法使用 ctrl + l 清屏，bash也没有颜色；
    
-   (5) 使用execve运行bmc_clid，必须添加 `DBUS_SESSION_BUS_ADDRESS` 和 `DBUS_STARTER_BUS_TYPE`环境变量，不能有单引号。
+   (5) 使用execve运行bmc_clid，必须添加 `DBUS_SESSION_BUS_ADDRESS` 和 `DBUS_STARTER_BUS_TYPE`环境变量，不能有单引号；
+   
+   (6) 每个console都会调用dbus_init -> sdbus_request_name；所以一个进程可以有多个bus name；
+   
+   (7) 可以通过 dropbear调用obmc-console-client: `obmc-console/conf/obmc-console-ssh@.service.d/use-socket.conf.in`，使用 drop的 `-c`选项执行obmc-console-client，类似于 agetty 的 `-l`、telnetd 的 `-E`(默认都是/bin/login)；
+   
+   (8) obmc-console-client 不需要指定参数，默认为 default，unix socket 为 `obmc-console.default`。
 
 ## 三、obmc-console-client工作流程
 
