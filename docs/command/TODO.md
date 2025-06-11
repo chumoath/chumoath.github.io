@@ -1355,8 +1355,6 @@
   # linux v2.4 cdrom => hdc (dev_t: 0x1600)
   ```
 
-  
-
 - TTY总结，为什么要用TTY?
 - 关于TTY的数据流
   - telnet: (client /dev/pts/*) TTY -> socket (telnet协议) -> (server) TTY pts
