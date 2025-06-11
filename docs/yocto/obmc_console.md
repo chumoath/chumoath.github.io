@@ -104,6 +104,7 @@
     
     [debug]
     log_level = 2
+    exec = /usr/bin/bmc_clid
     
     # 运行 - bmc_clid 也要添加这两个环境变量，且不能有 单引号，否则会报错
     export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/0/bus
@@ -113,3 +114,60 @@
     ./obmc-console-client -i debug
     ./obmc-console-client -i console1
     ```
+
+## 五、agetty使用
+
+1. util-linux构建agetty
+
+   ```shell
+   git clone https://github.com/util-linux/util-linux.git && cd util-linux
+   meson setup builddir -Dbuild-agetty=enabled
+   ninja -C builddir
+   ```
+
+2. 使用socat在两个 pts 伪终端之间转发数据，在其中一个pts运行agetty
+
+   ```shell
+   # 创建 pty1 和 pty2 两个软链接
+   # 工作原理: socat 将 ptmx1 转发到 ptmx2；或相反。
+   # 数据流向: pty1 -> ptmx1 -> socat转发 -> ptmx2 -> pty2；或相反。
+   socat -d -d pty,raw,echo=0,link=pty1 pty,raw,echo=0,link=pty2
+   
+   # agetty 使用 ["/dev/" + 参数] 作为 tty 路径来 open_tty
+   # 在一个pty运行agetty，另一个pty访问；双向都可以，但是换方向需重启socat。
+   agetty pts/$(basename $(readlink pty1))
+   agetty pts/$(basename $(realpath pty1))
+   
+   # 连接
+   # 一、使用 minicom
+   # 必须从另一个pty访问，不能从启动agetty的pty访问
+   minicom -D $(readlink pty2)
+   minicom -D $(realpath pty2)
+   
+   # obmc-console 连接
+   # 1、原生obmc-console使用
+   obmc-console-server --console-id dev $(realpath pty2)
+   obmc-console-client -i dev
+   
+   # 2、使用修改过的obmc-console
+   test.conf
+   [console]
+   tty = /dev/pts/5 # pty2
+   
+   obmc-console-server -c test.conf
+   obmc-console-client -i console
+   
+   # 数据流向
+   agetty -> pty1 -> ptmx1 -> socat转发 -> ptmx2 -> pty2 -> console-server转发 -> client
+   ```
+
+3. agetty参数
+
+   ```shell
+   # 可将agetty配置为systemd服务不断重启；使用端 exit 后，立即拉起
+   # -n 不需要登录
+   # -l 指定运行的程序
+   agetty -n -l /usr/bin/bmc_clid pts/8
+   agetty -n -l /usr/bin/bash pts/8
+   ```
+
