@@ -34,7 +34,11 @@
 
    (2) 每个console是一个可用gpio切换的通道；
 
-   (3) 多种通信方式连接到同一个console，回像串口服务器一样同时显示。
+   (3) 多种通信方式连接到同一个console，回像串口服务器一样同时显示；
+   
+   (4) 使用execve运行程序，必须添加 `TERM=xterm`环境变量，否则无法使用 ctrl + l 清屏，bash也没有颜色；
+   
+   (5) 使用execve运行bmc_clid，必须添加 `DBUS_SESSION_BUS_ADDRESS` 和 `DBUS_STARTER_BUS_TYPE`环境变量，不能有单引号。
 
 ## 三、obmc-console-client工作流程
 
