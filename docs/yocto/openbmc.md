@@ -71,6 +71,10 @@
 
 ## 3、传感器数据上报web全流程
 
+1. entity_manager: 将传感器json配置导出到dbus；创建i2c对象，生成hwmon目录和文件；
+2. dbus-sensor: 扫描 /sys/class/hwmon 目录；从Dbus获取包含 Configuration.[Type]接口的对象；/sys/class/hwmon扫描到是设备 bus、addr 和 Configuration.[Type]接口的bus、addr属性匹配，匹配后创建传感器对象，并添加chassis/board 和 传感器的关联；
+3. bmcweb: 通过 Item.Board、Item.Chassis 获取 Chassis、Board对象，再通过 `board对象路径 + all_sensors`获取当前 chassis/Board 关联的所有传感器对象。
+
 ## 4、dbus上接口创建全流程
 
 - 使用 phosphor-dbus-interfaces
