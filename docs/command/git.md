@@ -96,7 +96,7 @@
 18. 将本地仓库另一个仓库的commit应用到当前仓库的分支
 
     - 添加远程仓库
-      - `git remote add other_repo /home/ghx/sdk5_10`
+      - `git remote add other_repo /home/gxh/linux-2.4`
     - 获取远程分支
       - `git fetch other_repo`
     - 将指定commitID应用到当前仓库的当前分支
