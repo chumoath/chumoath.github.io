@@ -188,3 +188,94 @@ order为0，表示分配 1page；为1，表示分配 2 pages；为3，表示分�
 zone->free_area[order].map 就是每个zone的每个order的bitmap
 ```
 
+- free_area_init_core 的调用
+
+  - 假设有 highmem(4G/PAE 64位地址)
+
+  ```c
+  // arch/i386/kernel/setup.c
+  setup_arch
+      // 从 empty_zero_page 的 前半页 获取 BIOS 传递的E820的物理地址范围
+      // empty_zero_page (0x4000): 前半页 (0x4000-0x47FF) => BIOS传递信息；后半页 (0x4800-0x4FFF) => 内核启动参数
+      setup_memory_region
+      	// 将物理地址范围添加到 struct e820map e820; 全局变量
+      	add_memory_region
+      // 获取内核结尾物理地址的下一页
+      start_pfn = PFN_UP(__pa(&_end));
+  	// e820 最大物理页
+  	max_pfn;
+  	// #define VMALLOC_RESERVE	(unsigned long)(128 << 20)
+      // #define MAXMEM		(unsigned long)(-PAGE_OFFSET-VMALLOC_RESERVE)
+      // #define MAXMEM_PFN	PFN_DOWN(MAXMEM)
+  	// MAXMEM_PFN = 0x38000000 >> 12 = 0x38000
+  	max_low_pfn = MAXMEM_PFN;   // lowmem:  0x00000000-0x38000000 物理地址
+  	highend_pfn = max_pfn;
+  	highstart_pfn = MAXMEM_PFN; // highmem: 0x38000000-max_pfn
+  	
+  	// 先将 0x00000000-0x38000000的物理内存全部置为 reserved，表示已经被使用；再使用e820实际的物理地址范围free，确保只有e820指定的地址可以被分配
+  	bootmap_size = init_bootmem(start_pfn, max_low_pfn);
+  		// (unsigned long start, unsigned long pages)
+  		init_bootmem_core(&contig_page_data, start, 0, pages)
+              // （unsigned long mapstart, unsigned long start, unsigned long end)
+              bootmem_data_t *bdata = pgdat->bdata;
+  			// 计算 bitmap 大小，向上对 8 取整
+  			unsigned long mapsize = ((end - start)+7)/8;
+  			pgdat->node_next = pgdat_list;
+  			pgdat_list = pgdat;
+  			mapsize = (mapsize + (sizeof(long) - 1UL)) & ~(sizeof(long) - 1UL);
+  			// 设置 contig_page_data.bdata.node_bootmem_map为 start_pfn，即内核结尾的下一页的虚拟地址；这是第一块可用的内存地址，用来存放低端内存的 bitmap
+  			bdata->node_bootmem_map = phys_to_virt(mapstart << PAGE_SHIFT);
+  			// 设置 contig_page_data.bdata.node_boot_start 为 0，表示管理内存的起始物理地址
+  			bdata->node_boot_start = (start << PAGE_SHIFT);
+  			// 表示管理的内存的 pages
+  			bdata->node_low_pfn = end;
+  			// 将低端内存bitmap全部置 1，表示 reserved
+  			memset(bdata->node_bootmem_map, 0xff, mapsize);
+  			return mapsize;
+  	// 将 e820 的所有的低端物理内存全部 free，置 0
+  	for (i = 0; i < e820.nr_map; i++) {
+          if (e820.map[i].type != E820_RAM)
+  			continue;
+          
+          curr_pfn = PFN_UP(e820.map[i].addr);
+  		if (curr_pfn >= max_low_pfn)
+  			continue;
+          free_bootmem(PFN_PHYS(curr_pfn), PFN_PHYS(size));
+          	test_and_clear_bit(i, bdata->node_bootmem_map)
+      // #define HIGH_MEMORY	(1024*1024)
+  	// 将 0x00100000-(内核结束地址的下一页+低端内存的bitmap结束) 置为已使用状态；bitmap使用的页向上取整
+  	reserve_bootmem(HIGH_MEMORY, (PFN_PHYS(start_pfn) + bootmap_size + PAGE_SIZE-1) - (HIGH_MEMORY));
+          reserve_bootmem_core
+              eidx = (addr + size - bdata->node_boot_start + PAGE_SIZE-1)/PAGE_SIZE;
+          	test_and_set_bit(i, bdata->node_bootmem_map)
+  	// 保留物理页 0 (0x00000000-0x00001000)
+  	reserve_bootmem(0, PAGE_SIZE);
+      // 将虚拟地址 0xc0000000-0xF8000000 映射到 物理地址 0x00000000-0x38000000
+      // 通过 页目录表、页表索引获取虚拟地址，通过 虚拟地址 - PAGE_OFFSET (0xc0000000) 得到物理地址
+      paging_init
+          pagetable_init
+          	end = (unsigned long)__va(max_low_pfn*PAGE_SIZE);
+          	pgd_base = swapper_pg_dir;
+          	i = __pgd_offset(PAGE_OFFSET);
+          	pgd = pgd_base + i;
+          	for (; i < PTRS_PER_PGD; pgd++, i++) {
+                  for (j = 0; j < PTRS_PER_PMD; pmd++, j++) {
+                      for (k = 0; k < PTRS_PER_PTE; pte++, k++) {
+                          vaddr = i*PGDIR_SIZE + j*PMD_SIZE + k*PAGE_SIZE;
+                          *pte = mk_pte_phys(__pa(vaddr), PAGE_KERNEL);
+  		// 重新加载内核的页目录表
+          __asm__( "movl %%ecx,%%cr3\n" ::"c"(__pa(swapper_pg_dir)));
+          __flush_tlb_all();
+          unsigned long zones_size[MAX_NR_ZONES] = {0, 0, 0};
+          // #define MAX_DMA_ADDRESS      (PAGE_OFFSET+0x1000000)
+  		// MAX_DMA_ADDRESS = 0xC1000000
+  		// max_dma = 0x1000 个 pages，大小为 0x1000000
+          max_dma = virt_to_phys((char *)MAX_DMA_ADDRESS) >> PAGE_SHIFT;
+          low = max_low_pfn;
+          high = highend_pfn;
+  		// ZONE_DMA 设置为 0x1000
+          zones_size[ZONE_DMA] = max_dma;
+          // ZONE_NORMAL 设置为 剩下的低端内存
+          zones_size[ZONE_NORMAL] = low - max_dma;
+  		// ZONE_HIGHMEM 设置为高端内存
+          zones_size[ZONE_HIGHMEM] = high - low;
