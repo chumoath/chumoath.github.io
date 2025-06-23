@@ -41,6 +41,7 @@
   * [hpm](/qemu/hpm)
   * [hw](/qemu/hw)
   * [kvm](/qemu/kvm)
+  * [libvirt_aarch64](/qemu/libvirt_aarch64)
   * [pc_default_serial](/qemu/pc_default_serial)
   * [qemu_ubuntu](/qemu/qemu_ubuntu)
   * [tcg](/qemu/tcg)
