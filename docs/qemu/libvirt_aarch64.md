@@ -86,6 +86,7 @@ virt-manager
 ### 六、修改BIOS
 
 ```shell
+cp -fa /root/edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/FV/QEMU_EFI.fd /
 # 修改固件大小
 qemu-img resize -f raw /QEMU_EFI.fd 64M
 

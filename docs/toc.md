@@ -36,6 +36,7 @@
 * [misc](/misc/)
   * [classic](/misc/classic)
   * [cross_toolchain](/misc/cross_toolchain)
+  * [gcc_cross_openeuler](/misc/gcc_cross_openeuler)
   * [typora_expire](/misc/typora_expire)
 * [qemu](/qemu/)
   * [hpm](/qemu/hpm)
