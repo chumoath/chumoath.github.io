@@ -1356,17 +1356,52 @@
   ```
 
 - TTY总结，为什么要用TTY?
+
 - 关于TTY的数据流
   - telnet: (client /dev/pts/*) TTY -> socket (telnet协议) -> (server) TTY pts
   - qemu: (host) TTY pts -> 设备前端 -> (guest) 串口驱动 -> (guest) TTY
+  
 - 可以通过 SCM_RIGHTS发送任何文件描述符，包括打开的文件的描述符。
+
 - linux跨进程传递文件描述符的方法有哪些？dma_buf
+
 - 待写代码片段：
   - 跨进程传递 文件描述符
   - 将一个函数复制到一段缓冲区执行
   - sleep sort
   - 链接器自动生成 \_\_start\_\_[section_name]、\_\_stop\_\_[section_name] 的使用，结合复制函数
   - 复制函数后访问全局变量的符号重定位
+  
 - socketpair 和 pipe 的区别
+
 - pty的内核实现
+
 - 查看符号对应的文件和行号: `objdump -ld vmlinux`
+
+- cpld功能：
+
+  1. 扩展 IO;
+  2. 控制上下电时序。
+
+- 示波器模拟前端
+
+  ```shell
+  输入信号 -> 衰减器 -> 放大器 -> ADC -> 波形显示
+                                     (数字信号)
+  ADC采样：比如参考电压为 2.5V，使用 8bit，则将2.5V 256等分，精度为 9.765625mV
+  衰减器：50mv-150mv => 0mv-100mv (和ADC范围对齐)
+  放大器：0mv-100mv  => 0mv-500mv (0-100mv 只占10份，0-500mv占50份，精度更高)
+  ```
+
+- BMC关键组件
+  1. 升级
+  2. 传感器告警(温度、电压、功率)
+  3. 电源(上下电)
+  4. 风扇
+- 系统组件
+  1. 电源(上下电时序)
+  2. 网络
+  3. 时钟
+  4. 高速总线(PCIe、SATA、USB3、GE网)，都用serdes(一个lane，两对差分线，全双工双向通信)
+  5. 低速总线(i2c、spi、uart、superio(lpc、kcs、bt、80)、pwm)
+  6. 其他总线(localbus、sdio、emmc)
