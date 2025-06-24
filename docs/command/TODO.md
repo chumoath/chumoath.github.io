@@ -1410,3 +1410,17 @@
 - git禁用ssl认证
 
   - `git config --global http.sslVerify false`
+  
+- compile_commands.json
+
+  1. cmake: `-DCMAKE_EXPORT_COMPILE_COMMANDS=1`
+  2. meson
+  3. bear
+  4. compiledb
+
+- netlink、内核内存泄露定位、内核模块加载流程
+
+- CFLAGS和LDFLAGS不能混用，混用不生效
+
+  1. CFLAGS: 头文件搜索路径
+  2. LDFLAGS: 库文件搜索路径
