@@ -57,6 +57,7 @@
   * [vm_forward_topology](/solutions/vm_forward_topology)
   * [wireguard_hand](/solutions/wireguard_hand)
 * [uefi](/uefi/)
+  * [build_atf](/uefi/build_atf)
   * [edk2_vscode](/uefi/edk2_vscode)
 * [website](/website/)
 * [yocto](/yocto/)
