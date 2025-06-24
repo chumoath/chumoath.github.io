@@ -62,3 +62,55 @@ ctrl + ~          => 打开 terminal
 - 安装vsix插件 (ctrl + shift + p)
 
   <img src="../assets/vscode_vsix.png" style="zoom:50%;" />
+
+### 四、clangd + Edk2code自动补全和跳转
+
+```shell
+# 1) 安装clang，clangd为语言后台服务器
+apt install clang clangd
+
+# 2) 确保edk2包含 BaseTools: Generate compile information in build report 补丁
+# 从 edk2-stable202305 开始支持
+
+# 3) 安装 Edk2code 插件
+# 4) 构建 edk2，更换版本后，最好删除整个edk2目录，重新 git submodule update --init
+git clone https://github.com/tianocore/edk2.git
+cd edk2
+git submodule update --init
+make -C BaseTools
+source edksetup.sh
+export GCC5_AARCH64_PREFIX=aarch64-linux-gnu-
+# 指定 -y 和 -Y 参数
+build -a AARCH64 -t GCC5 -p ArmVirtPkg/ArmVirtQemu.dsc -y report.txt -Y COMPILE_INFO
+# 生成 edk2/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/CompileInfo/compile_commands.json
+```
+
+- EDK2: Rebuild index database
+
+  <img src="../assets/edk2code_rebuild_index.png" style="zoom:50%;" />
+
+- 选择Build目录
+
+  <img src="../assets/edk2_select_dir.png" style="zoom:50%;" />
+
+- 选择build目标
+
+  <img src="../assets/edk2_select_build.png" style="zoom:50%;" />
+
+- 修复clangd参数
+
+  <img src="../assets/edk2_fix.png" style="zoom:50%;" />
+
+- vscode验证clangd配置
+
+  <img src="../assets/edk2_setting.png" style="zoom:50%;" />
+
+- 重启clangd
+
+  <img src="../assets/edk2_restart_clangd.png" style="zoom:50%;" />
+
+- 后台验证clangd参数
+
+  <img src="../assets/edk2_verify_clangd.png" style="zoom:50%;" />
+
+- [Edk2code参考](https://zhuanlan.zhihu.com/p/13252846636)
