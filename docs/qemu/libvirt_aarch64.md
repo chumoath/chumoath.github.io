@@ -100,6 +100,9 @@ virsh edit ubuntu18.04-aarch64
 
 # 其他virsh命令
 virsh start ubuntu18.04-aarch64 --console
+
+# 启动网络
+virsh net-start --network default
 ```
 
 - 注意：
