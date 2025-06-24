@@ -56,6 +56,8 @@
   * [vim](/solutions/vim)
   * [vm_forward_topology](/solutions/vm_forward_topology)
   * [wireguard_hand](/solutions/wireguard_hand)
+* [uefi](/uefi/)
+  * [edk2_vscode](/uefi/edk2_vscode)
 * [website](/website/)
 * [yocto](/yocto/)
   * [bitbake_minimal](/yocto/bitbake_minimal)
