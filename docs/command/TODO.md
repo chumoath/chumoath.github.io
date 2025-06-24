@@ -1398,6 +1398,7 @@
   2. 传感器告警(温度、电压、功率)
   3. 电源(上下电)
   4. 风扇
+  
 - 系统组件
   1. 电源(上下电时序)
   2. 网络
@@ -1405,3 +1406,7 @@
   4. 高速总线(PCIe、SATA、USB3、GE网)，都用serdes(一个lane，两对差分线，全双工双向通信)
   5. 低速总线(i2c、spi、uart、superio(lpc、kcs、bt、80)、pwm)
   6. 其他总线(localbus、sdio、emmc)
+  
+- git禁用ssl认证
+
+  - `git config --global http.sslVerify false`
