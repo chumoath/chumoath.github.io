@@ -9,6 +9,8 @@
   * [docker](/command/docker)
   * [git](/command/git)
   * [pkg-config](/command/pkg-config)
+* [harmonyos](/harmonyos/)
+  * [harmonyos_build](/harmonyos/harmonyos_build)
 * [linux](/linux/)
   * [completion](/linux/completion)
   * [devm](/linux/devm)
