@@ -11,6 +11,7 @@
   * [pkg-config](/command/pkg-config)
 * [harmonyos](/harmonyos/)
   * [harmonyos_build](/harmonyos/harmonyos_build)
+  * [qemu_arm64_linux_min](/harmonyos/qemu_arm64_linux_min)
 * [linux](/linux/)
   * [completion](/linux/completion)
   * [devm](/linux/devm)
