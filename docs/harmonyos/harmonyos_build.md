@@ -177,3 +177,37 @@ repo sync --force-sync
 - [快速入门](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/Readme-CN.md)
 - [整机启动流程](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/subsystems/subsys-boot-deviceboot.md)
 - [编译构建指导](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/subsystems/subsys-build-all.md)
+
+### 四、Dockerfile
+
+```dockerfile
+FROM ubuntu:20.04
+WORKDIR /home/openharmony
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN sed -i "s@http://.*archive.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list \
+        && sed -i "s@http://.*security.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list \
+        && apt-get update -y \
+        && apt-get install -y apt-utils binutils bison flex bc build-essential make mtd-utils gcc-arm-linux-gnueabi u-boot-tools python3.8 python3-pip git zip unzip curl wget gcc g++ ruby dosfstools mtools default-jre default-jdk scons python3.8-distutils perl openssl libssl-dev cpio git-lfs m4 ccache zlib1g-dev tar rsync liblz4-tool genext2fs binutils-dev device-tree-compiler e2fsprogs git-core gnupg gnutls-bin gperf lib32ncurses5-dev libffi-dev zlib* libelf-dev libx11-dev libgl1-mesa-dev lib32z1-dev xsltproc x11proto-core-dev libc6-dev-i386 libxml2-dev lib32z-dev libdwarf-dev \
+        && apt-get install -y grsync xxd libglib2.0-dev libpixman-1-dev kmod jfsutils reiserfsprogs xfsprogs squashfs-tools  pcmciautils quota ppp libtinfo-dev libtinfo5 libncurses5 libncurses5-dev libncursesw5 libstdc++6 python2.7 gcc-arm-none-eabi \
+        && apt-get install -y vim ssh locales \
+        && apt-get install -y doxygen \
+        && locale-gen "en_US.UTF-8" \
+        && rm -rf /bin/sh /usr/bin/python /usr/bin/python3 /usr/bin/python3m \
+        && ln -s /bin/bash /bin/sh \
+        && ln -s /usr/bin/python3.8 /usr/bin/python3 \
+        && ln -s /usr/bin/python3.8 /usr/bin/python3m \
+        && ln -s /usr/bin/python3.8 /usr/bin/python
+
+RUN apt install -y libxml2-dev libxslt1-dev libpython3.8-dev
+RUN curl https://gitee.com/oschina/repo/raw/fork_flow/repo-py3 > /usr/bin/repo \
+        && chmod +x /usr/bin/repo \
+        && pip3 install --trusted-host https://repo.huaweicloud.com -i https://repo.huaweicloud.com/repository/pypi/simple requests setuptools pymongo kconfiglib pycryptodome ecdsa ohos-build pyyaml prompt_toolkit==1.0.14 redis json2html yagmail python-jenkins \
+        && pip3 install esdk-obs-python --trusted-host pypi.org \
+        && pip3 install six --upgrade --ignore-installed six \
+        && cd /home/openharmony
+
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
+```
+
