@@ -211,3 +211,22 @@ RUN curl https://gitee.com/oschina/repo/raw/fork_flow/repo-py3 > /usr/bin/repo \
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
 ```
 
+### 五、命令
+
+```shell
+docker run --rm -it -v $(pwd)/openharmony:/home/openharmony openharmony
+
+./build.sh -p rk3568
+./build.sh -p rk3568 --gn-args linux_kernel_version="linux-5.10"
+./build.sh -p rk3568 --fast-rebuild --gn-args linux_kernel_version="linux-5.10"
+
+./build.sh -p qemu-arm64-linux-min --gn-args linux_kernel_version="linux-5.10"
+./build.sh -p qemu-arm64-linux-min --gn-args linux_kernel_version="linux-5.10" --fast-rebuild
+
+repo init -u https://gitee.com/openharmony/manifest.git -b OpenHarmony-5.1.0-Release --no-repo-verify
+repo sync -c
+repo forall -c 'git lfs pull'
+
+bash build/prebuilts_download.sh
+```
+
