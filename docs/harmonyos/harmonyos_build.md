@@ -30,7 +30,7 @@ bash build/prebuilts_download.sh
 
 ./build.sh --product-name rk3568 --ccache
 
-docker run -it -v $(pwd)/openharmony:/home/openharmony openharmony
+docker run --rm -it -v $(pwd)/openharmony:/home/openharmony openharmony
 
 build/prebuilts_download.sh
 调用 build/prebuilts_download.py
@@ -224,7 +224,7 @@ docker run --rm -it -v $(pwd)/openharmony:/home/openharmony openharmony
 ./build.sh -p qemu-arm64-linux-min --gn-args linux_kernel_version="linux-5.10" --fast-rebuild
 
 repo init -u https://gitee.com/openharmony/manifest.git -b OpenHarmony-5.1.0-Release --no-repo-verify
-repo sync -c
+repo sync -j24
 repo forall -c 'git lfs pull'
 
 bash build/prebuilts_download.sh
