@@ -502,7 +502,6 @@ qemu_option_add "-serial stdio"
 -  "device_qemu-arm-linux": "device_qemu-arm-linux",
 -  "product_qemu-arm-linux-min": "product_qemu-arm-linux-min",
 +  "device_qemu-arm64-linux": "device_qemu-arm64-linux",
-+  "product_qemu-arm64-linux-min": "product_qemu-arm64-linux-min",
 ```
 
 ### 4、device/qemu/arm_virt/linux/images/system_image_conf.txt
@@ -515,7 +514,7 @@ qemu_option_add "-serial stdio"
  --dac_config ../../build/ohos/images/mkimage/dac.txt
 ```
 
-### 5、/kernel/linux/build/kernel.mk
+### 5、kernel/linux/build/kernel.mk
 
 ```makefile
  KERNEL_CROSS_COMPILE += CONFIG_MSP="y"
@@ -9463,5 +9462,84 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
              if args.host_platform == 'darwin':
                  cmd = [npm, 'install', '--registry', args.npm_registry, '--cache', npm_cache_dir]
              if args.unsafe_perm:
+```
+
+### 10、device/qemu/arm_virt/linux/ohos.build
+
+```shell
+{
+  "subsystem": "device_qemu-arm64-linux",
+  "parts": {
+    "qemu_arm_linux_chipset": {
+      "module_list": [
+        "//device/qemu/arm_virt/linux:qemu-arm-linux-group"
+      ]
+    }
+  }
+}
+```
+
+### 11、vendor/ohemu/qemu-arm64-linux-min/ohos.build
+
+```shell
+{
+  "parts": {
+    "product_qemu-arm64-linux-min": {
+      "module_list": [
+        "//vendor/ohemu/qemu-arm64-linux-min/hdf_config/uhdf:hdf_config"
+      ]
+    }
+  },
+  "subsystem": "product_qemu-arm64-linux-min"
+}
+```
+
+### 12、vendor/ohemu/qemu-arm64-linux-min/hdf_config/uhdf/BUILD.gn
+
+```json
+# Copyright (c) 2023 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//drivers/hdf_core/adapter/uhdf2/hcs/hcs.gni")
+
+hdf_hcb("hdf_default.hcb") {
+  source = "./hdf.hcs"
+  part_name = "product_qemu-arm64-linux-min"
+  subsystem_name = "product_qemu-arm64-linux-min"
+}
+
+hdf_cfg("hdf_devhost.cfg") {
+  source = "./hdf.hcs"
+  part_name = "product_qemu-arm64-linux-min"
+  subsystem_name = "product_qemu-arm64-linux-min"
+}
+
+ohos_prebuilt_etc("hdf_peripheral.cfg") {
+  source = "hdf_peripheral.cfg"
+  relative_install_dir = "init"
+  install_images = [ chipset_base_dir ]
+  subsystem_name = "product_qemu-arm64-linux-min"
+  part_name = "product_qemu-arm64-linux-min"
+}
+
+group("hdf_config") {
+  deps = [
+    ":hdf_default.hcb",
+    ":hdf_devhost.cfg",
+    ":hdf_peripheral.cfg",
+  ]
+}
+
 ```
 
