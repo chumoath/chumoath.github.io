@@ -504,17 +504,27 @@ qemu_option_add "-serial telnet::55555,server,nowait,nodelay"
 +  "device_qemu-arm64-linux": "device_qemu-arm64-linux",
 ```
 
-### 4、device/qemu/arm_virt/linux/images/system_image_conf.txt
+### 4、device/qemu/arm_virt/linux/images/system_image_conf.txt(debug)
 
 ```c
  /
 -104857600
-+2147483648
++21474836480
  --fs_type=ext4
  --dac_config ../../build/ohos/images/mkimage/dac.txt
 ```
 
-### 5、kernel/linux/build/kernel.mk
+### 5、device/qemu/arm_virt/linux/images/vendor_image_conf.txt(debug)
+
+```shell
+ /vendor
+-104857600
++1048576000
+ --fs_type=ext4
+ --dac_config ../../build/ohos/images/mkimage/dac.txt
+```
+
+### 6、kernel/linux/build/kernel.mk
 
 ```makefile
  KERNEL_CROSS_COMPILE += CONFIG_MSP="y"
@@ -531,7 +541,7 @@ qemu_option_add "-serial telnet::55555,server,nowait,nodelay"
  KERNEL_CROSS_COMPILE += CROSS_COMPILE="$(KERNEL_TARGET_TOOLCHAIN_PREFIX)"
 ```
 
-### 6、kernel/linux/config/linux-5.10/arch/arm64/configs/qemu-arm64-linux_standard_defconfig
+### 7、kernel/linux/config/linux-5.10/arch/arm64/configs/qemu-arm64-linux_standard_defconfig
 
 ```shell
 #
@@ -9423,7 +9433,7 @@ CONFIG_MEMTEST=y
 # end of Kernel hacking
 ```
 
-### 7、kernel/linux/linux-5.10/Makefile
+### 8、kernel/linux/linux-5.10/Makefile
 
 ```makefile
 KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
@@ -9438,7 +9448,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
  KBUILD_AFLAGS_KERNEL :=
 ```
 
-### 8、kernel/linux/linux-5.10/arch/arm64/Makefile
+### 9、kernel/linux/linux-5.10/arch/arm64/Makefile
 
 ```makefile
  $(warning Detected assembler with broken .inst; disassembly will be unreliable)
@@ -9451,7 +9461,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
  KBUILD_AFLAGS  += $(compat_vdso)
 ```
 
-### 9、build/prebuilts_download.py
+### 10、build/prebuilts_download.py
 
 ```python
              print('remove node_modules %s' % node_modules_path)
@@ -9464,7 +9474,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
              if args.unsafe_perm:
 ```
 
-### 10、device/qemu/arm_virt/linux/ohos.build
+### 11、device/qemu/arm_virt/linux/ohos.build
 
 ```shell
 {
@@ -9479,7 +9489,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
 }
 ```
 
-### 11、vendor/ohemu/qemu-arm64-linux-min/ohos.build
+### 12、vendor/ohemu/qemu-arm64-linux-min/ohos.build
 
 ```shell
 {
@@ -9494,7 +9504,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
 }
 ```
 
-### 12、vendor/ohemu/qemu-arm64-linux-min/hdf_config/uhdf/BUILD.gn
+### 13、vendor/ohemu/qemu-arm64-linux-min/hdf_config/uhdf/BUILD.gn
 
 ```json
 # Copyright (c) 2023 Huawei Device Co., Ltd.
@@ -9540,6 +9550,57 @@ group("hdf_config") {
     ":hdf_peripheral.cfg",
   ]
 }
-
 ```
 
+### 14、third_party/skia/include/core/SkTypes.h(debug)
+
+```c
+     #ifdef NDEBUG
+         #define SK_RELEASE
+     #else
+-        #define SK_DEBUG
++        #define SK_RELEASE
+     #endif
+ #endif
+```
+
+### 15、third_party/grpc/BUILD.gn(debug)
+
+```shell
+config("pulbic_grpc_config") {
+     "GPR_SUPPORT_CHANNELS_FROM_FD",
+     "GRPC_ARES=0",
+     "GPR_PTHREAD_TLS",
++    "NDEBUG",
+   ]
+ }
+```
+
+### 16、third_party/pulseaudio/include/log/audio_log.h(debug)
+
+```c
+-inline void CallStart(const char *traceName)
++static inline void CallStart(const char *traceName)
+ {
+ #ifdef FEATURE_HITRACE_METER
+     HiTraceStartTrace(HITRACE_AUDIO_TAG, traceName);
+ #endif
+ }
+ 
+-inline void CallEnd()
++static inline void CallEnd()
+ {
+ #ifdef FEATURE_HITRACE_METER
+     HiTraceFinishTrace(HITRACE_AUDIO_TAG);
+```
+
+### 17、base/security/huks/frameworks/huks_standard/main/common/include/hks_base_check.h(debug)
+
+```c
+ int32_t HksCheckUserAuthKeyInfoValidity(const struct HksParamSet *paramSet);
+ 
+-inline bool HksAttestIsAnonymous(const struct HksParamSet *paramSet)
++static inline bool HksAttestIsAnonymous(const struct HksParamSet *paramSet)
+ {
+     struct HksParam *attestParam = NULL;
+     if (HksGetParam(paramSet, HKS_TAG_ATTESTATION_MODE, &attestParam) == HKS_SUCCESS) {
