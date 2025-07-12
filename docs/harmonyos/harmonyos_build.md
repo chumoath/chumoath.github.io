@@ -223,11 +223,24 @@ docker run --rm -it -v $(pwd)/openharmony:/home/openharmony openharmony
 ./build.sh -p qemu-arm64-linux-min --gn-args linux_kernel_version="linux-5.10"
 ./build.sh -p qemu-arm64-linux-min --gn-args linux_kernel_version="linux-5.10" --fast-rebuild
 
+# debug - use true/false instead of 0/1 
+./build.sh -p qemu-arm64-linux-min --gn-args linux_kernel_version="linux-5.10" enable_profiling=true is_debug=true
+
 repo init -u https://gitee.com/openharmony/manifest.git -b OpenHarmony-5.1.0-Release --no-repo-verify
 repo sync -j24
 repo forall -c 'git lfs pull'
 
 bash build/prebuilts_download.sh
+
+# no enough disk space
+(host) docker run --rm -it -v $(pwd)/openharmony:/home/openharmony -v /home/gxh/images:/home/openharmony/openharmony/out/qemu-arm64-linux/packages/phone/images openharmony
+# or
+(host) docker run --rm -it -v $(pwd)/openharmony:/home/openharmony -v /home/xxx/images:/home/openharmony/images openharmony
+(docker) ln -s /home/openharmony/images /home/openharmony/openharmony/out/qemu-arm64-linux/packages/phone/images
+
+# run
+(host) ln -s /home/xxx/images /mnt/openharmony/openharmony/out/qemu-arm64-linux/packages/phone/images
+(host) ./vendor/ohemu/qemu-arm64-linux-min/qemu_run.sh
 
 # segmentation fault: samgr/foundation/render_service reboot
 service_control stop foundation
