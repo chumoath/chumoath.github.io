@@ -228,5 +228,86 @@ repo sync -j24
 repo forall -c 'git lfs pull'
 
 bash build/prebuilts_download.sh
+
+# segmentation fault: samgr/foundation/render_service reboot
+service_control stop foundation
+service_control stop render_service
+service_control stop appspawn
+dmesg -n 1
+
+# gdbserver
+export PATH=/mnt/openharmony/openharmony/prebuilts/gcc/linux-x86/aarch64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin:$PATH
+
+apt install -y make
+wget https://mirrors.tuna.tsinghua.edu.cn/gnu/gdb/gdb-8.0.1.tar.xz
+tar -xf gdb-8.0.1.tar.xz && cd gdb-8.0.1
+mkdir build && cd build
+LDFLAGS="-static" ../gdb/gdbserver/configure --host=aarch64-linux-gnu
+make -j$(nproc)
+# dynamically linked, interpreter /lib/ld-linux-aarch64.so.1,
+file gdbserver
+
+# /system/bin/sh: /bin/gdbserver: No such file or directory => /lib/ld-linux-aarch64.so.1
+# (shell) /lib/ld-musl-aarch64.so.1 --list /bin/gdbserver                              
+# /lib/ld-musl-aarch64.so.1: /bin/gdbserver: Not a valid dynamic program
+
+# static
+rm -f gdbserver
+make
+
+# delete -Wl,--dynamic-list=../gdb/gdbserver/proc-service.list
+# statically linked
+file gdbserver
+
+mount system.img /mnt
+cp gdbserver /mnt/system/bin/
+
+# strace
+apt install -y autoconf
+apt install -y gcc-aarch64-linux-gnu
+git clone https://github.com/strace/strace.git
+cd strace
+./bootstrap
+mkdir build && cd build
+LDFLAGS="-static" ../configure --host=aarch64-linux-gnu --enable-mpers=no
+make -j$(nproc)
+mount system.img /mnt
+cp src/strace /mnt/system/bin/
+# no: export PATH=/mnt/openharmony/openharmony/prebuilts/gcc/linux-x86/aarch64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin:$PATH
+#   => configure: error: failed to find timer_create
+
+# must: --enable-mpers=no
+#   => configure: error: Cannot enable m32 personality support
+
+# network
+# 1. qemu
+-net nic,netdev=tap0,model=virtio -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no
+-serial telnet::55555,server,nowait,nodelay
+
+# 2. host
+ip tuntap add tap0 mode tap group 0
+ip link set dev tap0 up
+ip addr add 192.168.33.1/24 dev tap0
+iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.33.0/24
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -P FORWARD ACCEPT
+
+# 3. guest
+ip addr add 192.168.33.2/24 dev eth0
+ip route add to 192.168.33.1 dev eth0
+ip route add default via 192.168.33.1
+
+ifconfig eth0 192.168.33.2 netmask 255.255.255.0
+toybox route add default gw 192.168.33.1
+ping 192.168.33.1
+
+# debug
+apt install gdb-multiarch
+
+telnet loalhost 55555
+(guest) ps -ef | grep composer_host
+(guest) gdbserver --attach :1234 [pid]
+(host) gdb-multiarch hdf_devhost
+(host gdb) target remote 192.168.33.2:1234
 ```
 
