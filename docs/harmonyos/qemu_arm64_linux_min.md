@@ -335,9 +335,7 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 
-set -x
-
-qemu_option="-M virt -cpu cortex-a57 -smp 4 -m 1024"
+qemu_option="-M virt -cpu cortex-a57 -smp 4 -m 10240"
 qemu_setup_network=""
 qemu_instance_id=""
 img_copy_option="-n"
@@ -487,7 +485,9 @@ qemu_option_add "-drive if=none,file=$elf_file/system${qemu_instance_id}.img,for
 qemu_option_add "-drive if=none,file=$elf_file/updater${qemu_instance_id}.img,format=raw,id=updater,index=0 -device virtio-blk-device,drive=updater"
 qemu_option_add "-kernel $elf_file/Image -initrd $elf_file/ramdisk.img"
 qemu_option_add "-device virtio-gpu-pci"
-qemu_option_add "-serial stdio"
+#qemu_option_add "-serial stdio"
+qemu_option_add "-net nic,netdev=tap0,model=virtio -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no"
+qemu_option_add "-serial telnet::55555,server,nowait,nodelay"
 
 # Setup network need sudo
 [ x"${qemu_setup_network}" != x ] && sudo qemu-system-aarch64 ${qemu_option} -append "${kernel_bootargs}"
