@@ -50,15 +50,20 @@ devpts
 
 # 串口
 systemctl enable serial-getty\@ttyAMA0.service
-systemctl start serial-getty\@ttyAMA0.service
+# systemctl start serial-getty\@ttyAMA0.service
 
 # 虚拟终端
 systemctl enable getty\@tty1.service
-systemctl start getty\@tty1.service
+# systemctl start getty\@tty1.service
+
+# shell - dash改为bash
+ln -sf /usr/bin/bash /bin/sh
+ln -sf /usr/bin/bash /usr/bin/sh
+# dpkg-reconfigure dash
 
 # ssh
 systemctl enable ssh
-systemctl start ssh
+# systemctl start ssh
 # 允许root用户登录
 sed -i 's@^#\?PermitRootLogin.*@PermitRootLogin yes@' /etc/ssh/sshd_config
 # 连接
@@ -78,6 +83,13 @@ passwd root
 chown -R gxh:gxh /home/gxh
 usermod -a -G lightdm gxh
 # /home/gxh/.Xauthority .dmrc 等会自动创建
+
+# 添加用户到sudoers
+echo "gxh ALL=(ALL:ALL) ALL" >> /etc/sudoers
+# 免密sudo
+echo "gxh ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+# sudo组免密
+%sudo ALL=(ALL:ALL) NOPASSWD:ALL
 ```
 
 3. 退出chroot环境
@@ -115,7 +127,12 @@ make bzImage -j$(nproc)
 
 # 可以直接使用yocto下载的bzImage，因为没有用到 virtio_blk 驱动，设备节点不是 vda
 # 必须指定 -m，否则图形界面会因为内存不足闪退
-qemu-system-x86_64 -enable-kvm -m 10G -smp 4 -kernel bzImage-qemux86-64.bin -append "console=ttyS0 root=/dev/sda rw" -hda debian12.img -display gtk -net user,hostfwd=tcp::2222-:22 -net nic -serial stdio
+qemu-system-x86_64 -enable-kvm -m 10G -smp 4 -kernel bzImage-qemux86-64.bin -append "console=ttyS0 root=/dev/sda rw" \
+-hda debian12.img -display gtk -net user,hostfwd=tcp::2222-:22 -net nic -serial stdio
+
+# 串口和虚拟终端同时显示启动日志
+qemu-system-x86_64 -enable-kvm -m 10G -smp 4 -kernel bzImage-qemux86-64.bin -append "console=ttyS0 console=tty1 root=/dev/sda rw" \
+-hda debian12.img -display gtk -net user,hostfwd=tcp::2222-:22 -net nic -serial stdio
 
 # -display gtk
 # -display sdl
