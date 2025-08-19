@@ -39,6 +39,7 @@ mount -t tmpfs none /dev/shm
 apt install -y vim openssh-server gcc python3-pip net-tools locales pciutils
 apt install -y network-manager bash-completion libpam-dev accountsservice auditd
 apt install -y xserver-xorg lightdm gnome-session gnome-terminal nautilus
+apt install -y sudo
 
 # 文件系统挂载
 /etc/fstab

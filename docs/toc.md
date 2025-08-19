@@ -39,6 +39,7 @@
 * [misc](/misc/)
   * [classic](/misc/classic)
   * [cross_toolchain](/misc/cross_toolchain)
+  * [debian12_fs](/misc/debian12_fs)
   * [gcc_cross_openeuler](/misc/gcc_cross_openeuler)
   * [typora_expire](/misc/typora_expire)
 * [qemu](/qemu/)
