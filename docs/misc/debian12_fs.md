@@ -202,3 +202,32 @@ e2fsck -f your_image.img
 resize2fs -M your_image.img
 ```
 
+### 三、ubuntu
+
+1. ubuntu镜像构建
+
+```shell
+mkdir ubuntu-rootfs
+debootstrap --arch=amd64 jammy ubuntu-rootfs https://mirrors.ustc.edu.cn/ubuntu
+chroot ubuntu-rootfs
+apt install -y vim
+passwd root
+exit
+
+# 1) 计算目录大小（以4K块为单位）
+dir_size=$(du -s --block-size=4096 ubuntu-rootfs | cut -f1)
+# 2) 增加20%的额外空间用于文件系统元数据
+fs_blocks=$((dir_size + dir_size/5))
+# 3) 创建镜像文件
+dd if=/dev/zero of=ubuntu22.img bs=4K count=$fs_blocks
+# 4) 使用mke2fs创建文件系统并填充内容
+mke2fs -t ext4 -d ubuntu-rootfs ubuntu22.img
+```
+
+2. Qemu验证
+
+```shell
+qemu-system-x86_64 -enable-kvm -m 10G -smp 4 -kernel bzImage-qemux86-64.bin -append "console=ttyS0 root=/dev/sda rw" \
+-hda ubuntu22.img -display gtk -net user,hostfwd=tcp::2222-:22 -net nic -serial stdio
+```
+
