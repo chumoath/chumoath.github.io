@@ -266,9 +266,10 @@ cp company_root.crt /usr/local/share/ca-certificates/
 update-ca-certificates
 # 3) 第二阶段安装核心包(包括apt)
 /debootstrap/debootstrap --second-stage
-apt install -y vim systemd
+apt install -y vim systemd iputils-ping net-tools
 # 4) # 配置启动
 ln -sf /lib/systemd/systemd /usr/sbin/init
+# aarch64不能使用 BindsTo，串口会一直等待，海思的芯片也是如此
 sed -i '/BindsTo=*/d' /lib/systemd/system/serial-getty@.service
 passwd root
 exit
