@@ -261,6 +261,9 @@ debootstrap --arch=arm64 --variant=minbase --foreign jammy ubuntu-arm64 https://
 cp /usr/bin/qemu-aarch64-static ubuntu-arm64/usr/bin/
 # 2) 进入chroot，相当于执行 chroot ubuntu-arm64 bash，在chroot后，所有exec文件相当于都被qemu-aarch64-static解释执行
 chroot ubuntu-arm64
+# 如果是局域网，则需要配置 https 的证书，否则不能访问https镜像源
+cp company_root.crt /usr/local/share/ca-certificates/
+update-ca-certificates
 # 3) 第二阶段安装核心包(包括apt)
 /debootstrap/debootstrap --second-stage
 apt install -y vim systemd
@@ -313,6 +316,12 @@ qemu-system-aarch64 -M virt,gic-version=3 -nographic \
 # 使用 wget 下载镜像源的包，镜像源会有限制
 # 解决方法：使用rsync下载
 # 1、/usr/sbin/debootstrap 添加 set -x，执行过一遍，收集所有包的日志
+# 获取一个文件中所有的https链接，去掉重复的
+grep -o 'https://[^[:space:]]*' ubuntu-arm64/debootstrap/debootstrap.log | sort | uniq
+grep -o 'https://[^[:space:]]*' ubuntu-arm64/debootstrap/debootstrap.log | sort | uniq | wc -l
+# rsync可以用http/https的代理
+export RSYNC_PROXY=192.168.32.1:10809
+bash rsync.sh
 # 2、全部改为使用 rsync下载，并将所有deb包放到 /root/ubuntu-arm64/var/cache/apt/archives/partial/
 # 3、重新执行: debootstrap --arch=arm64 --variant=minbase --foreign jammy ubuntu-arm64 https://mirrors.ustc.edu.cn/ubuntu-ports
 ```
@@ -367,6 +376,9 @@ qemu-system-aarch64 -M virt,gic-version=3 -nographic \
 7. rsync下载deb脚本
 
 ```shell
+#!/bin/bash
+
+mkdir /home/root
 rsync rsync://mirrors.ustc.edu.cn/ubuntu-ports/pool/main/a/acl/libacl1_2.3.1-1_arm64.deb                                  /home/root/
 rsync rsync://mirrors.ustc.edu.cn/ubuntu-ports/pool/main/a/adduser/adduser_3.118ubuntu5_all.deb                           /home/root/
 rsync rsync://mirrors.ustc.edu.cn/ubuntu-ports/pool/main/a/apt/apt_2.4.5_arm64.deb                                        /home/root/
