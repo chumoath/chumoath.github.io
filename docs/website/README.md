@@ -158,6 +158,9 @@
 - [v2ray](https://v2ray.com/)
 - [shell命令在线解释](https://explainshell.com/)
 - [csdiy.wiki tools](https://csdiy.wiki/%E5%BF%85%E5%AD%A6%E5%B7%A5%E5%85%B7/tools/)
+- [数据结构可视化](https://www.rmboot.com/)
+- [算法可视化](https://visualgo.net/en)
+- [硬件可视化]()
 
 ## 4、项目
 
@@ -180,6 +183,9 @@
 - [autoware自动驾驶](https://github.com/autowarefoundation/autoware)
 - [无人机](https://github.com/PX4/PX4-Autopilot)
 - [three.js](https://github.com/mrdoob/three.js)
+- [linux虚拟驱动](https://gitee.com/jerry_chg/virt_spi)
+- [linux工具大全-详细分类](https://getiot.tech/linux-command/spi-pipe/)
+- 
 
 ## 5、book
 
