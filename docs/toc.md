@@ -67,6 +67,7 @@
   * [build_atf](/uefi/build_atf)
   * [edk2_vscode](/uefi/edk2_vscode)
 * [website](/website/)
+  * [misc](/website/misc)
 * [yocto](/yocto/)
   * [bitbake_minimal](/yocto/bitbake_minimal)
   * [obmc_console](/yocto/obmc_console)
