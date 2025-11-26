@@ -188,6 +188,8 @@
 - [llvm backend](https://llvm.org/docs/WritingAnLLVMBackend.html)
 - [llvm-lc3](https://github.com/mdrush/llvm-lc3.git)
 - [gem5](https://zhuanlan.zhihu.com/p/487737252)
+- [pku-online-doc](https://github.com/pku-minic/online-doc.git)
+- [pku-compiler](https://github.com/pku-minic/compiler-dev.git)
 
 ## 5、book
 
