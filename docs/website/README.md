@@ -185,7 +185,9 @@
 - [three.js](https://github.com/mrdoob/three.js)
 - [linux虚拟驱动](https://gitee.com/jerry_chg/virt_spi)
 - [linux工具大全-详细分类](https://getiot.tech/linux-command/spi-pipe/)
-- 
+- [llvm backend](https://llvm.org/docs/WritingAnLLVMBackend.html)
+- [llvm-lc3](https://github.com/mdrush/llvm-lc3.git)
+- [gem5](https://zhuanlan.zhihu.com/p/487737252)
 
 ## 5、book
 

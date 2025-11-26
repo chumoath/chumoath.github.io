@@ -18,6 +18,7 @@
   * [driver](/linux/driver)
   * [fork](/linux/fork)
   * [fs](/linux/fs)
+  * [gpu](/linux/gpu/)
   * [hwmon](/linux/hwmon)
   * [idle](/linux/idle)
   * [interface](/linux/interface)
