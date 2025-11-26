@@ -161,6 +161,8 @@
 - [数据结构可视化](https://www.rmboot.com/)
 - [算法可视化](https://visualgo.net/en)
 - [硬件可视化]()
+- [清华ubuntu镜像源](https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/)
+- [mermaid中文文档](https://mermaid.nodejs.cn/intro/)
 
 ## 4、项目
 
