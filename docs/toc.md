@@ -9,6 +9,8 @@
   * [docker](/command/docker)
   * [git](/command/git)
   * [pkg-config](/command/pkg-config)
+* [gem5](/gem5/)
+  * [ubuntu](/gem5/ubuntu)
 * [harmonyos](/harmonyos/)
   * [harmonyos_build](/harmonyos/harmonyos_build)
   * [qemu_arm64_linux_min](/harmonyos/qemu_arm64_linux_min)
