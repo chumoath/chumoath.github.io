@@ -49,6 +49,7 @@
   * [resume](/new/resume)
   * [three](/new/three)
 * [qemu](/qemu/)
+  * [FAQ](/qemu/FAQ)
   * [hpm](/qemu/hpm)
   * [hw](/qemu/hw)
   * [kvm](/qemu/kvm)
