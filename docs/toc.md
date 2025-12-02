@@ -48,6 +48,8 @@
 * [new](/new/)
   * [resume](/new/resume)
   * [three](/new/three)
+* [philosophy](/philosophy/)
+  * [metaphysics](/philosophy/metaphysics)
 * [qemu](/qemu/)
   * [FAQ](/qemu/FAQ)
   * [hpm](/qemu/hpm)
