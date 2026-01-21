@@ -49,3 +49,29 @@
 10. 查看devm的符号
 
    - `grep -rn EXPORT_SYMBOL drivers/ | grep devm`
+
+11. win11 wsl不能访问host网络
+
+    ```shell
+    # 查看wsl网口别名
+    Get-NetAdapter | Format-Table Name, InterfaceAlias, InterfaceDescription, Status
+    
+    # 允许WSL网口通过防火墙
+    New-NetFirewallRule -DisplayName "Allow WSL" -Direction Inbound -InterfaceAlias "vEthernet (WSL (Hyper-V firewall))" -Action Allow
+    ```
+
+12. sshfs挂载根目录: `此电脑 -> 添加一个网络位置： \\sshfs.r\root@172.25.74.30`
+
+13. typora将复制的图片存到指定目录: `偏好设置 -> 图像 -> 插入图片时，选择路径即可；设置优先使用相对路径`
+
+14. 像welink一样截图：`截图软件snipaste，配置截图并复制快捷键为 Ctrl + ALT + A；截图快捷键设置为空`
+
+15. 使用vmware下载openharmony依赖 / vmware使用VHD硬盘：
+
+    ```shell
+    # 1、磁盘管理 -> 更多操作 -> 附加VHD -> 选择wsl的ext4.vhdx; 一定不要格式化
+    # 2、powershell -> Get-CimInstance -Query "SELECT * from Win32_DiskDrive"，获取vhdx的物理硬盘号
+    # 3、管理员运行vmware -> 添加硬盘 -> 选择物理硬盘，启动虚拟机
+    # 4、mount /dev/sdb /mnt
+    # 5、cd /mnt/home/gxh/opc; docker run -it -v $(pwd):/home/openharmony swr.cn-south-1.myhuaweicloud.com/openharmony-docker/openharmony-docker:1.0.0
+    ```
