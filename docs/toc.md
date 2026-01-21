@@ -14,6 +14,7 @@
 * [harmonyos](/harmonyos/)
   * [harmonyos_build](/harmonyos/harmonyos_build)
   * [qemu_arm64_linux_min](/harmonyos/qemu_arm64_linux_min)
+  * [x86_opc](/harmonyos/x86_opc)
 * [linux](/linux/)
   * [completion](/linux/completion)
   * [devm](/linux/devm)
