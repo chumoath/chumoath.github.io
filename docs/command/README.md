@@ -60,7 +60,7 @@
     New-NetFirewallRule -DisplayName "Allow WSL" -Direction Inbound -InterfaceAlias "vEthernet (WSL (Hyper-V firewall))" -Action Allow
     ```
 
-12. sshfs挂载根目录: `此电脑 -> 添加一个网络位置： \\sshfs.r\root@172.25.74.30`
+12. sshfs挂载根目录: `此电脑 -> 映射网络驱动器： \\sshfs.r\root@172.25.74.30`
 
 13. typora将复制的图片存到指定目录: `偏好设置 -> 图像 -> 插入图片时，选择路径即可；设置优先使用相对路径`
 
@@ -75,3 +75,19 @@
     # 4、mount /dev/sdb /mnt
     # 5、cd /mnt/home/gxh/opc; docker run -it -v $(pwd):/home/openharmony swr.cn-south-1.myhuaweicloud.com/openharmony-docker/openharmony-docker:1.0.0
     ```
+    
+16. wsl设置内存和swap大小
+
+    ```shell
+    # win + r: %UserProfile%
+    # 创建 .wslconfig
+    [wsl2]
+    memory=24GB
+    swap=50GB
+    
+    # 重启wsl
+    wsl --shutdown
+    wsl -d Ubuntu-22.04
+    ```
+
+    
