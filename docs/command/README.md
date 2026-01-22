@@ -90,4 +90,14 @@
     wsl -d Ubuntu-22.04
     ```
 
+17. wsl配置dns
+
+    ```shell
+    # windows: 获取dns服务器
+    ipconfig /all
+    
+    # wsl: /etc/resolv.conf
+    nameserver x.x.x.x
+    ```
+
     
