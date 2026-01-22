@@ -45,6 +45,7 @@
   * [cross_toolchain](/misc/cross_toolchain)
   * [debian12_fs](/misc/debian12_fs)
   * [gcc_cross_openeuler](/misc/gcc_cross_openeuler)
+  * [openeuler_pxe](/misc/openeuler_pxe)
   * [typora_expire](/misc/typora_expire)
 * [new](/new/)
   * [resume](/new/resume)
