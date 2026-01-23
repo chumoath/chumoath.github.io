@@ -100,4 +100,30 @@
     nameserver x.x.x.x
     ```
 
+18. wsl挂载物理硬盘 
+
+    ```shell
+    # powershell: 每次shutdown都必须重新挂载
+    Get-CimInstance -Query "SELECT * from Win32_DiskDrive"
+    
+    # 必须使用管理员权限执行：参数 --bare 表示将磁盘附加到 WSL2，但不自动挂载任何分区；若不使用--bare，默认使用ext4挂在整个硬盘
+    wsl --shutdown
+    wsl --mount \\.\PHYSICALDRIVE1 --bare
+    wsl -d ubuntu
+    
+    # powershell/cmd: windows查看磁盘分区
+    diskpart
+    > list disk
+    > select Disk 0
+    > list partition
+    
+    # 挂载单个分区 - 必须shutdown，否则会报错：无法将磁盘“\\.\PHYSICALDRIVE1”附加到 WSL2: 磁盘在使用中，或被另一个进程锁定
+    wsl --shutdown
+    wsl --mount \\.\PHYSICALDRIVE1 --partition 1 --bare
+    wsl --mount \\.\PHYSICALDRIVE1 --partition 1 --type ext4
+    
+    # 卸载 (无论是否只挂载单个分区)
+    wsl --unmount \\.\PHYSICALDRIVE1
+    ```
+    
     
