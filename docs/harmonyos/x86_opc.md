@@ -32,6 +32,8 @@ bash build/prebuilts_download.sh
 
 # 2、qemu运行
 
+- 使用qemu的显示缩放比例过大：`修改vendor.img:/etc/window/resources/display_manager_config.xml`，dpi 改为 80
+
 ```shell
 # cat /dev/input/mouse0  查看鼠标响应
 # cat /proc/bus/input/devices
