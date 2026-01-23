@@ -295,7 +295,39 @@ menuentry 'openharmony 6.0'  --class openharmony --class gnu-linux --class gnu -
 }
 ```
 
-# 8、参考链接
+# 8、DELL 3579 G3适配鸿蒙
+
+```shell
+# DELL 3579固态硬盘为NVME nvmen0，机械硬盘为 sda; 使用固态硬盘的USB为 sdb，但是不能引导，U盘未知
+# 1、挂载物理硬盘
+wsl --shutdown
+wsl --mount \\.\PHYSICALDRIVE1 --bare
+wsl -d Ubuntu-22.04
+
+# 2、分区/镜像烧录 - 同qemu_x86_64，最大问题是grub的root，当前仍为 hd0,gpt1，可以使用
+
+# 3、配置显示 - 否则缩放太过
+# /mnt/etc/window/resources/display_manager_config.xml
+<dpi>240</dpi>
+
+# 4、BIOS - F2进入BIOS配置，禁用 Secure boot
+# 5、启动  - F12，选择机械硬盘启动
+# 6、显卡为集成显卡(Intel(R) UHD Graphics 630)，N卡没有驱动；内核显卡驱动为 i915，vendor:device (8086:3e9b)
+驱动配置：CONFIG_DRM_I915
+驱动路径：drivers/gpu/drm/i915/
+驱动pciidlist: 
+    drivers/gpu/drm/i915/i915_pci.c
+    	static const struct pci_device_id pciidlist[] = {
+    		INTEL_CFL_H_GT2_IDS(&cfl_gt2_info),
+    		{0, 0, 0}
+    	};
+    include/drm/i915_pciids.h
+        #define INTEL_CFL_H_GT2_IDS(info) \
+        	INTEL_VGA_DEVICE(0x3E9B, info), /* Halo GT2 */ \
+        	INTEL_VGA_DEVICE(0x3E94, info)  /* Halo GT2 */
+```
+
+# 9、参考链接
 
 - [openharmony-dropbear](https://gitee.com/ohos-porting-communities/openharmony-dropbear)
 
