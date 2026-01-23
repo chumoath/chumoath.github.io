@@ -121,7 +121,181 @@ hilog > /data/qemu_oh_boot.log
 # 手动启动：dropbear_service dropbear -RB
 ```
 
-# 7、参考链接
+# 7、qemu使用grub引导openharmony
+
+- qemu启动
+
+```shell
+qemu-system-x86_64 -M q35,accel=kvm,vmport=off  -m 16G -smp 8  \
+-bios /usr/share/OVMF/OVMF_CODE.fd \
+-device e1000e,netdev=tap0 -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no \
+-hda openharmony.img  -nographic -vga none \
+-device virtio-gpu-pci,max_outputs=1,xres=1024,yres=768,addr=08.0  \
+-device virtio-mouse-pci -device virtio-keyboard-pci  \
+-device es1370  -k en-us  -display gtk,gl=off \
+-serial stdio  -monitor none -enable-kvm
+
+qemu-system-x86_64 -M q35,accel=kvm,vmport=off  -m 16G -smp 8  \
+-bios /usr/share/OVMF/OVMF_CODE.fd \
+-device e1000e,netdev=tap0 -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no \
+-hda /dev/loop0  -nographic -vga none \
+-device virtio-gpu-pci,max_outputs=1,xres=1024,yres=768,addr=08.0  \
+-device virtio-mouse-pci -device virtio-keyboard-pci  \
+-device es1370  -k en-us  -display gtk,gl=off \
+-serial stdio  -monitor none -enable-kvm
+
+qemu-system-x86_64 -M q35,accel=kvm,vmport=off  -m 16G -smp 8  \
+-bios /usr/share/OVMF/OVMF_CODE.fd \
+-device e1000e,netdev=tap0 -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no \
+-hda /dev/sdd  -nographic -vga none \
+-device virtio-gpu-pci,max_outputs=1,xres=1024,yres=768,addr=08.0  \
+-device virtio-mouse-pci -device virtio-keyboard-pci  \
+-device es1370  -k en-us  -display gtk,gl=off \
+-serial stdio  -monitor none -enable-kvm
+```
+
+- 重新构建内核 - 将硬盘的AHCI驱动打进内核
+
+```shell
+# device/board/opc/x86_general/kernel/configs/pocket2_oh_defconfig
+-CONFIG_SATA_AHCI=m
++CONFIG_SATA_AHCI=y
+ CONFIG_SATA_MOBILE_LPM_POLICY=3
+-CONFIG_SATA_AHCI_PLATFORM=m
++CONFIG_SATA_AHCI_PLATFORM=y
+ # CONFIG_AHCI_DWC is not set
+ CONFIG_SATA_INIC162X=m
+-CONFIG_SATA_ACARD_AHCI=m
++CONFIG_SATA_ACARD_AHCI=y
+ CONFIG_SATA_SIL24=m
+ CONFIG_ATA_SFF=y
+```
+
+- 制作镜像 - 使用文件作为磁盘
+
+```shell
+dd if=/dev/zero    of=openharmony.img bs=1G count=20
+
+# 1、分区
+losetup -P /dev/loop0 openharmony.img
+
+fdisk /dev/loop0
+# 创建GPT分区表
+> g
+# 新建分区
+> n
+# loop0p1 500M
+# loop0p2 2G
+# loop0p3 2G
+# loop0p4 2G
+# loop0p5 2G
+
+# 修改loop0p1的分区类型
+> t -> 1(EFI)
+# 打印分区表
+> p
+# 写入分区表
+> w
+
+# 2、准备grub启动
+# 格式化分区
+mkfs.vfat /dev/loop0p1
+
+mount /dev/loop0p1 /mnt
+cp -rfa iso/EFI /mnt/
+
+# 复制 bzImage ramdisk.img
+cp bzImage /mnt/
+cp ramdisk.img /mnt/
+
+# 3、准备其他分区
+dd if=updater.img  of=/dev/loop0p2
+dd if=system.img   of=/dev/loop0p3
+dd if=vendor.img   of=/dev/loop0p4
+dd if=userdata.img of=/dev/loop0p5
+
+# 4、适配显示和分区挂载
+mount /dev/loop0p4 /mnt
+# /mnt/etc/fstab.x86_general - 否则初始化失败
+
+/dev/block/sda5  /data  ext4  discard,noatime,nosuid,nodev,usrquota wait,check,fileencryption=software,quot
+
+# /mnt/etc/window/resources/display_manager_config.xml - 否则桌面会放大
+<dpi>80</dpi>
+```
+
+- 制作镜像 - 使用物理硬盘
+
+```shell
+# 0、wsl挂载物理硬盘
+wsl --shutdown
+wsl --mount \\.\PHYSICALDRIVE1 --bare
+wsl -d Ubuntu-22.04
+
+# 1、准备grub引导
+mkfs.vfat /dev/sdd1
+cp -rfa iso/EFI /mnt/
+
+# 复制 bzImage ramdisk.img
+cp bzImage /mnt/
+cp ramdisk.img /mnt/
+
+# 2、准备其他分区
+dd if=updater.img  of=/dev/sdd2
+dd if=system.img   of=/dev/sdd3
+dd if=vendor.img   of=/dev/sdd4
+dd if=userdata.img of=/dev/sdd5
+
+# 3、适配显示和分区挂载
+mount /dev/sdd4 /mnt
+# /mnt/etc/fstab.x86_general - 否则初始化失败
+
+# 虚拟机里面还是sda，所以不变
+/dev/block/sda5  /data  ext4  discard,noatime,nosuid,nodev,usrquota wait,check,fileencryption=software,quot
+
+# /mnt/etc/window/resources/display_manager_config.xml - 否则桌面会放大
+<dpi>80</dpi>
+```
+
+- /mnt/EFI/BOOT/grub.cfg
+
+```shell
+set default="0"
+
+function load_video {
+  insmod efi_gop
+  insmod efi_uga
+  insmod video_bochs
+  insmod video_cirrus
+  insmod all_video
+}
+
+load_video
+set gfxpayload=keep
+insmod gzio
+insmod part_gpt
+insmod ext2
+
+set timeout=60
+### END /etc/grub.d/00_header ###
+
+menuentry 'openharmony 6.0'  --class openharmony --class gnu-linux --class gnu --class os --unrestricted $menuentry_id_option 'gnulinux-6.6.0-72.6.0.56.oe2503.x86_64-advanced-85e4c7d3-83f3-44ae-9137-53b05d7b44ab' {
+        load_video
+        set gfxpayload=keep
+        insmod gzio
+        insmod part_gpt
+        insmod ext2
+        # 必须指定bzImage,ramdisk.img所在的硬盘和分区
+        set root='hd0,gpt1'
+
+        echo    'Loading bzImage'
+        linux   /bzImage loglevel=1 ip=192.168.33.2:255.255.255.0::eth0:off sn=0023456789 console=tty0 console=ttyS0 init=/bin/init ohos.boot.hardware=x86_general root=/dev/ram0 rw ohos.required_mount.system=/dev/block/sda3@/usr@ext4@ro,barrier=1@wait,required ohos.required_mount.vendor=/dev/block/sda4@/vendor@ext4@ro,barrier=1@wait,required ohos.required_mount.misc=/dev/block/sda2@/misc@none@none=@wait,required
+        echo    'Loading initial ramdisk ...'
+        initrd  /ramdisk.img
+}
+```
+
+# 8、参考链接
 
 - [openharmony-dropbear](https://gitee.com/ohos-porting-communities/openharmony-dropbear)
 
