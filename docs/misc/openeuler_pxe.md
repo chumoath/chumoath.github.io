@@ -274,8 +274,6 @@ subnet 192.168.33.0 netmask 255.255.255.0 {
 systemctl restart isc-dhcp-server
 ```
 
-![image-20260127220416368](../assets/image-20260127220416368.png)
-
 ### 2、HTTP服务 - windows
 
 - windows启动http服务
