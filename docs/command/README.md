@@ -56,7 +56,7 @@
     # 查看wsl网口别名
     Get-NetAdapter | Format-Table Name, InterfaceAlias, InterfaceDescription, Status
     
-    # 允许WSL网口通过防火墙
+    # 管理员权限powershell:允许WSL网口通过防火墙
     New-NetFirewallRule -DisplayName "Allow WSL" -Direction Inbound -InterfaceAlias "vEthernet (WSL (Hyper-V firewall))" -Action Allow
     ```
 
@@ -64,7 +64,7 @@
 
 13. typora将复制的图片存到指定目录: `偏好设置 -> 图像 -> 插入图片时，选择路径即可；设置优先使用相对路径`
 
-14. 像welink一样截图：`截图软件snipaste，配置截图并复制快捷键为 Ctrl + ALT + A；截图快捷键设置为空`
+14. 像welink一样截图：`截图软件snipaste，配置截图快捷键为 Ctrl + ALT + A；截图并复制快捷键设置为空，因为该功能无法编辑图片`
 
 15. 使用vmware下载openharmony依赖 / vmware使用VHD硬盘：
 
