@@ -308,13 +308,13 @@ modprobe nf_nat_tftp
 iptables -t raw -I PREROUTING -j CT -p udp -m udp --dport 69 --helper tftp
 ```
 
-![image-20260127220543117](../assets/image-20260127220543117.png)
+   ![image-20260127220543117](../assets/image-20260127220543117.png)
 
 - 已安装openeuler的系统从PXE启动 - UEFI和grub的用户名和密码: `root/openEuler#12`
 
-![image-20260127221210065](../assets/image-20260127221210065.png)
-![image-20260127221003870](../assets/image-20260127221003870.png)
-![image-20260127221022300](../assets/image-20260127221022300.png)
+    ![image-20260127221210065](../assets/image-20260127221210065.png)
+    ![image-20260127221003870](../assets/image-20260127221003870.png)
+    ![image-20260127221022300](../assets/image-20260127221022300.png)
 
 - C:\osinstall\tftpd\oe-25.03\grub.cfg - **修改http的IP**
 
