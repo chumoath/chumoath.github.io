@@ -260,6 +260,15 @@ kernel-devel
 ```shell
 # 1) 安装dhcp服务
 apt install -y isc-dhcp-server
+# 2) 配置dhcp
+# /etc/dhcp/dhcpd.conf
+subnet 192.168.33.0 netmask 255.255.255.0 {
+	range 192.168.33.2 192.168.33.200;
+	option routers 192.168.33.1;
+	# tftp server ip
+	next-server 172.25.64.1;
+	filename "grubx64.efi";
+}
 ```
 
 ### 2、HTTP服务 - windows
