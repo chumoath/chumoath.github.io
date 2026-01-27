@@ -272,7 +272,7 @@ subnet 192.168.33.0 netmask 255.255.255.0 {
 # 192.168.33.0/24网段必须可访问, 即tap0必须先创建并配置IP，否则dhcp服务启动失败
 systemctl restart isc-dhcp-server
 ```
-
+![image-20260127220416368](../assets/image-20260127220416368.png)
 ### 2、HTTP服务 - windows
 
 - windows启动http服务
