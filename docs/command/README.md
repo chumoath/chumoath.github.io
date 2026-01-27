@@ -126,4 +126,7 @@
     wsl --unmount \\.\PHYSICALDRIVE1
     ```
     
-    
+19. docsify提交后排版混乱解决技巧：
+
+    - google商店搜索 cache killer插件，红色；按 `Ctrl + F5`刷新网页，随时更新
+    - 删除一块，保证排版正常；再一块一块添加即可
