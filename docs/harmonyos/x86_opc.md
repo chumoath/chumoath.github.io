@@ -327,7 +327,17 @@ wsl -d Ubuntu-22.04
         	INTEL_VGA_DEVICE(0x3E94, info)  /* Halo GT2 */
 ```
 
-# 9、参考链接
+# 9、A卡适配鸿蒙
+
+- 添加内核启动参数，开启 DRM_ATOMIC
+
+```shell
+# radeon.si_support=0 amdgpu.si_support=1 radeon.cik_support=0 amdgpu.cik_support=1: 直接让radeon的驱动返回，使用amdgpu驱动
+# amdgpu.dc=1：使能amdgpu的DRM_ATOMIC
+radeon.si_support=0 amdgpu.si_support=1 radeon.cik_support=0 amdgpu.cik_support=1 amdgpu.dc=1
+```
+
+# 10、参考链接
 
 - [openharmony-dropbear](https://gitee.com/ohos-porting-communities/openharmony-dropbear)
 
