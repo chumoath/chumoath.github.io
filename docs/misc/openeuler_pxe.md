@@ -260,18 +260,6 @@ kernel-devel
 ```shell
 # 1) 安装dhcp服务
 apt install -y isc-dhcp-server
-
-# 2) 配置dhcp
-# /etc/dhcp/dhcpd.conf
-subnet 192.168.33.0 netmask 255.255.255.0 {
-	range 192.168.33.2 192.168.33.200;
-	option routers 192.168.33.1;
-	# tftp server ip
-	next-server 172.25.64.1;
-	filename "grubx64.efi";
-}
-# 192.168.33.0/24网段必须可访问, 即tap0必须先创建并配置IP，否则dhcp服务启动失败
-systemctl restart isc-dhcp-server
 ```
 
 ### 2、HTTP服务 - windows
