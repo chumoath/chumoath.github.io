@@ -250,7 +250,6 @@ kernel-devel
 
 - glibc error: cpu does not support x86-64-v2: `使用 -cpu max，使用全量的host cpu特性`
 
-
 # 三、不同子网PXE启动
 
 - DHCP部署在linux，且和qemu在同一子网；TFTP、HTTP在windows，和qemu不在同一个子网
