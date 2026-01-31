@@ -351,7 +351,49 @@ wsl -d Ubuntu-22.04
 radeon.si_support=0 amdgpu.si_support=1 radeon.cik_support=0 amdgpu.cik_support=1 amdgpu.dc=1
 ```
 
-# 10、参考链接
+### 10、命令
+
+```shell
+# 1、重启桌面
+service_control stop foundation
+service_control stop render_service
+service_control stop composer_host
+
+service_control start composer_host
+service_control start render_service
+service_control start foundation        # (/system/bin/sa_main)
+
+# 2、重新挂载为读写
+mount -o remount,rw /vendor
+mount -o remount,rw /chipset
+
+# 3、测试没有virtio_gpu_dri文件，桌面是否亮
+# 1) 桌面亮
+mv /vendor/lib64/chipsetsdk/virtio_gpu_dri.so /vendor/lib64/chipsetsdk/virtio_gpu_dri.so.bak
+mv /chipset/lib64/chipsetsdk/virtio_gpu_dri.so /chipset/lib64/chipsetsdk/virtio_gpu_dri.so.bak
+
+# 2) 桌面不亮
+mv /vendor/lib64/chipsetsdk/libgallium_dri.so /vendor/lib64/chipsetsdk/libgallium_dri.so.bak
+
+# 4、手动启动服务
+# 停止服务
+service_control stop foundation
+service_control stop render_service
+service_control stop composer_host
+
+# 手动启动
+/vendor/bin/hdf_devhost -i 12 -n composer_host -p -8 -s 1 &
+# /vendor/lib64/chipsetsdk/virtio_gpu_dri.so 不存在，加载 /vendor/lib64/chipsetsdk/libgallium_dri.so 
+render_service &
+service_control start foundation
+
+# 停止手动启动
+service_control stop foundation
+killall render_service
+killall composer_host
+```
+
+# 11、参考链接
 
 - [openharmony-dropbear](https://gitee.com/ohos-porting-communities/openharmony-dropbear)
 
