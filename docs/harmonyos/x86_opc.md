@@ -126,6 +126,20 @@ hilog > /data/qemu_oh_boot.log
 - qemu启动
 
 ```shell
+# host网络配置
+ip tuntap add tap0 mode tap group 0
+ip link set dev tap0 up
+ip addr add 192.168.33.1/24 dev tap0
+iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.33.0/24
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -P FORWARD ACCEPT
+
+# guest配置网络
+ifconfig eth0 192.168.33.2/24 up
+
+# host连接guest
+ssh 192.168.33.2  # 密码 123456
+
 qemu-system-x86_64 -M q35,accel=kvm,vmport=off  -m 16G -smp 8  \
 -bios /usr/share/OVMF/OVMF_CODE.fd \
 -device e1000e,netdev=tap0 -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no \
