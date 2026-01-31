@@ -12,6 +12,7 @@
 * [gem5](/gem5/)
   * [ubuntu](/gem5/ubuntu)
 * [harmonyos](/harmonyos/)
+  * [harmonynext_laptop](/harmonyos/harmonynext_laptop)
   * [harmonyos_build](/harmonyos/harmonyos_build)
   * [qemu_arm64_linux_min](/harmonyos/qemu_arm64_linux_min)
   * [x86_opc](/harmonyos/x86_opc)
