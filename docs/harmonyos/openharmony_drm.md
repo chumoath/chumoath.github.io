@@ -13,8 +13,17 @@
 - buildroot单独构建gdbserver
 
   ```shell
+  # 1、修改镜像源为国内的 - Config.in，或者使用menuconfig
+  BR2_BACKUP_SITE： https://mirrors.ustc.edu.cn/buildroot
+  BR2_KERNEL_MIRROR： https://mirrors.ustc.edu.cn/kernel
+  BR2_GNU_MIRROR： https://mirrors.ustc.edu.cn/gnu
+  BR2_LUAROCKS_MIRROR： https://mirrors.ustc.edu.cn/luarocks
+  BR2_CPAN_MIRROR： https://mirrors.ustc.edu.cn/CPAN
+  
+  # 2、构建 - 重新从默认配置生成
+  rm -f .config
+  make menuconfig
   apt install -y libncurses-dev unzip
-  export https_proxy=http://172.25.64.1:7897
   make gdb -j$(nproc)
   ```
 
