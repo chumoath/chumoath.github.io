@@ -4,7 +4,7 @@
 
 - [gdb调试openharmony进程](https://laval.csdn.net/6646f9fd931dbe49ec6d8528.html)
 
-- [gdb工具-使用静态链接的gdbserver](git clone https://gitee.com/qq2820/buildroot-tool-ohos.git)
+- [gdb工具-使用静态链接的gdbserver](https://gitee.com/qq2820/buildroot-tool-ohos.git)
 
 - 在openharmony使用glibc的两种方法：
   1. 全部使用静态链接 (静态链接的，只要内核特性兼容，在哪里都可以跑)
@@ -13,6 +13,9 @@
 - buildroot单独构建gdbserver
 
   ```shell
+  # 0、下载代码
+  git clone https://gitee.com/qq2820/buildroot-tool-ohos.git
+  
   # 1、修改镜像源为国内的 - Config.in，或者使用menuconfig
   BR2_BACKUP_SITE： https://mirrors.ustc.edu.cn/buildroot
   BR2_KERNEL_MIRROR： https://mirrors.ustc.edu.cn/kernel
