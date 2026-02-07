@@ -1,10 +1,24 @@
 # openharmony_drm
 
+### 1、openharmony 调试
+
 - [gdb调试openharmony进程](https://laval.csdn.net/6646f9fd931dbe49ec6d8528.html)
+
 - [gdb工具-使用静态链接的gdbserver](git clone https://gitee.com/qq2820/buildroot-tool-ohos.git)
+
 - 在openharmony使用glibc的两种方法：
   1. 全部使用静态链接 (静态链接的，只要内核特性兼容，在哪里都可以跑)
   2. 显示使用glibc的动态链接器执行可执行程序(和glibc系统实际执行方式一致)
+  
+- buildroot单独构建gdbserver
+
+  ```shell
+  apt install -y libncurses-dev unzip
+  export https_proxy=http://172.25.64.1:7897
+  make gdb -j$(nproc)
+  ```
+
+### 2、openharmony drm
 
 ```shell
 # 调试信息：is_debug=true use_unstripped_as_runtime_output=true
