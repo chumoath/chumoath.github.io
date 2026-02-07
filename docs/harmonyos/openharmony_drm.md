@@ -10,6 +10,12 @@
   1. 全部使用静态链接 (静态链接的，只要内核特性兼容，在哪里都可以跑)
   2. 显示使用glibc的动态链接器执行可执行程序(和glibc系统实际执行方式一致)
   
+- openharmony5.1.0在qemu的virtiogpu一直报`waitNextVBlank`的错误，但是在intel集成显卡(i915驱动 & UHD Graphics 630)正常显示
+  
+  1. build目录的配置问题？对比一下
+  2. driver下的display驱动问题？对比一下
+  3. device/vendor问题？对比过了，没什么区别
+  
 - buildroot单独构建gdbserver
 
   ```shell
