@@ -14,6 +14,7 @@
 * [harmonyos](/harmonyos/)
   * [harmonynext_laptop](/harmonyos/harmonynext_laptop)
   * [harmonyos_build](/harmonyos/harmonyos_build)
+  * [openharmony_drm](/harmonyos/openharmony_drm)
   * [qemu_arm64_linux_min](/harmonyos/qemu_arm64_linux_min)
   * [x86_opc](/harmonyos/x86_opc)
 * [linux](/linux/)
