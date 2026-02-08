@@ -68,6 +68,9 @@ qemu-system-x86_64 \
 -netdev user,id=net0,hostfwd=tcp::2222-:22 \
 -serial telnet::55555,server,nowait,nodelay \
 -monitor none
+
+# 使用 tap 网口
+qemu-system-x86_64 --enable-kvm -machine q35,accel=kvm,vmport=off -m 16G -smp 8 -drive if=none,file=updater.img,format=raw,id=updater,index=0 -device virtio-blk-pci,drive=updater -drive if=none,file=system.img,format=raw,id=system,index=1 -device virtio-blk-pci,drive=system -drive if=none,file=vendor.img,format=raw,id=vendor,index=2 -device virtio-blk-pci,drive=vendor -drive if=none,file=userdata.img,format=raw,id=userdata,index=3 -device virtio-blk-pci,drive=userdata -append "loglevel=1 ip=192.168.33.2:255.255.255.0::eth0:off sn=0023456789 console=tty0 console=ttyS0 init=/bin/init ohos.boot.hardware=x86_general root=/dev/ram0 rw ohos.required_mount.system=/dev/block/vdb@/usr@ext4@ro,barrier=1@wait,required ohos.required_mount.vendor=/dev/block/vdc@/vendor@ext4@ro,barrier=1@wait,required ohos.required_mount.misc=/dev/block/vda@/misc@none@none=@wait,required" -kernel bzImage -initrd ramdisk.img -nographic -vga none -device virtio-gpu-pci,max_outputs=1,xres=1024,yres=768,addr=08.0  -device virtio-mouse-pci -device virtio-keyboard-pci -device es1370  -k en-us  -display gtk,gl=off -device e1000e,netdev=tap0 -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no -serial telnet::55555,server,nowait,nodelay -monitor none
 ```
 
 # 3、单独构建
