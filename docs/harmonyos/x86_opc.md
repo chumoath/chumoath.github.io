@@ -354,7 +354,7 @@ wsl -d Ubuntu-22.04
 radeon.si_support=0 amdgpu.si_support=1 radeon.cik_support=0 amdgpu.cik_support=1 amdgpu.dc=1
 ```
 
-### 10、命令
+# 10、命令
 
 ```shell
 # 1、重启桌面
@@ -396,8 +396,115 @@ killall render_service
 killall composer_host
 ```
 
-# 11、参考链接
+# 11、openharmony-6.0调试drm
+
+```shell
+# 0、启动composer_host，render_service启动后才会调用接口
+# 1、构建静态链接的gdbserver
+wget https://mirrors.tuna.tsinghua.edu.cn/gnu/gdb/gdb-12.1.tar.xz
+LDFLAGS="-static" ../configure
+make -j$(nproc)
+file gdbserver/gdbserver
+
+# 2、openharmony运行待调试程序 - 以composer_host为例
+# host
+sshpass -p 123456 scp gdbserver 192.168.33.2:/data/
+
+# qemu
+ifconfig eth0 192.168.33.2 up
+
+service_control stop foundation
+service_control stop render_service
+service_control stop composer_host
+
+/data/gdbserver 0.0.0.0:1234 /vendor/bin/hdf_devhost -i 12 -n composer_host -p -8 -s 1
+
+# 3、host使用
+ln -s /root/opc /home/openharmony
+cd /opc/out/x86_general
+gdb exe.unstripped/hdf/hdf_core/hdf_devhost
+> target remote 192.168.33.2:1234
+> b DrmDevice::Init
+> b DrmDisplay::Init
+> b DrmVsyncWorker::Init
+> b DrmVsyncWorker::WaitNextVBlank
+> c
+```
+
+# 12、参考链接
 
 - [openharmony-dropbear](https://gitee.com/ohos-porting-communities/openharmony-dropbear)
-
 - [vendor_opc](https://gitcode.com/ohos-porting-communities/vendor_opc)
+
+# 13、openharmony-6.0调用链
+
+- DrmDevice::Init
+
+```shell
+Thread 2 "OS_IPC_1_3987" hit Breakpoint 1, 0x00007fff755dd4a0 in OHOS::HDI::DISPLAY::DrmDevice::Init() () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+(gdb) bt
+#0  0x00007fff755dd4a0 in OHOS::HDI::DISPLAY::DrmDevice::Init() () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#1  0x00007fff755d48db in OHOS::HDI::DISPLAY::HdiDeviceInterface::DiscoveryDevice() () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#2  0x00007fff755d9573 in OHOS::HDI::DISPLAY::HdiSession::Init() () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#3  0x00007ffff6d0b7d0 in std::__h::__call_once(unsigned long volatile&, void*, void (*)(void*)) () from target:/lib64/chipset-sdk-sp/libc++.so
+#4  0x00007fff755d92f6 in OHOS::HDI::DISPLAY::HdiSession::GetInstance() () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#5  0x00007fff7558639f in OHOS::HDI::DISPLAY::DisplayComposerVdiImpl::RegHotPlugCallback(void (*)(unsigned int, bool, void*), void*) () from target:/vendor/lib64/libdisplay_composer_vdi_impl.z.so
+#6  0x00007fff75697560 in OHOS::HDI::Display::Composer::DisplayComposerService::RegHotPlugCallback(OHOS::sptr<OHOS::HDI::Display::Composer::V1_0::IHotPlugCallback> const&) () from target:/vendor/lib64/libdisplay_composer_service_1.3.z.so
+#7  0x00007fff75993191 in OHOS::HDI::Display::Composer::V1_0::DisplayComposerStub::DisplayComposerStubRegHotPlugCallback_(OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&, OHOS::sptr<OHOS::HDI::Display::Composer::V1_0::IDisplayComposer>) ()
+   from target:/vendor/lib64/libdisplay_composer_stub_1.0.z.so
+#8  0x00007fff7580f074 in OHOS::HDI::Display::Composer::V1_3::DisplayComposerStub::OnRemoteRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/vendor/lib64/libdisplay_composer_stub_1.3.z.so
+#9  0x00007ffff718aaa4 in OHOS::IPCObjectStub::SendRequestInner(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#10 0x00007ffff718b181 in OHOS::IPCObjectStub::SendRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#11 0x00007fff7590466a in DisplayComposerDriverDispatch(HdfDeviceIoClient*, int, HdfSBuf*, HdfSBuf*) () from target:/vendor/lib64/libdisplay_composer_driver_1.0.z.so
+#12 0x00007ffff6f0e1d6 in DeviceServiceStubDispatch () from target:/vendor/lib64/libhdf_host.z.so
+#13 0x00007ffff6f4e34c in HdfRemoteServiceStub::OnRemoteRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libhdf_ipc_adapter.z.so
+#14 0x00007ffff718aaa4 in OHOS::IPCObjectStub::SendRequestInner(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#15 0x00007ffff718b181 in OHOS::IPCObjectStub::SendRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#16 0x00007ffff71a726e in OHOS::BinderInvoker::GeneralServiceSendRequest(binder_transaction_data const&, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#17 0x00007ffff71a769c in OHOS::BinderInvoker::Transaction(binder_transaction_data_secctx&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#18 0x00007ffff71a7df6 in OHOS::BinderInvoker::HandleCommandsInner(unsigned int) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#19 0x00007ffff71a6312 in OHOS::BinderInvoker::HandleCommands(unsigned int) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#20 0x00007ffff71a614a in OHOS::BinderInvoker::StartWorkLoop() () from target:/system/lib64/platformsdk/libipc_single.z.so
+#21 0x00007ffff71a7f16 in OHOS::BinderInvoker::JoinThread(bool) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#22 0x00007ffff719dc05 in OHOS::IPCWorkThread::JoinThread(int, int) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#23 0x00007ffff719e0f3 in OHOS::IPCWorkThread::ThreadHandler(void*) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#24 0x00007ffff7fd04ee in start () from target:/lib/ld-musl-x86_64.so.1
+#25 0x00007ffff7f4384b in __clone () from target:/lib/ld-musl-x86_64.so.1
+#26 0x00007ffff719dcf0 in ?? () from target:/system/lib64/platformsdk/libipc_single.z.so
+```
+
+- DrmVsyncWorker::Init
+
+```shell
+#0  0x00007fff755e5f60 in OHOS::HDI::DISPLAY::DrmVsyncWorker::Init(int)@plt () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#1  0x00007fff755e2ec4 in void std::__h::__call_once_proxy[abi:v15004]<std::__h::tuple<OHOS::HDI::DISPLAY::DrmVsyncWorker::GetInstance()::$_1&&> >(void*) () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#2  0x00007ffff6d0b7d0 in std::__h::__call_once(unsigned long volatile&, void*, void (*)(void*)) () from target:/lib64/chipset-sdk-sp/libc++.so
+#3  0x00007fff755e2785 in OHOS::HDI::DISPLAY::DrmVsyncWorker::GetInstance() () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#4  0x00007fff755e1661 in OHOS::HDI::DISPLAY::DrmDisplay::RegDisplayVBlankCallback(void (*)(unsigned int, unsigned long, void*), void*) () from target:/vendor/lib64/libdisplay_composer_vendor.z.so
+#5  0x00007fff75586a6e in int OHOS::HDI::DISPLAY::HdiSession::CallDisplayFunction<unsigned int*, OHOS::HDI::Display::Composer::V1_0::DisplayModeInfo*>(unsigned int, int (OHOS::HDI::DISPLAY::HdiDisplay::*)(unsigned int*, OHOS::HDI::Display::Composer::V1_0::DisplayModeInfo*), unsigned int*, OHOS::HDI::Display::Composer::V1_0::DisplayModeInfo*) () from target:/vendor/lib64/libdisplay_composer_vdi_impl.z.so
+#6  0x00007fff75587bce in OHOS::HDI::DISPLAY::DisplayComposerVdiImpl::RegDisplayVBlankCallback(unsigned int, void (*)(unsigned int, unsigned long, void*), void*) () from target:/vendor/lib64/libdisplay_composer_vdi_impl.z.so
+#7  0x00007fff756993de in OHOS::HDI::Display::Composer::DisplayComposerService::RegDisplayVBlankCallback(unsigned int, OHOS::sptr<OHOS::HDI::Display::Composer::V1_0::IVBlankCallback> const&) () from target:/vendor/lib64/libdisplay_composer_service_1.3.z.so
+#8  0x00007fff75993664 in OHOS::HDI::Display::Composer::V1_0::DisplayComposerStub::DisplayComposerStubRegDisplayVBlankCallback_(OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&, OHOS::sptr<OHOS::HDI::Display::Composer::V1_0::IDisplayComposer>) ()
+   from target:/vendor/lib64/libdisplay_composer_stub_1.0.z.so
+#9  0x00007fff7580f0ab in OHOS::HDI::Display::Composer::V1_3::DisplayComposerStub::OnRemoteRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/vendor/lib64/libdisplay_composer_stub_1.3.z.so
+#10 0x00007ffff718aaa4 in OHOS::IPCObjectStub::SendRequestInner(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#11 0x00007ffff718b181 in OHOS::IPCObjectStub::SendRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#12 0x00007fff7590466a in DisplayComposerDriverDispatch(HdfDeviceIoClient*, int, HdfSBuf*, HdfSBuf*) () from target:/vendor/lib64/libdisplay_composer_driver_1.0.z.so
+#13 0x00007ffff6f0e1d6 in DeviceServiceStubDispatch () from target:/vendor/lib64/libhdf_host.z.so
+#14 0x00007ffff6f4e34c in HdfRemoteServiceStub::OnRemoteRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libhdf_ipc_adapter.z.so
+#15 0x00007ffff718aaa4 in OHOS::IPCObjectStub::SendRequestInner(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#16 0x00007ffff718b181 in OHOS::IPCObjectStub::SendRequest(unsigned int, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#17 0x00007ffff71a726e in OHOS::BinderInvoker::GeneralServiceSendRequest(binder_transaction_data const&, OHOS::MessageParcel&, OHOS::MessageParcel&, OHOS::MessageOption&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#18 0x00007ffff71a769c in OHOS::BinderInvoker::Transaction(binder_transaction_data_secctx&) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#19 0x00007ffff71a7df6 in OHOS::BinderInvoker::HandleCommandsInner(unsigned int) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#20 0x00007ffff71a6312 in OHOS::BinderInvoker::HandleCommands(unsigned int) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#21 0x00007ffff71a614a in OHOS::BinderInvoker::StartWorkLoop() () from target:/system/lib64/platformsdk/libipc_single.z.so
+#22 0x00007ffff71a7f16 in OHOS::BinderInvoker::JoinThread(bool) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#23 0x00007ffff719dc05 in OHOS::IPCWorkThread::JoinThread(int, int) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#24 0x00007ffff719e0f3 in OHOS::IPCWorkThread::ThreadHandler(void*) () from target:/system/lib64/platformsdk/libipc_single.z.so
+#25 0x00007ffff7fd04ee in start () from target:/lib/ld-musl-x86_64.so.1
+#26 0x00007ffff7f4384b in __clone () from target:/lib/ld-musl-x86_64.so.1
+#27 0x00007ffff719dcf0 in ?? () from target:/system/lib64/platformsdk/libipc_single.z.so
+```
+
+- DrmVsyncWorker::WaitNextVBlank正常显示时未被调用
