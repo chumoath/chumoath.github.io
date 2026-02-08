@@ -186,6 +186,10 @@ qemu-system-x86_64 -M q35,accel=kvm,vmport=off  -m 16G -smp 8  \
 +CONFIG_SATA_ACARD_AHCI=y
  CONFIG_SATA_SIL24=m
  CONFIG_ATA_SFF=y
+ 
+# e1000e/e1000网络驱动
+CONFIG_E1000E=y
+CONFIG_E1000=y
 ```
 
 - 制作镜像 - 使用文件作为磁盘
@@ -347,6 +351,7 @@ wsl -d Ubuntu-22.04
 # 9、A卡适配鸿蒙
 
 - 添加内核启动参数，开启 DRM_ATOMIC
+- radeon驱动不支持atomic，amdgpu驱动支持
 
 ```shell
 # radeon.si_support=0 amdgpu.si_support=1 radeon.cik_support=0 amdgpu.cik_support=1: 直接让radeon的驱动返回，使用amdgpu驱动
