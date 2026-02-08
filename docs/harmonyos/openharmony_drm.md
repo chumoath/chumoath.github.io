@@ -36,6 +36,10 @@
   make gdb -j$(nproc)
   ```
 
+- openharmony使用gdbserver的两种方法
+  1. 静态链接 gdbserver
+  2. 使用glibc的动态链接器，并拷贝所有动态库 (也可以直接挂载ubuntu系统)
+
 ### 2、openharmony drm
 
 ```shell
