@@ -401,7 +401,28 @@ killall render_service
 killall composer_host
 ```
 
-# 11、openharmony-6.0调试drm
+# 11、openharmony系统服务/目录结构
+
+```shell
+# 系统服务配置
+/etc/init/*.cfg
+/vendor/etc/init/*.cfg
+
+# composer_host
+/vendor/etc/init/hdf_devhost.cfg
+/vendor/bin/hdf_devhost 12 composer_host -8 1   # openharmony5.1.0
+
+# foundation
+/etc/init/foundation.cfg
+
+# render_service
+/etc/init/graphic.cfg
+
+# console
+/etc/init/console.cfg  # /system/bin/sh
+```
+
+# 12、openharmony-6.0调试drm
 
 ```shell
 # 0、启动composer_host，render_service启动后才会调用接口
@@ -436,12 +457,12 @@ gdb exe.unstripped/hdf/hdf_core/hdf_devhost
 > c
 ```
 
-# 12、参考链接
+# 13、参考链接
 
 - [openharmony-dropbear](https://gitee.com/ohos-porting-communities/openharmony-dropbear)
 - [vendor_opc](https://gitcode.com/ohos-porting-communities/vendor_opc)
 
-# 13、openharmony-6.0调用链
+# 14、openharmony-6.0调用链
 
 - DrmDevice::Init
 
