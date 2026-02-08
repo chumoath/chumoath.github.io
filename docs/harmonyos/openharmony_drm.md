@@ -39,6 +39,15 @@
 - openharmony使用gdbserver的两种方法
   1. 静态链接 gdbserver
   2. 使用glibc的动态链接器，并拷贝所有动态库 (也可以直接挂载ubuntu系统)
+  
+- ubuntu22.04 构建 静态链接的gdbserver
+
+  ```shell
+  wget https://mirrors.tuna.tsinghua.edu.cn/gnu/gdb/gdb-12.1.tar.xz
+  LDFLAGS="-static" ../configure
+  make -j$(nproc)
+  file gdbserver/gdbserver
+  ```
 
 ### 2、openharmony drm
 
