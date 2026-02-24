@@ -1,5 +1,122 @@
 # mesa
 
+### 0、hilog获取日志
+
+```shell
+pip3 install mako
+ModuleNotFoundError: No module named 'markupsafe'
+
+python3 -m pip install --upgrade pip
+pip3 install markupsafe
+pip3 install mako
+
+python3 -m pip install --upgrade pip
+
+build/templates/cxx/cxx.gni
+build/core/gn/ohos_exec_script_allowlist.gni
+build/auto_install_whitelist.json
+
+files=$(ls ./*.patch)
+for filename in $files
+do
+  filenamebase=$(basename "$filename")
+  patch -d ./expat-2.4.1 -p1 < ./$filenamebase --fuzz=0 --no-backup-if-mismatch
+done
+
+find /mnt/ -type l | grep dri
+
+./build_mesa3d.py /home/openharmony/out/x86_general
+
+third_party/mesa3d/build-ohos/install/lib
+	libEGL.so.1.0.0
+	libGLESv1_CM.so.1.1.0
+	libGLESv2.so.2.0.0
+	
+	libgbm.so.1.0.0
+	libglapi.so.0.0.0
+
+third_party/mesa3d/build-ohos/src/gallium/targets/dri/
+	libgallium_dri.so
+	
+ls -l /mnt/lib64/chipsetsdk/*_impl.so
+	/mnt/lib64/chipsetsdk/libEGL_impl.so -> libEGL.so.1.0.0
+	/mnt/lib64/chipsetsdk/libGLESv1_impl.so -> libGLESv1_CM.so.1.1.0
+	/mnt/lib64/chipsetsdk/libGLESv2_impl.so -> libGLESv2.so.2.0.0
+	/mnt/lib64/chipsetsdk/libGLESv3_impl.so -> libGLESv2.so.2.0.0
+
+meson_cmd = [
+    'meson',
+    'setup',
+    mesa3d_dir,
+    'build-ohos',
+    '-Dplatforms=ohos',
+    '-Degl-native-platform=ohos',
+    '-Ddri-drivers=',
+    '-Dgallium-drivers=virgl,swrast',
+    '-Dvulkan-drivers=',
+    '-Dgbm=enabled',
+    '-Degl=enabled',
+    '-Dcpp_rtti=false',
+    '-Dglx=disabled',
+    '-Dtools=',
+    '-Ddri-search-path=/vendor/lib64/chipsetsdk',
+    '--cross-file=cross_file',
+    F'--prefix={mesa3d_dir}/build-ohos/install',
+]
+
+Error: Loading GLESv2 entry points failed.Error: CanvasGeneric: Invalid EGL state
+
+mount -o remount,rw /
+
+hilog > /data/test.log
+
+# 删除历史所有日志
+mount userdata.img /mnt
+rm -f /mnt/log/hilog/*
+
+# 不能指定 -f mybootlog，不能被hilogtool解析；日志文件前缀必须是默认的 hilog.*
+hilog -w start -l 16M -m zlib -n 100
+hilog -b D --persist
+
+hilog -G 16M --persist
+
+hilog -w stop
+
+ls -lh /data/log/hilog/
+
+# 解析压缩的日志
+hilogtool.exe parse -i .\boot_self
+hilogtool.exe parse -i .\boot_normal
+
+hilogtool.exe parse -i .\boot_log -o .\dict
+
+# 记住启动时间即可: 比如 19:48，在hilog日志中搜索即可
+
+PhysicalScreenInit|zeroth|OnHotPlug|OnScreenChange|TriggerCallbacks|AddScreenChangeCallback|RSLogicalDisplayRenderNode|SetScreenChangeCallback
+
+Deveco Studio下载：
+	https://developer.huawei.com/consumer/cn/deveco-studio/
+
+工具路径：
+	C:\Program Files\Huawei\DevEco Studio\sdk\default\openharmony\toolchains\hdc.exe
+	C:\Program Files\Huawei\DevEco Studio\sdk\default\hms\toolchains\hilogtool.exe
+
+HdiSession::GetInstance	
+ HdiSession::Init
+	mHdiDevices = HdiDeviceInterface::DiscoveryDevice();
+		std::shared_ptr<HdiDeviceInterface> drmDevice = DrmDevice::Create();
+		
+HdiSession::Init
+	DrmDevice::DiscoveryDisplay
+		std::shared_ptr<HdiDisplay> display = std::make_shared<DrmDisplay>(connector, crtc, mInstance);
+		display->Init();
+		DrmDisplay::Init
+			auto postComp = std::make_unique<HdiDrmComposition>(mConnector, mCrtc, mDrmDevice);
+			postComp->Init();
+			HdiDrmComposition::Init	
+				DrmDevice::GetDrmPlane
+```
+
 ### 1、OH
 
 ```shell
