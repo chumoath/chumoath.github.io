@@ -130,3 +130,12 @@
 
     - google商店搜索 cache killer插件，红色；按 `Ctrl + F5`刷新网页，随时更新
     - 删除一块，保证排版正常；再一块一块添加即可
+    
+20. wsl网络问题：
+
+    - wsl2网络报错：wsl无法配置网络(networkingmode nat)，回退到networkingMode VirtioProxy，且eth0为大网地址
+    - 解决办法：`控制面板 -> 程序 -> 启动功能 -> 虚拟机平台 -> 重启`
+
+21. wsl配置从systemd启动
+
+    - /etc/wsl.conf: `[boot] systemd=true`
