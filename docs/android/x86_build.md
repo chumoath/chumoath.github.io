@@ -52,7 +52,7 @@ update-alternatives --config javadoc
 
 # 报错修改
 # 1) RefBase.cpp
-# frameworks/base/libs/utils/Android.mk: LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) 改为 LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) –fpermissive
+# frameworks/base/libs/utils/Android.mk: LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) 改为 LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) -fpermissive
 
 # 2) _FORTIFY_SOURCE redefined
 # build/core/combo/HOST_linux-x86.mk: HOST_GLOBAL_CFLAGS += -D_FORTIFY_SOURCE=0 改为 HOST_GLOBAL_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
