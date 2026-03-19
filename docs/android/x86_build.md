@@ -72,7 +72,7 @@ ldd /bin/ls | cut -d' ' -f3 | xargs -I{} sh -c "cp {} ./ubuntu12_libs/"
 cp /lib/ld-linux.so.2 ./ubuntu12_libs/
 
 # ubuntu22运行ubuntu12编出的emulator
-ANDROID_PRODUCT_OUT=/root/android/out/target/product/generic
+export ANDROID_PRODUCT_OUT=/root/android/out/target/product/generic
 LD_LIBRARY_PATH=ubuntu12_libs  ubuntu12_libs/ld-linux.so.2  out/host/linux-x86/bin/emulator
 ```
 
