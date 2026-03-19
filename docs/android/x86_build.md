@@ -31,7 +31,7 @@ libgl1-mesa-glx:i386 libgl1-mesa-dev gcc-multilib g++-multilib mingw32 tofrodos 
 libxml2-utils xsltproc zlib1g-dev:i386 cpp-4.6 libz-dev
 
 jdk-6u45-linux-x64.bin
-wget https://www.atteya.net/site/en/downloads/java-jdk?download=48:java-jdk-6u45-linux-x64
+# https://repo.huaweicloud.com/java/jdk/6u45-b06/jdk-6u45-linux-x64.bin
 
 mkdir -p /usr/java
 chmod +x ./jdk-6u45-linux-x64.bin
