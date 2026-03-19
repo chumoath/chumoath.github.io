@@ -50,9 +50,18 @@ update-alternatives --config jar
 update-alternatives --config javah
 update-alternatives --config javadoc
 
+# 报错修改
+# 1) RefBase.cpp
+# frameworks/base/libs/utils/Android.mk: LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) 改为 LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) –fpermissive
+
+# 2) _FORTIFY_SOURCE redefined
+# build/core/combo/HOST_linux-x86.mk: HOST_GLOBAL_CFLAGS += -D_FORTIFY_SOURCE=0 改为 HOST_GLOBAL_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
 make -j24
 make sdk
 ```
+
+- [RefBase.cpp](https://www.cnblogs.com/googlegis/archive/2012/01/02/2978744.html)
+- [_FORTIFY_SOURCE](https://www.cnblogs.com/googlegis/archive/2012/01/07/2978726.html)
 
 ### 3、在ubuntu22运行ubuntu12编出的emulator
 
