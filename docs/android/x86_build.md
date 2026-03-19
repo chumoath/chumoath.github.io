@@ -68,7 +68,7 @@ make sdk
 ```shell
 # 从ubuntu12复制emulator所需的所有动态库
 mkdir ubuntu12_libs
-ldd /bin/ls | cut -d' ' -f3 | xargs -I{} sh -c "cp {} ./ubuntu12_libs/"
+ldd out/host/linux-x86/bin/emulator | cut -d' ' -f3 | xargs -I{} sh -c "cp {} ./ubuntu12_libs/"
 cp /lib/ld-linux.so.2 ./ubuntu12_libs/
 
 # ubuntu22运行ubuntu12编出的emulator
