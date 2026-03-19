@@ -31,7 +31,7 @@ libgl1-mesa-glx:i386 libgl1-mesa-dev gcc-multilib g++-multilib mingw32 tofrodos 
 libxml2-utils xsltproc zlib1g-dev:i386 cpp-4.6 libz-dev
 
 jdk-6u45-linux-x64.bin
-# https://repo.huaweicloud.com/java/jdk/6u45-b06/jdk-6u45-linux-x64.bin
+wget https://www.atteya.net/site/en/downloads/java-jdk?download=48:java-jdk-6u45-linux-x64
 
 mkdir -p /usr/java
 chmod +x ./jdk-6u45-linux-x64.bin
@@ -52,7 +52,7 @@ update-alternatives --config javadoc
 
 # 报错修改
 # 1) RefBase.cpp
-# frameworks/base/libs/utils/Android.mk: LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) 改为 LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) -fpermissive
+# frameworks/base/libs/utils/Android.mk: LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) 改为 LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) –fpermissive
 
 # 2) _FORTIFY_SOURCE redefined
 # build/core/combo/HOST_linux-x86.mk: HOST_GLOBAL_CFLAGS += -D_FORTIFY_SOURCE=0 改为 HOST_GLOBAL_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
@@ -68,11 +68,63 @@ make sdk
 ```shell
 # 从ubuntu12复制emulator所需的所有动态库
 mkdir ubuntu12_libs
-ldd out/host/linux-x86/bin/emulator | cut -d' ' -f3 | xargs -I{} sh -c "cp {} ./ubuntu12_libs/"
+ldd /bin/ls | cut -d' ' -f3 | xargs -I{} sh -c "cp {} ./ubuntu12_libs/"
 cp /lib/ld-linux.so.2 ./ubuntu12_libs/
 
 # ubuntu22运行ubuntu12编出的emulator
-export ANDROID_PRODUCT_OUT=/root/android/out/target/product/generic
+ANDROID_PRODUCT_OUT=/root/android/out/target/product/generic
 LD_LIBRARY_PATH=ubuntu12_libs  ubuntu12_libs/ld-linux.so.2  out/host/linux-x86/bin/emulator
+```
+
+### 4、构建分析
+
+```shell
+Makefile
+   include build/core/main.mk
+
+build/core/main.mk
+   TOP := .
+   .PHONY: droid
+   DEFAULT_GOAL := droid
+   $(DEFAULT_GOAL):
+   
+   # include any Android.mk files we can find.
+   subdirs := $(TOP)
+   FULL_BUILD := true
+   
+   # 从 TOP目录(顶级目录，因为Makefile的include)搜索所有Android.mk
+   subdir_makefiles := $(shell build/tools/findleaves.py --prune=out --prune=.repo --prune=.git $(subdirs) Android.mk)
+
+   include $(subdir_makefiles)
+
+# emulator构建
+external/qemu/Android.mk
+   ifeq ($(DEFAULT_GOAL),droid)
+      LOCAL_PATH:= $(call my-dir)
+      include $(LOCAL_PATH)/Makefile.android
+   else
+
+external/qemu/Makefile.android
+```
+
+### 5、添加Android组件
+
+```shell
+# - external/freg/Android.mk
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := freg
+LOCAL_SRC_FILES := $(call all-subdir-c-files)
+include $(BUILD_EXECUTABLE)
+
+# - external/freg/freg.c
+#include <stdio.h>
+
+int main(void)
+{
+        printf ("freg\n");
+        return 0;
+}
 ```
 
