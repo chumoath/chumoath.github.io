@@ -244,9 +244,15 @@ apt install -y binfmt-support qemu-user-static debootstrap
 # -s 指定CPU，-Q 指定 qemu-aarch64-static 路径，-F指定qemu-aarch64后面的后缀
 # 必须使用 qemu-aach64-static，执行chroot没有x86的动态库
 ./qemu-binfmt-conf.sh -s aarch64 -Q /usr/bin -F -static -c yes
+# 注：wsl必须删除该文件，否则systemd-binfmt.service无法启动
+#  start condition failed: ConditionVirtualization=!wsl was not met
+rm -f /usr/lib/systemd/system/systemd-binfmt.service.d/wsl.conf
 # 3) 配置文件生效
+systemctl daemon-reload
 systemctl restart systemd-binfmt.service
 ```
+
+- [qemu-binfmt-conf.sh](https://github.com/qemu/qemu/blob/master/scripts/qemu-binfmt-conf.sh)
 
 2. 创建ubuntu镜像
 
@@ -266,11 +272,13 @@ cp company_root.crt /usr/local/share/ca-certificates/
 update-ca-certificates
 # 3) 第二阶段安装核心包(包括apt)
 /debootstrap/debootstrap --second-stage
-apt install -y vim systemd iputils-ping net-tools
+apt install -y vim systemd iputils-ping net-tools pciutils kmod network-manager
 # 4) # 配置启动
 ln -sf /lib/systemd/systemd /usr/sbin/init
 # aarch64不能使用 BindsTo，串口会一直等待，海思的芯片也是如此
 sed -i '/BindsTo=*/d' /lib/systemd/system/serial-getty@.service
+# 删除network-manager的 10-globally-managed-devices.conf，否则网口无法被nmtui管理
+rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
 passwd root
 exit
 # 5) 清理apt缓存
@@ -285,9 +293,9 @@ dir_size=$(du -s --block-size=4096 ubuntu-arm64 | cut -f1)
 # 2) 增加20%的额外空间用于文件系统元数据
 fs_blocks=$((dir_size + dir_size/5))
 # 3) 创建镜像文件
-dd if=/dev/zero of=ubuntu22.img bs=4K count=$fs_blocks
+dd if=/dev/zero of=ubuntu22_arm64.img bs=4K count=$fs_blocks
 # 4) 使用mke2fs创建文件系统并填充内容
-mke2fs -t ext4 -d ubuntu-arm64 ubuntu22.img
+mke2fs -t ext4 -d ubuntu-arm64 ubuntu22_arm64.img
 ```
 
 4. Qemu验证
@@ -302,7 +310,7 @@ iptables -P FORWARD ACCEPT
 
 qemu-system-aarch64 -M virt,gic-version=3 -nographic \
     -m 1024M -cpu cortex-a72 -smp 1 -kernel Image-qemuarm64.bin \
-    -drive format=raw,file=ubuntu22.img \
+    -drive format=raw,file=ubuntu22_arm64.img \
     -append "console=ttyAMA0 root=/dev/vda rw nokaslr" \
     -net nic,netdev=tap0,model=virtio \
     -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no  \
