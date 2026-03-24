@@ -273,6 +273,10 @@ update-ca-certificates
 # 3) 第二阶段安装核心包(包括apt)
 /debootstrap/debootstrap --second-stage
 apt install -y vim systemd iputils-ping net-tools pciutils kmod network-manager
+apt install -y openssh-server
+sed -i 's@^#\?PermitRootLogin.*@PermitRootLogin yes@' /etc/ssh/sshd_config
+systemctl enable ssh
+systemctl enable getty\@tty1.service
 # 4) # 配置启动
 ln -sf /lib/systemd/systemd /usr/sbin/init
 # aarch64不能使用 BindsTo，串口会一直等待，海思的芯片也是如此
@@ -315,6 +319,14 @@ qemu-system-aarch64 -M virt,gic-version=3 -nographic \
     -net nic,netdev=tap0,model=virtio \
     -netdev tap,id=tap0,ifname=tap0,script=no,downscript=no  \
     -serial stdio -monitor none
+    
+# 内核构建
+apt install -y gcc-aarch64-linux-gnu libssl-dev
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=build.arm64 defconfig
+# VIRTIO_BLK DRM DRM_VIRTIO_GPU
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=build.arm64 menuconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=build.arm64 Image -j$(nproc)
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=build.arm64 modules -j$(nproc)
 ```
 
 [Image-qemuarm64.bin](https://downloads.yoctoproject.org/releases/yocto/yocto-5.1.4/machines/qemu/qemuarm64/Image-qemuarm64.bin)
