@@ -45,6 +45,7 @@
 * [llvm](/llvm/)
   * [backend](/llvm/backend)
   * [front](/llvm/front)
+  * [numba](/llvm/numba)
   * [optimizer](/llvm/optimizer)
 * [misc](/misc/)
   * [classic](/misc/classic)
