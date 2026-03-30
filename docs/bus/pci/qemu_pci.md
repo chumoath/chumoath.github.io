@@ -69,3 +69,36 @@ qemu-system-aarch64 -M virt,gic-version=3 -m 16G -cpu cortex-a72 -smp 4 \
 ![image-20260330195951183](../../assets/image-20260330195951183.png)
 
 ![image-20260330200028090](../../assets/image-20260330200028090.png)
+
+### 3、linux的mps的配置
+
+```shell
+# 0、核心接口
+devm_pci_alloc_host_bridge
+pci_bus_size_bridges
+pci_bus_assign_resources
+pcie_bus_configure_settings
+pci_bus_add_devices
+
+# root port没有上级的bridge，没有被设置过mps，用的是固件/硬件初始化的
+# 1、bridge/dev 设置mps
+pci_scan_root_bus_bridge/pci_scan_root_bus
+ -> pci_scan_child_bus -> pci_scan_child_bus_extend 
+    -> pci_scan_slot -> pci_scan_single_device
+      -> pci_device_add -> pci_configure_device -> pci_configure_mps
+      
+   pcie_get_mps/pcie_set_mps
+   
+# 2、设备的DEVCAP_PAYLOAD_SIZE的获取
+pci_scan_single_device -> pci_scan_device -> pci_setup_device 
+  -> set_pcie_port_type
+  pdev->pcie_mpss = FIELD_GET(PCI_EXP_DEVCAP_PAYLOAD, pdev->devcap);
+  
+# 3、扫链完成重新配置MAX_PAYLOAD_SIZE
+pci_host_probe -> pcie_bus_configure_settings
+# 1) pcie_find_smpss: pcie_bus_config == PCIE_BUS_SAFE，查询总线上所有设备DEVCAP最小的mps
+# 2) pcie_bus_configure_set: pcie_bus_config!=PCIE_BUS_TUNE_OFF && pcie_bus_config!=PCIE_BUS_DEFAULT，设置总线上所有设备的mps和mrrs
+# 3) pcie_bus_config == PCIE_BUS_PERFORMANCE并没有顾名思义
+#    pcie_write_mps: pcie_bus_config==PCIE_BUS_PERFORMANCE 匹配设备的DEVCAP的mps和总线配置的mps的最小值，而不是整个链路上的最小值
+#    pcie_write_mrrs: pcie_bus_config==PCIE_BUS_PERFORMANCE，尝试将设备配置的mps设置到mrrs.
+```
