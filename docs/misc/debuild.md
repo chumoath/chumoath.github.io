@@ -14,6 +14,10 @@ apt build-dep -y .
 
 # 3) 构建
 debuild -j$(proc)
+
+# 强制构建，不校验源代码是否改变
+apt build-dep -y .
+dpkg-buildpackage -rfakeroot -b
 ```
 
 ### 2、dpkg命令
