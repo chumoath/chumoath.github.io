@@ -12,7 +12,7 @@ exec /usr/bin/wget "$@" --no-check-certificate
 ### 2、直接指定动态链接器，不需要内核解析ELF文件拿到动态链接器的路径
 
 ```shell
-# LD_LIBRARY_PATH 可以独立于另一个系统，LD_PRELOAD 可以mock一个动态库的函数(符号解析时从已有符号表找到了就不会从其他动态库找)
+# LD_LIBRARY_PATH 可以独立于当前系统的C库；LD_PRELOAD 可以mock一个动态库的函数(符号解析时从已有符号表找到了就不会从其他动态库找)
 LD_LIBRARY_PATH=/ LD_PRELOAD=/lib/x86_64-linux-gnu/libc.so.6 LD_DEBUG=all /lib64/ld-linux-x86-64.so.2 /usr/bin/ls
 
 # ldd /usr/bin/ls
