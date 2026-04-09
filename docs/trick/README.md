@@ -41,3 +41,36 @@ ldconfig -p
 depmod -a
 ```
 
+### 4、查看动态链接器的搜索路径
+
+```shell
+# 1) 通过 ld.so --help
+export LD_LIBRARY_PATH=.:/
+/lib64/ld-linux-x86-64.so.2 --help
+
+# 代码路径：
+# glibc/elf/dl-usage.c: _dl_help -> print_search_path_for_help
+
+# 2) 通过gdb
+apt source glibc
+apt build-dep -y .
+debuild
+
+gdb ./build-tree/amd64-libc/elf/ld-linux-x86-64.so.2
+> set args /usr/bin/ls
+> catch syscall openat  # 找到打开依赖的动态库
+> run
+> p *__rtld_search_dirs.dirs[0]
+> p *__rtld_search_dirs.dirs[1]
+> p *__rtld_env_path_list.dirs[0]
+> p *__rtld_env_path_list.dirs[1]
+# 代码路径：_start -> _dl_start -> dl_main -> _dl_map_object_deps -> openaux -> _dl_map_object
+# 默认搜索路径：__rtld_search_dirs.dirs
+# 环境变量搜索路径：__rtld_env_path_list.dirs，配置了 LD_LIBRARY_PATH 才有
+```
+
+![image-20260409230120921](../assets/image-20260409230120921.png)
+
+![image-20260409230330791](../assets/image-20260409230330791.png)
+
+![image-20260409230533862](../assets/image-20260409230533862.png)
