@@ -90,6 +90,7 @@
   * [ld-linux](/tools/ld-linux)
   * [pahole](/tools/pahole)
   * [windows](/tools/windows)
+* [trick](/trick/)
 * [uefi](/uefi/)
   * [build_atf](/uefi/build_atf)
   * [edk2_vscode](/uefi/edk2_vscode)
