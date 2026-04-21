@@ -74,3 +74,53 @@ gdb ./build-tree/amd64-libc/elf/ld-linux-x86-64.so.2
 ![image-20260409230330791](../assets/image-20260409230330791.png)
 
 ![image-20260409230533862](../assets/image-20260409230533862.png)
+
+### 5、windows/linux使用clion工具编译mixbench
+
+- windows直接使用clion的工具链，不用使用mingw自己装
+
+```shell
+# 1) 下载mixbench
+git clone https://github.com/ekondis/mixbench.git
+# 2) linux 编译
+cd mixbench/mixbench-cpu
+mkdir build && cd build
+cmake -G Ninja ..
+ninja
+# 3) linux测试
+taskset --cpu-list 0 ./mixbench-cpu        # CPU list: #0
+taskset 1 ./mixbench-cpu                   # CPU mask: 0x1表示 CPU #0，0x3表示 CPU #0 #1
+taskset --cpu-list 1-5:2,4 ./mixbench-cpu  # :2表示步长，即 CPU#1 #3 #5 #4
+# 4) windows编译 - 用everything找到 gcc.exe g++.exe cmake.exe ninja.exe的路径，不使用cygwin，加入到PATH环境变量；提示缺openmp的库-libgomp，why?
+cmake -G Ninja .
+ninja
+# 5) windows测试
+help start  # 查看start的使用方法
+start /affinity 0xF .\mixbench-cpu.exe # 一定是16进制，同linux的taskset
+```
+
+- taskset使用
+
+```shell
+# 0) 注: 
+    # -c: 使用CPU列表；
+    # -a 对指定PID的进程的所有线程生效；
+    # mask无论是否有 0x前导，都是16进制；
+    # 指定 mask/cpulist，则是设置，否则是查询
+# 1) 启动命令，并设置CPU亲和性
+taskset --cpu-list 0 ./mixbench-cpu        # CPU list: #0
+taskset 1 ./mixbench-cpu                   # CPU mask: 0x1表示 CPU #0，0x3表示 CPU #0 #1
+taskset --cpu-list 1-5:2,4 ./mixbench-cpu  # :2表示步长，即 CPU#1 #3 #5 #4
+taskset 32 ./mixbench-cpu                  # 0x32表示 CPU #1 #4 $5
+
+# 2) 查看指定进程的亲和性
+taskset --cpu-list -p 1             # 查看指定进程，输出为CPU列表
+taskset -p 1                        # 查看指定进程，输出为CPU mask
+taskset -c -a -p 1                  # 查看指定PID所在的进程所有线程的 CPU亲和性，输出为 CPU列表
+
+# 3) 设置指定进程的亲和性
+taskset -p --cpu-list 0-3,5  1      # 使用CPU列表设置进程1的CPU的亲和性，只对指定线程的PID生效
+taskset -p -a --cpu-list 0-3,5  1   # 使用CPU列表设置线程1所在进程的所有线程的CPU的亲和性
+taskset -p -a 0xf 1                 # 使用CPU mask设置线程1所在进程的所有线程的CPU的亲和性
+```
+
