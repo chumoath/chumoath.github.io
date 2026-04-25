@@ -139,3 +139,7 @@
 21. wsl配置从systemd启动
 
     - /etc/wsl.conf: `[boot] systemd=true`
+    
+22. scp/ssh报错：`Unable to negotiate with 192.168.3.30 port 22: no matching host key type found. Their offer: ssh-rsa`
+
+    - `scp -o HostKeyAlgorithms=+ssh-rsa zImage 192.168.3.30:/root`
