@@ -23,6 +23,7 @@
   * [mesa](/harmonyos/mesa)
   * [mesa_llvm](/harmonyos/mesa_llvm)
   * [openharmony_drm](/harmonyos/openharmony_drm)
+  * [power_dialog](/harmonyos/power_dialog)
   * [qemu_arm64_linux_min](/harmonyos/qemu_arm64_linux_min)
   * [x86_opc](/harmonyos/x86_opc)
 * [linux](/linux/)
