@@ -11,6 +11,7 @@ CONFIG_FUNCTION_GRAPH_TRACER
 
 # 确认ftrace使能路径
 /sys/kernel/debug/tracing
+mount -t tracefs none /sys/kernel/debug/tracing
 ```
 
 ### 2、使用
