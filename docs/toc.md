@@ -1,3 +1,5 @@
+* [AI](/AI/)
+  * [opencode](/AI/opencode)
 * [android](/android/)
   * [x86_build](/android/x86_build)
 * [bus](/bus/)
