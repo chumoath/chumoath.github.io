@@ -186,7 +186,30 @@ cc-connect feishu setup --project wechat_train
 cc-connect
 ```
 
+5. 开机自启动
+
+```shell
+systemctl daemon-reload
+systemctl restart cc-connect
+journalctl -xeru cc-connect
+
+# /etc/systemd/system/cc-connect.service
+[Unit]
+Description=CC Connect Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cc-connect --config /root/.cc-connect/config.toml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ### 五、命令cheatsheet
+
+- 完整功能指南：https://github.com/chenhg5/cc-connect/blob/main/docs/usage.zh-CN.md
 
 |  分类   |        命令         |                   功能                   |
 | :-----: | :-----------------: | :--------------------------------------: |
