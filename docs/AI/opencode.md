@@ -102,7 +102,7 @@
    opencode session list
    
    # 连接到指定session
-   opencode attach <session-id>
+   opencode --session <session-id>
    
    # 导出指定session为json
    opencode export ses_1bf3e5a4cffe8c99Lv7L47NXnt
