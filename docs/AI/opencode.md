@@ -237,7 +237,7 @@ cc-connect
 
 3. 在acp-ui使用: https://github.com/formulahendry/acp-ui
 
-   - windows / android / web
+   - windows / android / web: https://acp-ui.github.io/
 
    - add agent -> Transport(websocket) -> 填入 ws://x.x.x.x:3000 或者 wss://domain
    - New Session
