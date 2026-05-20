@@ -275,6 +275,9 @@ WantedBy=multi-user.target
 
    ```shell
    ssh -R myssh_server:22:localhost:22 serveo.net
+   
+   # 断连自动重启
+   autossh -M 0 -R myssh_server:22:localhost:22 serveo.net
    ```
 
 2. client连接ssh
