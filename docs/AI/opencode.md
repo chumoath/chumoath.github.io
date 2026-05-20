@@ -268,3 +268,19 @@ WantedBy=multi-user.target
 ![image-20260521023638026](../assets/image-20260521023638026.png)
 
 ![image-20260521024135408](../assets/image-20260521024135408.png)
+
+### 七、ssh验证生成结果
+
+1. server端暴露ssh端口
+
+   ```shell
+   ssh -R myssh_server:22:localhost:22 serveo.net
+   ```
+
+2. client连接ssh
+
+   ```shell
+   ssh -J serveo.net root@myssh_server
+   ```
+
+![image-20260521042654770](../assets/image-20260521042654770.png)
