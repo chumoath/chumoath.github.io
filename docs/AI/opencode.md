@@ -136,5 +136,48 @@
    }
    ```
 
-   
+
+### 四、cc-connect - 使用终端控制agent
+
+1. 安装&配置cc-connect
+   - https://github.com/chenhg5/cc-connect/blob/main/README.zh-CN.md
+
+```shell
+npm install -g cc-connect
+```
+
+2. 配置cc-connect
+   -  https://github.com/chenhg5/cc-connect/blob/main/INSTALL.md
+   - https://github.com/chenhg5/cc-connect/blob/main/docs/weixin.md
+
+```shell
+# 使用web配置
+# 1) 创建配置文件
+mkdir -p ~/.cc-connect
+curl -fsSL  https://github.com/chenhg5/cc-connect/raw/refs/heads/main/config.example.toml > ~/.cc-connect/config.toml
+
+# 2) 配置
+[[projects]]
+  name = "wechat_train"
+
+  [projects.agent]
+    type = "opencode"
+
+    [projects.agent.options]
+      mode = "default"
+      work_dir = "/root/agents"
+```
+
+3. 连接wechat
+
+```shell
+# 扫码连接ClawBot，自动生成 [[projects.platforms]] 和 [projects.platforms.options]
+cc-connect weixin setup --project wechat_train
+```
+
+4. 启动cc-connect
+
+```shell
+cc-connect
+```
 
