@@ -159,20 +159,25 @@ curl -fsSL  https://github.com/chenhg5/cc-connect/raw/refs/heads/main/config.exa
 # 2) 配置
 [[projects]]
   name = "wechat_train"
-
+  # 可以执行特权级命令：(/dir, /shell, /restart, /upgrade, /commands addexec)
+  # user_id通过客户端发送 /whoami 获取
+  admin_from = "user_id1,user_id2" 
+  # 配置使用的 AI agent
   [projects.agent]
     type = "opencode"
-
+    # 配置使用的模式和工作目录(只能访问工作目录)
     [projects.agent.options]
       mode = "default"
       work_dir = "/root/agents"
 ```
 
-3. 连接wechat
+3. 连接wechat/feishu(可同时支持多个平台)
+   - 飞书还会自动提示，交互体验更好；wechat体验较差
 
 ```shell
 # 扫码连接ClawBot，自动生成 [[projects.platforms]] 和 [projects.platforms.options]
 cc-connect weixin setup --project wechat_train
+cc-connect feishu setup --project wechat_train
 ```
 
 4. 启动cc-connect
@@ -181,3 +186,62 @@ cc-connect weixin setup --project wechat_train
 cc-connect
 ```
 
+### 五、命令cheatsheet
+
+|  分类   |        命令         |                   功能                   |
+| :-----: | :-----------------: | :--------------------------------------: |
+|   sys   |        /help        |               查看可用命令               |
+|   sys   |       /status       |            查看cc-connect状态            |
+|   sys   |       /doctor       |                   诊断                   |
+|   sys   |       /whoami       |           查看使用的客户端的ID           |
+|   sys   |        /dir         |      查看、切换或重置agent工作目录       |
+| session |        /new         |       创建新session，不会立刻激活        |
+| session |      /current       |           查看当前活跃session            |
+| session |   /delete <序号>    | 删除session，但是不能删除当前活跃session |
+| session |        /list        |        查看当前工作区所有session         |
+| session |       /switch       |               切换session                |
+| session |        /stop        |            停止当前工作的命令            |
+| session | /name <序号> <名称> |              给session命名               |
+|  tool   |  /shell <command>   |            执行shell命令返回             |
+|  agent  |    /lang <zh/en>    |                 切换语言                 |
+|  agent  |       /model        |              查看/切换模型               |
+|  agent  |        /mode        |            查看/切换权限模式             |
+|  agent  |       /memory       |          查看/编辑agent记忆文件          |
+
+### 六、使用ACP协议
+
+1. 配置服务端
+
+   ```shell
+   # 启动opencode的acp模式(用ACP协议通信)，并将标准输入输出重定向到websocket
+   npx @rebornix/stdio-to-ws "opencode acp" --port 3000
+   ```
+
+2. 暴露指定端口到公网
+
+   ```shell
+   # 方法一：
+   # 会生成一个URL，直接在web浏览器或者acp-ui访问即可，不需要指定端口
+   #   your url is: https://stupid-ends-roll.loca.lt
+   npx localtunnel --port 3000
+   
+   # 示例
+   python3 -m http.server 8080
+   npx localtunnel --port 8080
+   
+   # 方法二：
+   # 也会生成一个url
+   # https://e8db17ce90a7c1e7-14-220-189-236.serveousercontent.com
+   ssh -R 80:localhost:8080 serveo.net
+   ```
+
+3. 在acp-ui使用: https://github.com/formulahendry/acp-ui
+
+   - windows / android / web
+
+   - add agent -> Transport(websocket) -> 填入 ws://x.x.x.x:3000 或者 wss://domain
+   - New Session
+
+![image-20260521023638026](../assets/image-20260521023638026.png)
+
+![image-20260521024135408](../assets/image-20260521024135408.png)
